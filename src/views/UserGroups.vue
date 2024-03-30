@@ -6,7 +6,7 @@
       <InputText
         class="group-search__input-search"
         v-model="search"
-        placeholder="Поиск по коду группы"
+        placeholder="Поиск коду группы"
       />
     </IconField>
   </div>
@@ -19,24 +19,24 @@
     selectionMode="single"
     v-model:selection="selectedProduct"
   >
-    <Column field="codeGroup" header="Код группы"></Column>
-    <Column field="lessonName" header="Предмет"></Column>
-    <Column field="groupLeader" header="Стараста"></Column>
-    <Column field="numberStudents" header="Кол.Студентов" sortable></Column>
-    <Column field="attendance" header="Посещаймость %" :sortable="true"></Column>
+    <Column field="group_name" header="Код группы"></Column>
+    <Column field="subject_name" header="Предмет"></Column>
+    <!-- <Column field="" header="Стараста"></Column> -->
+    <!-- <Column field="" header="Кол.Студентов" sortable></Column> -->
+    <!-- <Column field="" header="Посещаймость %" sortable></Column> -->
   </DataTable>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 // import InputText from 'primevue/inputtext'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import router from '../router'
+import { getUserGroup } from '../servise/getUserGroup'
 
-const selectedProduct = ref({})
 
 const students = ref([
   {
@@ -61,22 +61,29 @@ const students = ref([
     attendance: '43'
   }
 ])
-
+const userGroup = ref()
 const search = ref('')
+const selectedProduct = ref({})
+
 
 const filteredStudents = computed(() => {
   if (!search.value) {
-    return students.value
+    return userGroup.value
   }
 
-  return students.value.filter((student) =>
+  return userGroup.value.filter((student) =>
     student.codeGroup.toLowerCase().includes(search.value.toLowerCase())
   )
 })
 
 function onRowSelect() {
-  router.push({ name: 'groupStatistics',  query: { codeGroup: selectedProduct.value.codeGroup }})
+  router.push({ name: 'groupStatistics',  query: { codeGroup: selectedProduct.value['group_name'] }})
 }
+
+onMounted(async () => {
+  userGroup.value = await getUserGroup()
+})
+
 </script>
 
 <style>

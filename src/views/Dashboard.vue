@@ -8,6 +8,12 @@
         <span class="pi pi-users"></span>
         Ваши группы
       </li>
+      <li class="sidebar-menu__item sidebar-menu__item--title-category">
+        Администрирование
+      </li>
+      <li class="sidebar-menu__item sidebar-menu__item--title-category">
+        Управление групами
+      </li>
     </ul>
 
     <Button class="logOut-button" label="Выйти" severity="danger" @click="logOut" />
@@ -73,10 +79,14 @@ function logOut() {
   
   border-radius: 5px;
 
-  padding: 10px;
+  padding: 5px;
   gap: 10px;
 
   transition: all 0.3s ease-in-out;
+}
+
+.sidebar-menu__item--title-category{
+  font-weight:600;
 }
 
 .sidebar-menu__item:hover{

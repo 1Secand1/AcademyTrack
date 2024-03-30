@@ -34,7 +34,7 @@ import Button from 'primevue/button';
 // import InputText from 'primevue/inputText';
 
 import { reactive, ref } from 'vue'
-import { getToken } from '../servises/auth.js'
+import { getToken } from '../servise/auth.js'
 
 import {setCookie,getCookie} from '../utils/cookie.js'
 import router from '../router/index.js';
@@ -101,3 +101,4 @@ input {
   gap: 10px;
 }
 </style>
+../service/auth.js
