@@ -18,6 +18,11 @@ const routes = [
         path: 'groupStatistics',
         name: 'groupStatistics',
         component: () => import('../views/GroupStatistics.vue')
+      },
+      {
+        path: 'settingsGroups',
+        name: 'settingsGroups',
+        component: () => import('../views/SettingsGroups.vue')
       }
     ]
   },

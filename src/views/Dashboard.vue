@@ -6,13 +6,18 @@
     <ul class="sidebar-menu__list">
       <li class="sidebar-menu__item">
         <span class="pi pi-users"></span>
-        Ваши группы
+        <router-link :to="{name:'userGroups'}">
+          Ваши группы
+        </router-link>
       </li>
       <li class="sidebar-menu__item sidebar-menu__item--title-category">
         Администрирование
       </li>
       <li class="sidebar-menu__item sidebar-menu__item--title-category">
+      <router-link :to="{name:'settingsGroups'}">
         Управление групами
+      </router-link>
+
       </li>
     </ul>
 

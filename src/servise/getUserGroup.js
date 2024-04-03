@@ -9,7 +9,7 @@ export async function getUserGroup() {
       },
     });
     const data = await response.json();
-    return await data;
+    return data;
   } catch (error) {
     throw new Error(`HTTP error! ${error}`)
   }

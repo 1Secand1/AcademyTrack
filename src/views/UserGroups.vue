@@ -19,8 +19,8 @@
     selectionMode="single"
     v-model:selection="selectedProduct"
   >
-    <Column field="group_name" header="Код группы"></Column>
-    <Column field="subject_name" header="Предмет"></Column>
+    <Column field="groupCode" header="Код группы"></Column>
+    <Column field="subjectName" header="Предмет"></Column>
     <!-- <Column field="" header="Стараста"></Column> -->
     <!-- <Column field="" header="Кол.Студентов" sortable></Column> -->
     <!-- <Column field="" header="Посещаймость %" sortable></Column> -->
@@ -36,7 +36,6 @@ import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import router from '../router'
 import { getUserGroup } from '../servise/getUserGroup'
-
 
 const students = ref([
   {
@@ -77,7 +76,7 @@ const filteredStudents = computed(() => {
 })
 
 function onRowSelect() {
-  router.push({ name: 'groupStatistics',  query: { codeGroup: selectedProduct.value['group_name'] }})
+  router.push({ name: 'groupStatistics',  query: { codeGroup: selectedProduct.value['groupCode'] }})
 }
 
 onMounted(async () => {
