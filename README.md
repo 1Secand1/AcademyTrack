@@ -1,7 +1,36 @@
-# Tauri + Vue 3
+# AcademyTrack
 
-This template should help get you started developing with Tauri + Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Описание проекта
+**AcademyTrack** — это приложение предназначено для упрощения процесса учета посещаемости студентов и анализа статистики посещаемости в образовательных учреждениях. Это приложение предлагает преподавателям набор мощных инструментов для ведения учета посещаемости, позволяя им сосредоточиться на обучении, а не на бюрократии.
 
-## Recommended IDE Setup
+## Основные технологии
+Проект **AcademyTrack** построен на современных технологиях, чтобы обеспечить легкость использования и высокую производительность:
+- **Frontend:** разработан с использованием фреймворка Vue.js, который обеспечивает реактивность и великолепную производительность интерфейса.
+- **Desktop:** создается с помощью Tauri, что позволяет приложению работать на различных операционных системах с нативной скоростью и безопасностью.
+- **API:** для бэкенда используется REST API, написанный на PHP, обеспечивающий надежное и масштабируемое взаимодействие между фронтендом и сервером.
+- **Project assembly:**сборка проекта производится с помощью Vite.js, упрощающего разработку и ускоряющего процесс сборки.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## Требования
+- **Для веб-версии:** не требуются специальные зависимости или настройки.
+- **Для десктопной версии:** необходимо установить [Rust](https://www.rust-lang.org/learn/get-started) и [Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/ru/visual-cpp-build-tools/) для сборки приложения.
+
+## Установка и запуск
+1. Клонируйте репозиторий: git clone https://github.com/1Secand1/AcademyTrack.git
+2. Установить зависимости: npm install
+3. Запуск приложения:
+- Веб-приложение:
+  ```
+  npm run dev
+  ```
+- Десктопное приложение (предпросмотр):
+  ```
+  npm run tauri dev
+  ```
+- Сборка десктопного приложения:
+  ```
+  npm run tauri build
+  ```
+
+	
+## Лицензия
+Проект распространяется под лицензией GPL-3.0. Для получения дополнительной информации см. файл LICENSE в репозитории.
