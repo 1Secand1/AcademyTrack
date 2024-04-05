@@ -1,12 +1,18 @@
 <template>
   <div class="login-container">
-    <form class="login-form" @submit.prevent="handleSubmit">
+    <form
+      class="login-form"
+      @submit.prevent="handleSubmit"
+    >
       <h2 class="login-form__title">Вход в систему</h2>
 
       <div class="login-form__input-box">
         <div class="login-form__named-input">
           <label for="username">Логин</label>
-          <InputText id="username" v-model="formData.login" aria-describedby="username-help" />
+          <InputText
+            id="username"
+            v-model="formData.login"
+          />
         </div>
 
         <div class="login-form__named-input">
@@ -15,7 +21,6 @@
             type="password"
             id="password"
             v-model="formData.password"
-            aria-describedby="username-help"
           />
         </div>
       </div>
@@ -30,33 +35,30 @@
 </template>
 
 <script setup>
-import Button from 'primevue/button';
-// import InputText from 'primevue/inputText';
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
 
 import { reactive, ref } from 'vue'
-import { getToken } from '../servise/auth.js'
+import { getToken } from '../service/auth.js'
 
-import {setCookie,getCookie} from '../utils/cookie.js'
-import router from '../router/index.js';
+import router from '../router/index.js'
+import { setCookie } from '../utils/cookie.js'
 
 const value = ref(null)
 
 const formData = reactive({
   login: '',
-  password: ''
+  password: '',
 })
 
-
 async function userAuthorization(login, password) {
-    const token = await getToken(login, password)
-    
-    console.log(token);
-    if (!token)return
-    setCookie('token',60*60*24*365, token)
-    router.push({ path: '/dashboard' })
-} 
+  const token = await getToken(login, password)
 
-
+  console.log(token)
+  if (!token) return
+  setCookie('token', 60 * 60 * 24 * 365, token)
+  router.push({ path: '/dashboard' })
+}
 </script>
 
 <style scoped>
@@ -74,6 +76,7 @@ async function userAuthorization(login, password) {
 .login-form {
   display: grid;
 }
+
 .login-form__title {
   margin: 0;
 }
@@ -91,7 +94,7 @@ input {
   gap: 8px;
 }
 
-.qwe > .p-inputtext {
+.qwe>.p-inputtext {
   display: none;
 }
 
@@ -101,4 +104,4 @@ input {
   gap: 10px;
 }
 </style>
-../service/auth.js
+
