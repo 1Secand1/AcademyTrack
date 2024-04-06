@@ -1,58 +1,110 @@
 <template>
 	<div class="wrapper">
 		<section class="settings">
-			<SelectButton
-				pt:root:class='settings__select-button'
-				v-model="selectButtonValue"
-				:options="selectButtonOptions"
-				aria-labelledby="basic"
-			/>
-
-			<IconField iconPosition="left">
-				<InputIcon class="pi pi-search"> </InputIcon>
-				<InputText
-					class="settings__input-search"
-					v-model="search"
-					placeholder="Поиск"
-				/>
-			</IconField>
-
-
 			<form
+				v-if="typeOfAdditionValue === 'В ручную'"
 				class='addition-form'
 				action=''
 			>
+				<h2 class='settings__title'>
+					Изменить данные
+				</h2>
+
 				<InputText
+					v-if="
+						selectButtonOptionsValue === 'Студенты' || selectButtonOptionsValue === 'Учителя'"
 					class="settings__input-search"
 					v-model="search"
 					placeholder="Имя"
 				/>
 
 				<InputText
+					v-if="
+						selectButtonOptionsValue === 'Студенты' || selectButtonOptionsValue === 'Учителя'"
 					class="settings__input-search"
 					v-model="search"
 					placeholder="Фамилия"
 				/>
 
 				<InputText
+					v-if="
+						selectButtonOptionsValue === 'Студенты' || selectButtonOptionsValue === 'Учителя'"
 					class="settings__input-search"
 					v-model="search"
 					placeholder="Отчество"
 				/>
 
 				<InputText
+					v-if="selectButtonOptionsValue === 'Группы' || selectButtonOptionsValue === 'Студенты'"
 					class="settings__input-search"
 					v-model="search"
-					placeholder="Группа"
+					placeholder="Код группы"
+				/>
+
+				<InputText
+					v-if="selectButtonOptionsValue === 'Группы'"
+					class="settings__input-search"
+					v-model="search"
+					placeholder="Год начала обучения"
+				/>
+				<InputText
+					v-if="selectButtonOptionsValue === 'Группы'"
+					class="settings__input-search"
+					v-model="search"
+					placeholder="Год окончания обучения"
 				/>
 
 				<Button
 					class=""
-					label="Создать"
+					label="Изменить"
 					@click=""
 				/>
 			</form>
+
+			<Section
+				class='fileUploadBox'
+				v-if="typeOfAdditionValue === 'Excel файл'"
+			>
+				<h2>Загрузить файл</h2>
+
+				<FileUpload
+					chooseLabel='Загрузить'
+					pt:root:class='fileUploadBox__button'
+					mode="basic"
+					name="demo[]"
+					url="/api/upload"
+					accept="image/*"
+					:maxFileSize="1000000"
+					@upload="onUpload"
+				/>
+			</Section>
+
+
+			<section class='settings__options'>
+				<SelectButton
+					pt:root:class='settings__select-button'
+					v-model="selectButtonOptionsValue"
+					:options="selectButtonOptions"
+					aria-labelledby="basic"
+				/>
+
+				<SelectButton
+					pt:root:class='settings__select-button'
+					v-model="selectButtonTypeOperationValue"
+					:options="selectButtonTypeOperation"
+					aria-labelledby="basic"
+				/>
+
+				<SelectButton
+					v-if='selectButtonTypeOperationValue === "Добавление"'
+					pt:root:class='settings__select-button'
+					v-model="typeOfAdditionValue"
+					:options="typeOfAddition"
+					aria-labelledby="basic"
+				/>
+			</section>
 		</section>
+
 		<DataTable
 			class='table'
 			@rowSelect="onRowSelect"
@@ -87,15 +139,21 @@
 import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import SelectButton from 'primevue/selectbutton'
 
-import { ref } from 'vue'
+import FileUpload from 'primevue/fileupload'
+
+import { ref, watch } from 'vue'
 
 const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
-const selectButtonValue = ref('Студенты')
+const selectButtonOptionsValue = ref('Студенты')
+
+const selectButtonTypeOperation = ['Изменение', 'Добавление']
+const selectButtonTypeOperationValue = ref('Изменение')
+
+const typeOfAddition = ['Excel файл', 'В ручную']
+const typeOfAdditionValue = ref('В ручную')
 
 const valued = ref([
 	{
@@ -105,48 +163,28 @@ const valued = ref([
 		codeGroup: 'Исп-211'
 	},
 	{
-		firstName: "Владислав",
+		firstName: "Дмитрий",
 		surname: "Владимирович",
 		patronymic: "Боев",
 		codeGroup: 'Исп-211'
 	},
 	{
-		firstName: "Владислав",
+		firstName: "Иванов",
 		surname: "Владимирович",
 		patronymic: "Боев",
 		codeGroup: 'Исп-211'
 	},
-	{
-		firstName: "Владислав",
-		surname: "Владимирович",
-		patronymic: "Боев",
-		codeGroup: 'Исп-211'
-	},
-	{
-		firstName: "Владислав",
-		surname: "Владимирович",
-		patronymic: "Боев",
-		codeGroup: 'Исп-211'
-	},
-	{
-		firstName: "Владислав",
-		surname: "Владимирович",
-		patronymic: "Боев",
-		codeGroup: 'Исп-211'
-	},
-	{
-		firstName: "Владислав",
-		surname: "Владимирович",
-		patronymic: "Боев",
-		codeGroup: 'Исп-211'
-	},
-	{
-		firstName: "Владислав",
-		surname: "Владимирович",
-		patronymic: "Боев",
-		codeGroup: 'Исп-211'
-	},
+
 ])
+const selectedProduct = ref([])
+const onRowSelect = ref([])
+const search = ref()
+
+watch(selectButtonTypeOperationValue, (value) => {
+	if (value == 'Изменение') {
+		typeOfAdditionValue.value = 'В ручную'
+	}
+})
 
 </script>
 
@@ -160,12 +198,12 @@ const valued = ref([
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	max-width: 350px;
 
 	gap: 10px;
 
 	padding: 10px;
-	padding-top: 20px;
 
 	height: 100svh;
 	border-radius: 5px;
@@ -180,16 +218,32 @@ const valued = ref([
 	display: flex;
 }
 
-.addition-form {
-	display: grid;
+.settings__title {}
 
+.settings__options {
+	display: grid;
 	gap: 10px;
-	margin-top: 15px;
+	margin-bottom: 20px;
+	margin-top: auto;
 }
 
+.addition-form {
+	display: grid;
+	gap: 10px;
+}
+
+.addition-form__title {
+	margin: 0;
+}
 
 .settings__input-search {
 	width: 100%;
+}
+
+.fileUploadBox {}
+
+.fileUploadBox__button {
+	display: flex;
 }
 
 .table {

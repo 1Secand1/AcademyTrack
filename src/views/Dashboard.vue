@@ -4,18 +4,25 @@
 			<h2 class="sidebar-menu__title">AcademyTrack</h2>
 
 			<ul class="sidebar-menu__list">
+				<li class="sidebar-menu__item sidebar-menu__item--title-category">
+					Категория
+				</li>
 				<li class="sidebar-menu__item">
 					<span class="pi pi-users"></span>
-					<router-link :to="{ name: 'userGroups' }"> Ваши группы </router-link>
+					<router-link :to="{ name: 'userGroups' }">
+						Ваши группы
+					</router-link>
 				</li>
 				<li class="sidebar-menu__item sidebar-menu__item--title-category">
 					Администрирование
 				</li>
 				<li class="sidebar-menu__item sidebar-menu__item--title-category">
+					<span class="pi pi-credit-card"></span>
 					<router-link :to="{ name: 'settingsGroups' }">
 						Управление
 					</router-link>
 				</li>
+
 			</ul>
 
 			<Button
@@ -104,4 +111,5 @@ function logOut() {
 
 .logOut-button {
 	margin-top: auto;
-}</style>
+}
+</style>
