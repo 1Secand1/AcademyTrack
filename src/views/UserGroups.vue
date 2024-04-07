@@ -41,7 +41,7 @@ import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import { computed, onMounted, ref } from 'vue'
 import router from '../router'
-import { getStudentsGroups } from '../service/getStudentsGroups.js'
+import { getTeachersGroups } from '../service/getTeachersGroups.js'
 
 const students = ref([
 	{
@@ -88,7 +88,7 @@ function onRowSelect() {
 }
 
 onMounted(async () => {
-	userGroup.value = await getStudentsGroups()
+	userGroup.value = await getTeachersGroups()
 })
 </script>
 
