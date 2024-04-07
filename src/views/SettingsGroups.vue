@@ -61,7 +61,7 @@
 				/>
 			</form>
 
-			<Section
+			<section
 				class='fileUploadBox'
 				v-if="typeOfAdditionValue === 'Excel файл'"
 			>
@@ -75,10 +75,9 @@
 					url="/api/upload"
 					accept="image/*"
 					:maxFileSize="1000000"
-					@upload="onUpload"
+					@upload=""
 				/>
-			</Section>
-
+			</section>
 
 			<section class='settings__options'>
 				<SelectButton
@@ -116,7 +115,7 @@
 			stripedRows
 		>
 			<Column
-				field="firstName"
+				field="name"
 				header="Имя"
 			/>
 			<Column
@@ -128,7 +127,7 @@
 				header="Отчество"
 			/>
 			<Column
-				field="codeGroup"
+				field="groupCode"
 				header="Код группы"
 			/>
 		</DataTable>
@@ -139,12 +138,12 @@
 import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
+import FileUpload from 'primevue/fileupload'
 import InputText from 'primevue/inputtext'
 import SelectButton from 'primevue/selectbutton'
 
-import FileUpload from 'primevue/fileupload'
-
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { getStudents } from '../service/getStudents.js'
 
 const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
 const selectButtonOptionsValue = ref('Студенты')
@@ -155,27 +154,7 @@ const selectButtonTypeOperationValue = ref('Изменение')
 const typeOfAddition = ['Excel файл', 'В ручную']
 const typeOfAdditionValue = ref('В ручную')
 
-const valued = ref([
-	{
-		firstName: "Владислав",
-		surname: "Владимирович",
-		patronymic: "Боев",
-		codeGroup: 'Исп-211'
-	},
-	{
-		firstName: "Дмитрий",
-		surname: "Владимирович",
-		patronymic: "Боев",
-		codeGroup: 'Исп-211'
-	},
-	{
-		firstName: "Иванов",
-		surname: "Владимирович",
-		patronymic: "Боев",
-		codeGroup: 'Исп-211'
-	},
-
-])
+const valued = ref([])
 const selectedProduct = ref([])
 const onRowSelect = ref([])
 const search = ref()
@@ -184,6 +163,10 @@ watch(selectButtonTypeOperationValue, (value) => {
 	if (value == 'Изменение') {
 		typeOfAdditionValue.value = 'В ручную'
 	}
+})
+
+onMounted(async () => {
+	valued.value = await getStudents()
 })
 
 </script>
