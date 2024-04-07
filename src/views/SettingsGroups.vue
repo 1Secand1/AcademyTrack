@@ -82,9 +82,12 @@
 			<section class='settings__options'>
 				<SelectButton
 					pt:root:class='settings__select-button'
+					@change='changeTableContent'
 					v-model="selectButtonOptionsValue"
 					:options="selectButtonOptions"
 					aria-labelledby="basic"
+					:allowEmpty="false"
+					:unselectable="false"
 				/>
 
 				<SelectButton
@@ -92,6 +95,8 @@
 					v-model="selectButtonTypeOperationValue"
 					:options="selectButtonTypeOperation"
 					aria-labelledby="basic"
+					:allowEmpty="false"
+					:unselectable="false"
 				/>
 
 				<SelectButton
@@ -100,6 +105,8 @@
 					v-model="typeOfAdditionValue"
 					:options="typeOfAddition"
 					aria-labelledby="basic"
+					:allowEmpty="false"
+					:unselectable="false"
 				/>
 			</section>
 		</section>
@@ -115,21 +122,40 @@
 			stripedRows
 		>
 			<Column
+				v-if="selectButtonOptionsValue === 'Студенты'"
 				field="name"
 				header="Имя"
 			/>
 			<Column
+				v-if="selectButtonOptionsValue === 'Студенты'"
 				field="surname"
 				header="Фамилия"
 			/>
 			<Column
+				v-if="selectButtonOptionsValue === 'Студенты'"
 				field="patronymic"
 				header="Отчество"
 			/>
 			<Column
+				v-if="selectButtonOptionsValue === 'Студенты' ||
+					selectButtonOptionsValue === 'Группы'
+				"
 				field="groupCode"
 				header="Код группы"
 			/>
+
+			<Column
+				v-if="selectButtonOptionsValue === 'Группы'"
+				field="yearOfEntry"
+				header="Год начала обучения"
+			/>
+
+			<Column
+				v-if="selectButtonOptionsValue === 'Группы'"
+				field="yearOfIssue"
+				header="Год окончания обучения"
+			/>
+
 		</DataTable>
 	</div>
 </template>
@@ -143,6 +169,7 @@ import InputText from 'primevue/inputtext'
 import SelectButton from 'primevue/selectbutton'
 
 import { onMounted, ref, watch } from 'vue'
+import { getStudentGroups } from '../service/getStudentGroups.js'
 import { getStudents } from '../service/getStudents.js'
 
 const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
@@ -164,6 +191,18 @@ watch(selectButtonTypeOperationValue, (value) => {
 		typeOfAdditionValue.value = 'В ручную'
 	}
 })
+
+async function changeTableContent(event) {
+	const { value } = event
+
+	if (value === "Студенты") {
+		valued.value = await getStudents()
+	}
+
+	if (value === "Группы") {
+		valued.value = await getStudentGroups()
+	}
+}
 
 onMounted(async () => {
 	valued.value = await getStudents()
