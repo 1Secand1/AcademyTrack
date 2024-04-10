@@ -1,7 +1,6 @@
 <template>
   Группа
   {{ groupCode }}
-
   <router-link to="/userGroups">Назад</router-link>
 </template>
 

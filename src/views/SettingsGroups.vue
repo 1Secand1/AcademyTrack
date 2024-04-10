@@ -100,7 +100,7 @@
 				/>
 
 				<SelectButton
-					v-if='selectButtonTypeOperationValue === "Добавление"'
+					v-if='selectButtonTypeOperationValue === "Добавление "'
 					pt:root:class='settings__select-button'
 					v-model="typeOfAdditionValue"
 					:options="typeOfAddition"
@@ -175,7 +175,7 @@ import { getStudents } from '../service/getStudents.js'
 const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
 const selectButtonOptionsValue = ref('Студенты')
 
-const selectButtonTypeOperation = ['Изменение', 'Импорт данных']
+const selectButtonTypeOperation = ['Изменение', 'Добавление ']
 const selectButtonTypeOperationValue = ref('Изменение')
 
 const typeOfAddition = ['Excel файл', 'В ручную']
