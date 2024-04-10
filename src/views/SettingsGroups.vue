@@ -175,7 +175,7 @@ import { getStudents } from '../service/getStudents.js'
 const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
 const selectButtonOptionsValue = ref('Студенты')
 
-const selectButtonTypeOperation = ['Изменение', 'Добавление']
+const selectButtonTypeOperation = ['Изменение', 'Импорт данных']
 const selectButtonTypeOperationValue = ref('Изменение')
 
 const typeOfAddition = ['Excel файл', 'В ручную']
