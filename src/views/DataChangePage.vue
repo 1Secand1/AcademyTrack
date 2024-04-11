@@ -114,11 +114,11 @@ import SelectButton from 'primevue/selectbutton'
 import DataChangePageStudentForm from "../components/DataChangePageStudentForm.vue"
 import DataChangePageTeachersForm from "../components/DataChangePageTeachersForm.vue"
 
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, shallowRef, watch } from 'vue'
 import { getStudentGroups } from '../service/getStudentGroups.js'
 import { getStudents } from '../service/getStudents.js'
 
-const currentActiveForm = ref(DataChangePageStudentForm)
+const currentActiveForm = shallowRef(DataChangePageStudentForm)
 
 const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
 const selectButtonOptionsValue = ref('Студенты')
