@@ -15,7 +15,7 @@
 						selectButtonOptionsValue === 'Студенты' || selectButtonOptionsValue === 'Учителя'"
 					class="settings__input-search"
 					v-model="search"
-					placeholder="Имя"
+					placeholder="Фамилия"
 				/>
 
 				<InputText
@@ -23,8 +23,10 @@
 						selectButtonOptionsValue === 'Студенты' || selectButtonOptionsValue === 'Учителя'"
 					class="settings__input-search"
 					v-model="search"
-					placeholder="Фамилия"
+					placeholder="Имя"
 				/>
+
+
 
 				<InputText
 					v-if="
@@ -123,14 +125,16 @@
 		>
 			<Column
 				v-if="selectButtonOptionsValue === 'Студенты'"
-				field="name"
-				header="Имя"
-			/>
-			<Column
-				v-if="selectButtonOptionsValue === 'Студенты'"
 				field="surname"
 				header="Фамилия"
 			/>
+
+			<Column
+				v-if="selectButtonOptionsValue === 'Студенты'"
+				field="name"
+				header="Имя"
+			/>
+
 			<Column
 				v-if="selectButtonOptionsValue === 'Студенты'"
 				field="patronymic"
