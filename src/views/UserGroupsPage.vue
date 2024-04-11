@@ -40,7 +40,7 @@ import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import { computed, onMounted, ref } from 'vue'
-import router from '../router'
+import router from '../router/index.js'
 import { getTeachersGroups } from '../service/getTeachersGroups.js'
 
 const students = ref([
