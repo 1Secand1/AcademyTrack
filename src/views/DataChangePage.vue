@@ -1,67 +1,8 @@
 <template>
 	<div class="wrapper">
 		<section class="settings">
-			<form
-				v-if="typeOfAdditionValue === 'В ручную'"
-				class='addition-form'
-				action=''
-			>
-				<h2 class='settings__title'>
-					Изменить данные
-				</h2>
 
-				<InputText
-					v-if="
-						selectButtonOptionsValue === 'Студенты' || selectButtonOptionsValue === 'Учителя'"
-					class="settings__input-search"
-					v-model="search"
-					placeholder="Фамилия"
-				/>
-
-				<InputText
-					v-if="
-						selectButtonOptionsValue === 'Студенты' || selectButtonOptionsValue === 'Учителя'"
-					class="settings__input-search"
-					v-model="search"
-					placeholder="Имя"
-				/>
-
-
-
-				<InputText
-					v-if="
-						selectButtonOptionsValue === 'Студенты' || selectButtonOptionsValue === 'Учителя'"
-					class="settings__input-search"
-					v-model="search"
-					placeholder="Отчество"
-				/>
-
-				<InputText
-					v-if="selectButtonOptionsValue === 'Группы' || selectButtonOptionsValue === 'Студенты'"
-					class="settings__input-search"
-					v-model="search"
-					placeholder="Код группы"
-				/>
-
-				<InputText
-					v-if="selectButtonOptionsValue === 'Группы'"
-					class="settings__input-search"
-					v-model="search"
-					placeholder="Год начала обучения"
-				/>
-				<InputText
-					v-if="selectButtonOptionsValue === 'Группы'"
-					class="settings__input-search"
-					v-model="search"
-					placeholder="Год окончания обучения"
-				/>
-
-				<Button
-					class=""
-					label="Изменить"
-					@click=""
-				/>
-			</form>
+			<component :is='currentActiveForm'></component>
 
 			<section
 				class='fileUploadBox'
@@ -165,16 +106,19 @@
 </template>
 
 <script setup>
-import Button from 'primevue/button'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import FileUpload from 'primevue/fileupload'
-import InputText from 'primevue/inputtext'
 import SelectButton from 'primevue/selectbutton'
+
+import DataChangePageStudentForm from "../components/DataChangePageStudentForm.vue"
+import DataChangePageTeachersForm from "../components/DataChangePageTeachersForm.vue"
 
 import { onMounted, ref, watch } from 'vue'
 import { getStudentGroups } from '../service/getStudentGroups.js'
 import { getStudents } from '../service/getStudents.js'
+
+const currentActiveForm = ref(DataChangePageStudentForm)
 
 const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
 const selectButtonOptionsValue = ref('Студенты')
@@ -200,10 +144,12 @@ async function changeTableContent(event) {
 	const { value } = event
 
 	if (value === "Студенты") {
+		currentActiveForm.value = DataChangePageStudentForm
 		valued.value = await getStudents()
 	}
 
 	if (value === "Группы") {
+		currentActiveForm = DataChangePageTeachersForm
 		valued.value = await getStudentGroups()
 	}
 }
