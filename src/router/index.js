@@ -29,7 +29,7 @@ const routes = [
 	{
 		path: '/authorization',
 		name: 'authorization',
-		component: () => import('../views/Authorization.vue'),
+		component: () => import('../views/AuthorizationPage.vue'),
 	},
 ]
 

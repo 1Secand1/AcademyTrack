@@ -28,7 +28,7 @@
       <Button
         class="login-form__button"
         label="Войти"
-        @click="userAuthorization(formData.login, formData.password)"
+        @click="userAuthorizationPage(formData.login, formData.password)"
       />
     </form>
   </div>
@@ -51,7 +51,7 @@ const formData = reactive({
   password: '',
 })
 
-async function userAuthorization(login, password) {
+async function userAuthorizationPage(login, password) {
   const token = await getToken(login, password)
 
   console.log(token)
@@ -104,4 +104,3 @@ input {
   gap: 10px;
 }
 </style>
-
