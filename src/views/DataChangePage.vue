@@ -1,8 +1,10 @@
 <template>
 	<div class="wrapper">
 		<section class="settings">
-
-			<component :is='currentActiveForm'></component>
+			<component
+				v-if='typeOfAdditionValue === "В ручную"'
+				:is='currentActiveForm'
+			/>
 
 			<section
 				class='fileUploadBox'
@@ -54,71 +56,24 @@
 			</section>
 		</section>
 
-		<DataTable
-			class='table'
-			@rowSelect="onRowSelect"
-			v-model:selection="selectedProduct"
-			:value="valued"
-			:sortOrder="-1"
-			sortField="attendance"
-			selectionMode="single"
-			stripedRows
-		>
-			<Column
-				v-if="selectButtonOptionsValue === 'Студенты'"
-				field="surname"
-				header="Фамилия"
-			/>
-
-			<Column
-				v-if="selectButtonOptionsValue === 'Студенты'"
-				field="name"
-				header="Имя"
-			/>
-
-			<Column
-				v-if="selectButtonOptionsValue === 'Студенты'"
-				field="patronymic"
-				header="Отчество"
-			/>
-			<Column
-				v-if="selectButtonOptionsValue === 'Студенты' ||
-					selectButtonOptionsValue === 'Группы'
-				"
-				field="groupCode"
-				header="Код группы"
-			/>
-
-			<Column
-				v-if="selectButtonOptionsValue === 'Группы'"
-				field="yearOfEntry"
-				header="Год начала обучения"
-			/>
-
-			<Column
-				v-if="selectButtonOptionsValue === 'Группы'"
-				field="yearOfIssue"
-				header="Год окончания обучения"
-			/>
-
-		</DataTable>
+		<component :is='currentActiveTable'></component>
 	</div>
 </template>
 
 <script setup>
-import Column from 'primevue/column'
-import DataTable from 'primevue/datatable'
 import FileUpload from 'primevue/fileupload'
 import SelectButton from 'primevue/selectbutton'
 
-import DataChangePageStudentForm from "../components/DataChangePageStudentForm.vue"
-import DataChangePageTeachersForm from "../components/DataChangePageTeachersForm.vue"
+import DataChangePageGroupForm from '../components/DataChangePage/DataChangePageGroupForm.vue'
+import DataChangePageGroupTable from '../components/DataChangePage/DataChangePageGroupTable.vue'
+import DataChangePageStudentForm from "../components/DataChangePage/DataChangePageStudentForm.vue"
+import DataChangePageStudentTable from '../components/DataChangePage/DataChangePageStudentTable.vue'
+import DataChangePageTeachersForm from '../components/DataChangePage/DataChangePageTeachersForm.vue'
 
-import { onMounted, ref, shallowRef, watch } from 'vue'
-import { getStudentGroups } from '../service/getStudentGroups.js'
-import { getStudents } from '../service/getStudents.js'
+import { ref, shallowRef, watch } from 'vue'
 
 const currentActiveForm = shallowRef(DataChangePageStudentForm)
+const currentActiveTable = shallowRef(DataChangePageStudentTable)
 
 const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
 const selectButtonOptionsValue = ref('Студенты')
@@ -129,10 +84,6 @@ const selectButtonTypeOperationValue = ref('Изменение')
 const typeOfAddition = ['Excel файл', 'В ручную']
 const typeOfAdditionValue = ref('В ручную')
 
-const valued = ref([])
-const selectedProduct = ref([])
-const onRowSelect = ref([])
-const search = ref()
 
 watch(selectButtonTypeOperationValue, (value) => {
 	if (value == 'Изменение') {
@@ -141,22 +92,26 @@ watch(selectButtonTypeOperationValue, (value) => {
 })
 
 async function changeTableContent(event) {
-	const { value } = event
-
-	if (value === "Студенты") {
-		currentActiveForm.value = DataChangePageStudentForm
-		valued.value = await getStudents()
+	const dataChangePageStudentTableAndFormComponents = {
+		"Студенты": {
+			form: DataChangePageStudentForm,
+			table: DataChangePageStudentTable
+		},
+		"Учителя": {
+			form: DataChangePageTeachersForm,
+			table: DataChangePageStudentTable
+		},
+		"Группы": {
+			form: DataChangePageGroupForm,
+			table: DataChangePageGroupTable
+		}
 	}
 
-	if (value === "Группы") {
-		currentActiveForm = DataChangePageTeachersForm
-		valued.value = await getStudentGroups()
-	}
+	const componentType = dataChangePageStudentTableAndFormComponents[event.value]
+
+	currentActiveForm.value = componentType.form
+	currentActiveTable.value = componentType.table
 }
-
-onMounted(async () => {
-	valued.value = await getStudents()
-})
 
 </script>
 
