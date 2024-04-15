@@ -2,13 +2,13 @@
 	<div class="wrapper">
 		<section class="settings">
 			<component
-				v-if='typeOfAdditionValue === "В ручную"'
+				v-if='typeDataModificationMethod === "manually"'
 				:is='currentActiveForm'
 			/>
 
 			<section
+				v-if='typeDataModificationMethod === "export"'
 				class='fileUploadBox'
-				v-if="typeOfAdditionValue === 'Excel файл'"
 			>
 				<h2>Загрузить файл</h2>
 
@@ -24,36 +24,11 @@
 				/>
 			</section>
 
-			<section class='settings__options'>
-				<SelectButton
-					pt:root:class='settings__select-button'
-					@change='changeTableContent'
-					v-model="selectButtonOptionsValue"
-					:options="selectButtonOptions"
-					aria-labelledby="basic"
-					:allowEmpty="false"
-					:unselectable="false"
-				/>
-
-				<SelectButton
-					pt:root:class='settings__select-button'
-					v-model="selectButtonTypeOperationValue"
-					:options="selectButtonTypeOperation"
-					aria-labelledby="basic"
-					:allowEmpty="false"
-					:unselectable="false"
-				/>
-
-				<SelectButton
-					v-if='selectButtonTypeOperationValue === "Добавление "'
-					pt:root:class='settings__select-button'
-					v-model="typeOfAdditionValue"
-					:options="typeOfAddition"
-					aria-labelledby="basic"
-					:allowEmpty="false"
-					:unselectable="false"
-				/>
-			</section>
+			<DataChangePageOptionSwitch
+				@changeDataCategory='changeDataCategory'
+				@changeTypeDataModification='changeTypeDataModificationMethod'
+				@changeMethodAddingData='changeMethodAddingData'
+			/>
 		</section>
 
 		<component :is='currentActiveTable'></component>
@@ -62,36 +37,22 @@
 
 <script setup>
 import FileUpload from 'primevue/fileupload'
-import SelectButton from 'primevue/selectbutton'
 
 import DataChangePageGroupForm from '../components/DataChangePage/DataChangePageGroupForm.vue'
 import DataChangePageGroupTable from '../components/DataChangePage/DataChangePageGroupTable.vue'
+import DataChangePageOptionSwitch from '../components/DataChangePage/DataChangePageOptionSwitch.vue'
 import DataChangePageStudentForm from "../components/DataChangePage/DataChangePageStudentForm.vue"
 import DataChangePageStudentTable from '../components/DataChangePage/DataChangePageStudentTable.vue'
 import DataChangePageTeachersForm from '../components/DataChangePage/DataChangePageTeachersForm.vue'
 
-import { ref, shallowRef, watch } from 'vue'
+import { ref, shallowRef } from 'vue'
 
+const typeOfDataModification = ref('change')
+const typeDataModificationMethod = ref('manually')
 const currentActiveForm = shallowRef(DataChangePageStudentForm)
 const currentActiveTable = shallowRef(DataChangePageStudentTable)
 
-const selectButtonOptions = ['Студенты', 'Учителя', 'Группы']
-const selectButtonOptionsValue = ref('Студенты')
-
-const selectButtonTypeOperation = ['Изменение', 'Добавление ']
-const selectButtonTypeOperationValue = ref('Изменение')
-
-const typeOfAddition = ['Excel файл', 'В ручную']
-const typeOfAdditionValue = ref('В ручную')
-
-
-watch(selectButtonTypeOperationValue, (value) => {
-	if (value == 'Изменение') {
-		typeOfAdditionValue.value = 'В ручную'
-	}
-})
-
-async function changeTableContent(event) {
+function changeDataCategory(value) {
 	const dataChangePageStudentTableAndFormComponents = {
 		"Студенты": {
 			form: DataChangePageStudentForm,
@@ -107,12 +68,32 @@ async function changeTableContent(event) {
 		}
 	}
 
-	const componentType = dataChangePageStudentTableAndFormComponents[event.value]
+	const componentType = dataChangePageStudentTableAndFormComponents[value]
 
 	currentActiveForm.value = componentType.form
 	currentActiveTable.value = componentType.table
 }
 
+function changeTypeDataModificationMethod(value) {
+	const typesOfDataModification = {
+		'Изменение': 'change',
+		'Добавление': 'addition',
+	}
+
+	if (typesOfDataModification[value] === 'change') {
+		changeMethodAddingData('В ручную')
+	}
+
+	typeOfDataModification.value = typesOfDataModification[value]
+}
+
+function changeMethodAddingData(value) {
+	const methodsAddingData = {
+		'В ручную': 'manually',
+		'Excel файл': 'export',
+	}
+	typeDataModificationMethod.value = methodsAddingData[value]
+}
 </script>
 
 <style scoped>
@@ -137,22 +118,8 @@ async function changeTableContent(event) {
 	background: white;
 }
 
-:deep(.p-button) {
-	flex: 1 1 auto;
-}
-
-.settings__select-button {
-	display: flex;
-}
-
 .settings__title {}
 
-.settings__options {
-	display: grid;
-	gap: 10px;
-	margin-bottom: 20px;
-	margin-top: auto;
-}
 
 .addition-form {
 	display: grid;
