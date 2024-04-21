@@ -36,8 +36,8 @@
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 
+import { getStudents } from '@service/getStudents.js'
 import { onMounted, ref } from 'vue'
-import { getStudents } from '../../service/getStudents.js'
 
 const selectedProduct = ref([])
 const onRowSelect = ref([])

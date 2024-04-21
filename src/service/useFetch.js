@@ -1,4 +1,4 @@
-import { getCookie } from '../utils/cookie'
+import { getCookie } from '@utils/cookie'
 
 export async function useFetch(url, method = 'GET') {
 	const fetchOptions = {

@@ -1,35 +1,35 @@
+import { getCookie } from '@utils/cookie.js'
 import { createRouter, createWebHistory } from 'vue-router'
-import { getCookie } from '../utils/cookie.js'
 
 const routes = [
 	{
 		alias: '/',
 		path: '/dashboard',
 		name: 'dashboard',
-		component: () => import('../views/DashboardPage.vue'),
+		component: () => import('@views/DashboardPage.vue'),
 		children: [
 			{
 				alias: '',
 				path: 'userGroups',
 				name: 'userGroups',
-				component: () => import('../views/UserGroupsPage.vue'),
+				component: () => import('@views/UserGroupsPage.vue'),
 			},
 			{
 				path: 'groupStatistics',
 				name: 'groupStatistics',
-				component: () => import('../views/GroupStatisticsPage.vue'),
+				component: () => import('@views/GroupStatisticsPage.vue'),
 			},
 			{
 				path: 'settingsGroups',
 				name: 'settingsGroups',
-				component: () => import('../views/DataChangePage.vue'),
+				component: () => import('@views/DataChangePage.vue'),
 			},
 		],
 	},
 	{
 		path: '/authorization',
 		name: 'authorization',
-		component: () => import('../views/AuthorizationPage.vue'),
+		component: () => import('@views/AuthorizationPage.vue'),
 	},
 ]
 

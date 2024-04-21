@@ -34,14 +34,14 @@
 </template>
 
 <script setup>
+import router from '@router/index.js'
+import { getTeachersGroups } from '@service/getTeachersGroups.js'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import { computed, onMounted, ref } from 'vue'
-import router from '../router/index.js'
-import { getTeachersGroups } from '../service/getTeachersGroups.js'
 
 const students = ref([
 	{

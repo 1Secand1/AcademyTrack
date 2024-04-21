@@ -38,11 +38,11 @@
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 
+import { getToken } from '@service/auth.js'
 import { reactive, ref } from 'vue'
-import { getToken } from '../service/auth.js'
 
-import router from '../router/index.js'
-import { setCookie } from '../utils/cookie.js'
+import router from '@router/index.js'
+import { setCookie } from '@utils/cookie.js'
 
 const value = ref(null)
 

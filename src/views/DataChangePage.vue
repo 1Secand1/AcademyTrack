@@ -38,12 +38,12 @@
 <script setup>
 import FileUpload from 'primevue/fileupload'
 
-import DataChangePageGroupForm from '../components/DataChangePage/DataChangePageGroupForm.vue'
-import DataChangePageGroupTable from '../components/DataChangePage/DataChangePageGroupTable.vue'
-import DataChangePageOptionSwitch from '../components/DataChangePage/DataChangePageOptionSwitch.vue'
-import DataChangePageStudentForm from "../components/DataChangePage/DataChangePageStudentForm.vue"
-import DataChangePageStudentTable from '../components/DataChangePage/DataChangePageStudentTable.vue'
-import DataChangePageTeachersForm from '../components/DataChangePage/DataChangePageTeachersForm.vue'
+import DataChangePageGroupForm from '@components/DataChangePage/DataChangePageGroupForm.vue'
+import DataChangePageGroupTable from '@components/DataChangePage/DataChangePageGroupTable.vue'
+import DataChangePageOptionSwitch from '@components/DataChangePage/DataChangePageOptionSwitch.vue'
+import DataChangePageStudentForm from "@components/DataChangePage/DataChangePageStudentForm.vue"
+import DataChangePageStudentTable from '@components/DataChangePage/DataChangePageStudentTable.vue'
+import DataChangePageTeachersForm from '@components/DataChangePage/DataChangePageTeachersForm.vue'
 
 import { ref, shallowRef } from 'vue'
 
