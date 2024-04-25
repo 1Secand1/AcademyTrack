@@ -1,44 +1,44 @@
 <template>
   Группа
   {{ groupCode }}
-  <router-link to="/userGroups">Наза@router-link>
+  <router-link to="/userGroups"></router-link>
 
-    <DataTable
-      :value="studentList"
-      stripedRows
-      showGridlines
-    >
+  <DataTable
+    :value="studentList"
+    stripedRows
+    showGridlines
+  >
 
-      <ColumnGroup type="header">
-        <Row>
-          <Column
-            header="Фио"
-            :rowspan="2"
-            :colspan="1"
-          />
-          <Column
-            v-for="(value, key) in listLessonsByMonth"
-            :key='key'
-            :header="key"
-            :colspan="value"
-          />
-        </Row>
-        <Row>
-          <Column :header="15" />
-          <Column :header="22" />
-          <Column :header="15" />
-          <Column :header="22" />
-        </Row>
-      </ColumnGroup>
+    <ColumnGroup type="header">
+      <Row>
+        <Column
+          header="Фио"
+          :rowspan="2"
+          :colspan="1"
+        />
+        <Column
+          v-for="(value, key) in listLessonsByMonth"
+          :key='key'
+          :header="key"
+          :colspan="value"
+        />
+      </Row>
+      <Row>
+        <Column :header="15" />
+        <Column :header="22" />
+        <Column :header="15" />
+        <Column :header="22" />
+      </Row>
+    </ColumnGroup>
 
-      <Column field="fullName" />
-      <Column :field="'2024-9-15'" />
-      <Column :field="'2024-9-22'" />
-      <Column :field="'2024-10-15'" />
-      <Column :field="'2024-10-22'" />
+    <Column field="fullName" />
+    <Column :field="'2024-9-15'" />
+    <Column :field="'2024-9-22'" />
+    <Column :field="'2024-10-15'" />
+    <Column :field="'2024-10-22'" />
 
 
-    </DataTable>
+  </DataTable>
 
 </template>
 
