@@ -8,7 +8,8 @@
 			"@service/*": ["src/service/*"],
 			"@stores/*": ["src/stores/*"],
 			"@utils/*": ["src/utils/*"],
-			"@views/*": ["src/views/*"]
+			"@views/*": ["src/views/*"],
+			"@constants/*": ["src/constants/*"]
 		}
 	}
 }

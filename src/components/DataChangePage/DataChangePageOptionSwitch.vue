@@ -3,8 +3,8 @@
 		<SelectButton
 			pt:root:class='settings__select-button'
 			@change="event => handleChange('changeDataCategory', event)"
-			v-model="buttonsSelectDataCategoryValue"
-			:options="buttonsSelectDataCategory"
+			v-model="catigoriesNameValue"
+			:options="Object.values(userRoleNames)"
 			aria-labelledby="basic"
 			:allowEmpty="false"
 			:unselectable="false"
@@ -13,19 +13,19 @@
 		<SelectButton
 			pt:root:class='settings__select-button'
 			@change="event => handleChange('changeTypeDataModification', event)"
-			v-model="buttonsSelectingTypeDataModificationValue"
-			:options="buttonsSelectingTypeDataModification"
+			v-model="dataChangeTypeNamesValue"
+			:options="Object.values(dataChangeTypeNames)"
 			aria-labelledby="basic"
 			:allowEmpty="false"
 			:unselectable="false"
 		/>
 
 		<SelectButton
-			v-if='buttonsSelectingTypeDataModificationValue === "Добавление "'
+			v-if='dataChangeTypeNamesValue === "Добавление "'
 			@change="event => handleChange('changeMethodAddingData', event)"
 			pt:root:class='settings__select-button'
-			v-model="buttonsSelectingMethodAddingDataValue"
-			:options="buttonsSelectingMethodAddingData"
+			v-model="namesOfDataAdditionMethodsValue"
+			:options="Object.value(namesOfDataAdditionMethods)"
 			aria-labelledby="basic"
 			:allowEmpty="false"
 			:unselectable="false"
@@ -37,18 +37,19 @@
 import SelectButton from 'primevue/selectbutton'
 import { defineEmits, ref } from 'vue'
 
+import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization'
+
 const emit = defineEmits([
 	'changeDataCategory',
 	'changeTypeDataModification',
 	'changeMethodAddingData'
 ])
 
-const buttonsSelectDataCategory = ['Студенты', 'Учителя', 'Группы']
-const buttonsSelectDataCategoryValue = ref('Студенты')
-const buttonsSelectingTypeDataModification = ['Изменение', 'Добавление ']
-const buttonsSelectingTypeDataModificationValue = ref('Изменение')
-const buttonsSelectingMethodAddingData = ['Excel файл', 'В ручную']
-const buttonsSelectingMethodAddingDataValue = ref('В ручную')
+const catigoriesNameValue = ref(userRoleNames.students)
+
+const dataChangeTypeNamesValue = ref(dataChangeTypeNames.modify)
+
+const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 
 function handleChange(emitEvent, event) {
 	emit(emitEvent, event.value)
