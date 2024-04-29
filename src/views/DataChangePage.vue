@@ -47,6 +47,8 @@ import DataChangePageTeachersForm from '@components/DataChangePage/DataChangePag
 
 import { ref, shallowRef } from 'vue'
 
+import { userRoleNames } from '@constants/userRoleNames'
+
 const typeOfDataModification = ref('change')
 const typeDataModificationMethod = ref('manually')
 const currentActiveForm = shallowRef(DataChangePageStudentForm)
@@ -54,15 +56,15 @@ const currentActiveTable = shallowRef(DataChangePageStudentTable)
 
 function changeDataCategory(value) {
 	const dataChangePageStudentTableAndFormComponents = {
-		"Студенты": {
+		[userRoleNames.students]: {
 			form: DataChangePageStudentForm,
 			table: DataChangePageStudentTable
 		},
-		"Учителя": {
+		[userRoleNames.teachers]: {
 			form: DataChangePageTeachersForm,
 			table: DataChangePageStudentTable
 		},
-		"Группы": {
+		[userRoleNames.groups]: {
 			form: DataChangePageGroupForm,
 			table: DataChangePageGroupTable
 		}
