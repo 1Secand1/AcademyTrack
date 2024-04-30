@@ -21,7 +21,7 @@
 		/>
 
 		<SelectButton
-			v-if='dataChangeTypeNamesValue === "Добавление"'
+			v-if='dataChangeTypeNamesValue === dataChangeTypeNames.adding'
 			@change="event => handleChange('changeMethodAddingData', event)"
 			pt:root:class='settings__select-button'
 			v-model="namesOfDataAdditionMethodsValue"
@@ -47,7 +47,7 @@ const emit = defineEmits([
 
 const catigoriesNameValue = ref(userRoleNames.students)
 
-const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding)
+const dataChangeTypeNamesValue = ref(dataChangeTypeNames.modify)
 
 const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 
