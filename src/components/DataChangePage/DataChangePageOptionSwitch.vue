@@ -21,11 +21,11 @@
 		/>
 
 		<SelectButton
-			v-if='dataChangeTypeNamesValue === "Добавление "'
+			v-if='dataChangeTypeNamesValue === "Добавление"'
 			@change="event => handleChange('changeMethodAddingData', event)"
 			pt:root:class='settings__select-button'
 			v-model="namesOfDataAdditionMethodsValue"
-			:options="Object.value(namesOfDataAdditionMethods)"
+			:options="Object.values(namesOfDataAdditionMethods)"
 			aria-labelledby="basic"
 			:allowEmpty="false"
 			:unselectable="false"
@@ -47,14 +47,13 @@ const emit = defineEmits([
 
 const catigoriesNameValue = ref(userRoleNames.students)
 
-const dataChangeTypeNamesValue = ref(dataChangeTypeNames.modify)
+const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding)
 
 const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 
 function handleChange(emitEvent, event) {
 	emit(emitEvent, event.value)
 }
-
 </script>
 
 <style scoped>
