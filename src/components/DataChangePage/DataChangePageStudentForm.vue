@@ -23,20 +23,20 @@
 		/>
 		<InputText
 			class="settings__input-search"
-			v-model="studentData.groupCode"
+			v-model="studentData.codeGroupe"
 			placeholder="Код группы"
 		/>
 
 		<Button
-			class=""
 			label="Изменить"
-			@click=""
+			@click="studentsService.add(studentData)"
 		/>
 	</form>
 </template>
 <script setup>
 import { reactive } from 'vue'
 
+import { studentsService } from '@service/apiFunctions'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 
@@ -44,7 +44,7 @@ const studentData = reactive({
 	surname: "",
 	name: "",
 	patronymic: "",
-	groupCode: '',
+	codeGroupe: "",
 })
 
 </script>

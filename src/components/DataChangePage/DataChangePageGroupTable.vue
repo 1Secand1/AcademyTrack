@@ -29,7 +29,7 @@
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 
-import { getStudentGroups } from '@service/getStudentGroups'
+import { getStudentGroups } from '@service/apiFunctions'
 import { onMounted, ref } from 'vue'
 
 const selectedProduct = ref([])
@@ -37,7 +37,7 @@ const onRowSelect = ref([])
 
 const valued = ref([])
 onMounted(async () => {
-	valued.value = await getStudentGroups()
+	valued.value = await getStudentGroups.get()
 })
 
 </script>
