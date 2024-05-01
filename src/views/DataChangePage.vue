@@ -51,8 +51,6 @@ function changeDataCategory(nameCategory) {
 
 	const componentType = dataChangePageStudentTableAndFormComponents[nameCategory]
 
-	console.log(currentNamesOfDataAdditionMethods.value, 1)
-
 	if (currentNamesOfDataAdditionMethods.value === namesOfDataAdditionMethods.manually) {
 		currentActiveForm.value = componentType.form
 	}

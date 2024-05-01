@@ -35,7 +35,7 @@
 
 <script setup>
 import router from '@router/index.js'
-import { getTeachersGroups } from '@service/getTeachersGroups.js'
+import { getTeachersGroupsService } from '@service/apiFunctions'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import IconField from 'primevue/iconfield'
@@ -88,7 +88,7 @@ function onRowSelect() {
 }
 
 onMounted(async () => {
-	userGroup.value = await getTeachersGroups()
+	userGroup.value = await getTeachersGroupsService.get()
 })
 </script>
 

@@ -8,7 +8,7 @@
 		</h2>
 		<InputText
 			class="settings__input-search"
-			v-model="groupData.groupCode"
+			v-model="groupData.codeGroupe"
 			placeholder="Код группы"
 		/>
 		<InputText
@@ -23,23 +23,27 @@
 		/>
 
 		<Button
-			class=""
 			label="Изменить"
-			@click=""
+			@click="add"
 		/>
 	</form>
 </template>
 <script setup>
-import { reactive } from 'vue'
+import { reactive, toRaw } from 'vue'
 
+import { useFetch } from '@service/useFetch'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 
 const groupData = reactive({
-	groupCode: '',
+	codeGroupe: '',
 	yearOfEntry: '',
 	yearOfIssue: '',
 })
+
+function add() {
+	useFetch("http://localhost:80/group", "POST", toRaw(groupData))
+}
 
 </script>
 

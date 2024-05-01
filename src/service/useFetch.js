@@ -1,6 +1,6 @@
 import { getCookie } from '@utils/cookie'
 
-export async function useFetch(url, method = 'GET', body) {
+export async function useFetch(url, method = 'GET', body = null) {
 	const fetchOptions = {
 		method: method,
 		headers: {
@@ -9,21 +9,25 @@ export async function useFetch(url, method = 'GET', body) {
 		},
 	}
 
-	if (method !== 'GET' || method !== 'DELETE') {
-		fetchOptions.body = body
+	if (method !== 'GET' && method !== 'DELETE') {
+		fetchOptions.body = JSON.stringify(body)
+		console.log(fetchOptions)
 	}
 
 	try {
 		const response = await fetch(url, fetchOptions)
 
 		if (!response.ok) {
-			throw new Error('Network response was not ok')
+			const errContent = await response.text()
+			console.warn(
+				`${response.statusText} (${response.status}) - ${errContent}`
+			)
+			throw new Error(`Network response was not ok`)
 		}
 
 		const responseData = await response.json()
 		return responseData
 	} catch (error) {
-		console.error('There was a problem with your fetch operation:', error)
 		throw error
 	}
 }
