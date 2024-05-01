@@ -1,0 +1,3 @@
+class StudentsService {
+	constructor() {}
+}

@@ -1,6 +1,6 @@
 import { getCookie } from '@utils/cookie'
 
-export async function useFetch(url, method = 'GET') {
+export async function useFetch(url, method = 'GET', body) {
 	const fetchOptions = {
 		method: method,
 		headers: {
@@ -8,6 +8,11 @@ export async function useFetch(url, method = 'GET') {
 			Authorization: `Bearer ${getCookie('token')}`,
 		},
 	}
+
+	if (method !== 'GET' || method !== 'DELETE') {
+		fetchOptions.body = body
+	}
+
 	try {
 		const response = await fetch(url, fetchOptions)
 

@@ -12,7 +12,7 @@
 
 		<SelectButton
 			pt:root:class='settings__select-button'
-			@change="event => handleChange('changeTypeDataModification', event)"
+			@change="changeTypeDataModification"
 			v-model="dataChangeTypeNamesValue"
 			:options="Object.values(dataChangeTypeNames)"
 			aria-labelledby="basic"
@@ -22,7 +22,7 @@
 
 		<SelectButton
 			v-if='dataChangeTypeNamesValue === dataChangeTypeNames.adding'
-			@change="event => handleChange('changeMethodAddingData', event)"
+			@change="changeMethodAddingData"
 			pt:root:class='settings__select-button'
 			v-model="namesOfDataAdditionMethodsValue"
 			:options="Object.values(namesOfDataAdditionMethods)"
@@ -54,6 +54,25 @@ const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 function handleChange(emitEvent, event) {
 	emit(emitEvent, event.value)
 }
+
+function changeTypeDataModification(event) {
+	emit('changeTypeDataModification', event.value)
+
+	if (event.value === dataChangeTypeNames.modify) {
+		changeMethodAddingData({ value: namesOfDataAdditionMethods.manually })
+		emit('changeDataCategory', catigoriesNameValue.value)
+	}
+}
+
+function changeMethodAddingData(event) {
+	console.log(event)
+	emit('changeMethodAddingData', event.value)
+	if (event.value === namesOfDataAdditionMethods.manually) {
+		emit('changeDataCategory', catigoriesNameValue.value)
+	}
+}
+
+
 </script>
 
 <style scoped>

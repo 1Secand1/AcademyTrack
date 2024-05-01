@@ -23,15 +23,17 @@ import DataChangePageStudentForm from "@components/DataChangePage/DataChangePage
 import DataChangePageStudentTable from '@components/DataChangePage/DataChangePageStudentTable.vue'
 import DataChangePageTeachersForm from '@components/DataChangePage/DataChangePageTeachersForm.vue'
 
-import { shallowRef } from 'vue'
+import { ref, shallowRef } from 'vue'
 
 import DataChangePageImportForm from '@components/DataChangePage/DataChangePageImportForm.vue'
-import { userRoleNames } from '@constants/localization'
+import { namesOfDataAdditionMethods, userRoleNames } from '@constants/localization'
 
 const currentActiveForm = shallowRef(DataChangePageStudentForm)
 const currentActiveTable = shallowRef(DataChangePageStudentTable)
 
-function changeDataCategory(value) {
+const currentNamesOfDataAdditionMethods = ref(namesOfDataAdditionMethods.manually)
+
+function changeDataCategory(nameCategory) {
 	const dataChangePageStudentTableAndFormComponents = {
 		[userRoleNames.students]: {
 			form: DataChangePageStudentForm,
@@ -47,9 +49,14 @@ function changeDataCategory(value) {
 		}
 	}
 
-	const componentType = dataChangePageStudentTableAndFormComponents[value]
+	const componentType = dataChangePageStudentTableAndFormComponents[nameCategory]
 
-	currentActiveForm.value = componentType.form
+	console.log(currentNamesOfDataAdditionMethods.value, 1)
+
+	if (currentNamesOfDataAdditionMethods.value === namesOfDataAdditionMethods.manually) {
+		currentActiveForm.value = componentType.form
+	}
+
 	currentActiveTable.value = componentType.table
 }
 
@@ -57,7 +64,11 @@ function changeTypeDataModificationMethod(value) {
 }
 
 function changeMethodAddingData(value) {
-	currentActiveForm.value = DataChangePageImportForm
+	console.log(value)
+	currentNamesOfDataAdditionMethods.value = value
+	if (value = namesOfDataAdditionMethods.excel) {
+		currentActiveForm.value = DataChangePageImportForm
+	}
 }
 </script>
 
