@@ -29,16 +29,12 @@
         />
       </Row>
     </ColumnGroup>
+    <Column field="fullName" />
     <Column
-      v-for='(value, key) in studentList[0]'
-      :field="key"
+      v-for='value in columnFields'
+      :field="value"
     />
-
-
   </DataTable>
-
-
-
 </template>
 
 <script setup>
@@ -58,8 +54,8 @@ const serverResponse = {
     {
       "fullName": "Боев Владислав Владимирович",
       "attendance": {
-        "2024-9-15": "attended",
-        "2024-9-22": "attended",
+        "2024-09-15": "attended",
+        "2024-09-22": "attended",
         "2024-10-15": "attended",
         "2024-10-22": "sick"
       }
@@ -67,8 +63,8 @@ const serverResponse = {
     {
       "fullName": "Иванов Иван Иваныч",
       "attendance": {
-        "2024-9-15": "attended",
-        "2024-9-22": "attended",
+        "2024-09-15": "attended",
+        "2024-09-22": "attended",
         "2024-10-15": "attended",
         "2024-10-22": "attended"
       }
@@ -83,14 +79,14 @@ const lessonPlan = {
   "lessonsAttendance": [
     {
       "lessonNumber": 1,
-      "date": "2024-01-15",
+      "date": "2024-09-15",
       "status": "completed",
       "attended": 25,
       "absent": 3
     },
     {
       "lessonNumber": 1,
-      "date": "2024-01-22",
+      "date": "2024-09-22",
       "status": "completed",
       "attended": 23,
       "absent": 5
@@ -116,17 +112,10 @@ const lessonPlan = {
 const route = useRoute()
 const groupCode = ref(route.query.codeGroup)
 
-//{
-//    "fullName": "Боев Владислав Владимирович",
-//    "2024-9-15": "attended",
-//    "2024-9-22": "attended",
-//    "2024-10-15": "attended",
-//    "2024-10-22": "attended",
-// },
-
 const lessonsByMonth = sortLessonsByMonth(lessonPlan.lessonsAttendance)
 const allLesson = srtAllClasses(lessonPlan.lessonsAttendance)
 const studentList = mergeStudentAndAttendance(serverResponse.students)
+const columnFields = getColumnFields(lessonPlan.lessonsAttendance)
 
 function sortLessonsByMonth(lessons) {
   if (!Array.isArray(lessons)) {
@@ -185,11 +174,10 @@ function mergeStudentAndAttendance(arr) {
   })
 }
 
-function log(lo) {
-  console.log(lo)
+function getColumnFields(lessons) {
+  return lessons.map(({ date }) => date)
 }
-
-console.log(studentList)
+console.log(columnFields)
 
 onMounted(async () => {
 
