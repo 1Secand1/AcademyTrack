@@ -8,7 +8,6 @@
     stripedRows
     showGridlines
   >
-
     <ColumnGroup type="header">
       <Row>
         <Column
@@ -30,15 +29,15 @@
         />
       </Row>
     </ColumnGroup>
-
-    <Column field="fullName" />
-    <Column :field="'2024-9-15'" />
-    <Column :field="'2024-9-22'" />
-    <Column :field="'2024-10-15'" />
-    <Column :field="'2024-10-22'" />
+    <Column
+      v-for='(value, key) in studentList[0]'
+      :field="key"
+    />
 
 
   </DataTable>
+
+
 
 </template>
 
@@ -50,12 +49,6 @@ import Column from 'primevue/column'
 import ColumnGroup from 'primevue/columngroup'
 import DataTable from 'primevue/datatable'
 import Row from 'primevue/row'
-
-
-const route = useRoute()
-const groupCode = ref(route.query.codeGroup)
-const studentList = ref([])
-
 
 const serverResponse = {
   "teacherFullName": "Иванова Тамара Ивановна",
@@ -82,7 +75,6 @@ const serverResponse = {
     }
   ]
 }
-
 const lessonPlan = {
   "groupCode": "ИСП-216",
   "teacherFullName": "Иванова Тамара Ивановна",
@@ -121,11 +113,27 @@ const lessonPlan = {
   ]
 }
 
+const route = useRoute()
+const groupCode = ref(route.query.codeGroup)
+
+//{
+//    "fullName": "Боев Владислав Владимирович",
+//    "2024-9-15": "attended",
+//    "2024-9-22": "attended",
+//    "2024-10-15": "attended",
+//    "2024-10-22": "attended",
+// },
 
 const lessonsByMonth = sortLessonsByMonth(lessonPlan.lessonsAttendance)
 const allLesson = srtAllClasses(lessonPlan.lessonsAttendance)
+const studentList = mergeStudentAndAttendance(serverResponse.students)
 
 function sortLessonsByMonth(lessons) {
+  if (!Array.isArray(lessons)) {
+    console.error("The value passed must be an Array")
+    return
+  }
+
   const result = {}
 
   const monthNames = [
@@ -154,6 +162,11 @@ function sortLessonsByMonth(lessons) {
 }
 
 function srtAllClasses(arr) {
+  if (!Array.isArray(arr)) {
+    console.error("The value passed must be an Array")
+    return
+  }
+
   return arr.map((lesson) => {
     const { date } = lesson
     const dayLesson = date.split('-')[2]
@@ -161,18 +174,25 @@ function srtAllClasses(arr) {
   })
 }
 
+function mergeStudentAndAttendance(arr) {
+  if (!Array.isArray(arr)) {
+    console.error("The value passed must be an Array")
+    return
+  }
+
+  return arr.map(({ fullName, attendance }) => {
+    return { fullName, ...attendance }
+  })
+}
+
+function log(lo) {
+  console.log(lo)
+}
+
+console.log(studentList)
 
 onMounted(async () => {
-  studentList.value = [
-    {
-      "fullName": "Боев Владислав Владимирович",
-      "2024-9-15": "attended",
-      "2024-9-22": "attended",
-      "2024-10-15": "attended",
-      "2024-10-22": "attended",
-    },
 
-  ]
 })
 </script>
 
