@@ -17,17 +17,17 @@
           :colspan="1"
         />
         <Column
-          v-for="(value, key) in listLessonsByMonth"
+          v-for="(value, key) in lessonsByMonth"
           :key='key'
           :header="key"
           :colspan="value"
         />
       </Row>
       <Row>
-        <Column :header="15" />
-        <Column :header="22" />
-        <Column :header="15" />
-        <Column :header="22" />
+        <Column
+          v-for='lesson in allLesson'
+          :header="lesson"
+        />
       </Row>
     </ColumnGroup>
 
@@ -56,46 +56,6 @@ const route = useRoute()
 const groupCode = ref(route.query.codeGroup)
 const studentList = ref([])
 
-
-const attendanceStatistics = [{
-  groupCode: "ИСП-216",
-  teachersFullName: "Бакина Светлана Ивановна ",
-  studentAttendance: [
-    {
-      "fullName": "Боев Владислав Владимирович",
-      "markedLessons": [
-        {
-          "month": "09",
-          "day": "15",
-          "attendanceStatus": true
-        },
-        {
-          "month": "09",
-          "day": "22",
-          "attendanceStatus": true
-        },
-      ]
-    },
-    {
-      "fullName": "Боев Владислав Владимирович",
-      "markedLessons": [
-        {
-          "month": "09",
-          "day": "15",
-          "attendanceStatus": true
-        },
-        {
-          "month": "09",
-          "day": "22",
-          "attendanceStatus": true
-        },
-      ]
-    }
-  ]
-}]
-
-function transformObjectForTable(obj) {
-}
 
 const serverResponse = {
   "teacherFullName": "Иванова Тамара Ивановна",
@@ -131,14 +91,14 @@ const lessonPlan = {
   "lessonsAttendance": [
     {
       "lessonNumber": 1,
-      "date": "2024-9-15",
+      "date": "2024-01-15",
       "status": "completed",
       "attended": 25,
       "absent": 3
     },
     {
       "lessonNumber": 1,
-      "date": "2024-9-22",
+      "date": "2024-01-22",
       "status": "completed",
       "attended": 23,
       "absent": 5
@@ -153,17 +113,17 @@ const lessonPlan = {
       "date": "2024-10-22",
       "status": "planned",
     },
+    {
+      "lessonNumber": 1,
+      "date": "2024-12-22",
+      "status": "planned",
+    },
   ]
 }
 
-const lessonList = [
-  {
-    monthName: "ноябрь",
-    lessons: 2
-  },
-]
 
-const listLessonsByMonth = sortLessonsByMonth(lessonPlan.lessonsAttendance)
+const lessonsByMonth = sortLessonsByMonth(lessonPlan.lessonsAttendance)
+const allLesson = srtAllClasses(lessonPlan.lessonsAttendance)
 
 function sortLessonsByMonth(lessons) {
   const result = {}
@@ -185,12 +145,20 @@ function sortLessonsByMonth(lessons) {
 
   lessons.forEach((obj) => {
     const monthNumber = Number(obj.date.split('-')[1])
-    const monthName = monthNames[monthNumber + 1]
+    const monthName = monthNames[monthNumber - 1]
     const currentCount = result[monthName] || 0
     result[monthName] = currentCount + 1
   })
 
   return result
+}
+
+function srtAllClasses(arr) {
+  return arr.map((lesson) => {
+    const { date } = lesson
+    const dayLesson = date.split('-')[2]
+    return dayLesson
+  })
 }
 
 
