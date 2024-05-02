@@ -17,17 +17,17 @@
           :colspan="1"
         />
         <Column
-          v-for="(value, key) in listLessonsByMonth"
+          v-for="(value, key) in lessonsByMonth"
           :key='key'
           :header="key"
           :colspan="value"
         />
       </Row>
       <Row>
-        <Column :header="15" />
-        <Column :header="22" />
-        <Column :header="15" />
-        <Column :header="22" />
+        <Column
+          v-for='lesson in allLesson'
+          :header="lesson"
+        />
       </Row>
     </ColumnGroup>
 
@@ -56,46 +56,6 @@ const route = useRoute()
 const groupCode = ref(route.query.codeGroup)
 const studentList = ref([])
 
-
-const attendanceStatistics = [{
-  groupCode: "ИСП-216",
-  teachersFullName: "Бакина Светлана Ивановна ",
-  studentAttendance: [
-    {
-      "fullName": "Боев Владислав Владимирович",
-      "markedLessons": [
-        {
-          "month": "09",
-          "day": "15",
-          "attendanceStatus": true
-        },
-        {
-          "month": "09",
-          "day": "22",
-          "attendanceStatus": true
-        },
-      ]
-    },
-    {
-      "fullName": "Боев Владислав Владимирович",
-      "markedLessons": [
-        {
-          "month": "09",
-          "day": "15",
-          "attendanceStatus": true
-        },
-        {
-          "month": "09",
-          "day": "22",
-          "attendanceStatus": true
-        },
-      ]
-    }
-  ]
-}]
-
-function transformObjectForTable(obj) {
-}
 
 const serverResponse = {
   "teacherFullName": "Иванова Тамара Ивановна",
@@ -156,14 +116,9 @@ const lessonPlan = {
   ]
 }
 
-const lessonList = [
-  {
-    monthName: "ноябрь",
-    lessons: 2
-  },
-]
 
-const listLessonsByMonth = sortLessonsByMonth(lessonPlan.lessonsAttendance)
+const lessonsByMonth = sortLessonsByMonth(lessonPlan.lessonsAttendance)
+const allLesson = srtAllClasses(lessonPlan.lessonsAttendance)
 
 function sortLessonsByMonth(lessons) {
   const result = {}
@@ -191,6 +146,14 @@ function sortLessonsByMonth(lessons) {
   })
 
   return result
+}
+
+function srtAllClasses(arr) {
+  return arr.map((lesson) => {
+    const { date } = lesson
+    const dayLesson = date.split('-')[2]
+    return dayLesson
+  })
 }
 
 
