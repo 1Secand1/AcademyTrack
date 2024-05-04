@@ -126,36 +126,11 @@ function onCellEditComplete(event) {
 
 
 function sortLessonsByMonth(lessons) {
-  if (!Array.isArray(lessons)) {
-    console.error("The value passed must be an Array")
-    return
-  }
-
-  const result = {}
-
-  const monthNames = [
-    "январь",
-    "февраль",
-    "март",
-    "апрель",
-    "май",
-    "июнь",
-    "июль",
-    "август",
-    "сентябрь",
-    "октябрь",
-    "ноябрь",
-    "декабрь"
-  ]
-
-  lessons.forEach((obj) => {
-    const monthNumber = Number(obj.date.split('-')[1])
-    const monthName = monthNames[monthNumber - 1]
-    const currentCount = result[monthName] || 0
-    result[monthName] = currentCount + 1
-  })
-
-  return result
+  return lessons.reduce((acc, { date }) => {
+    const month = new Date(date).toLocaleString('ru', { month: 'long' })
+    acc[month] = (acc[month] || 0) + 1
+    return acc
+  }, {})
 }
 
 function srtAllClasses(arr) {
@@ -185,32 +160,6 @@ function mergeStudentAndAttendance(arr) {
 function getColumnFields(lessons) {
   return lessons.map(({ date }) => date)
 }
-
-const lessons = [
-  { date: '2024-01-15' },
-  { date: '2024-02-20' },
-  { date: '2024-01-22' },
-  { date: '2024-02-25' },
-  { date: '2024-03-10' },
-  { date: '2024-03-17' },
-  { date: '2024-01-29' },
-  { date: '2024-04-02' },
-  { date: '2024-04-20' },
-  { date: '2024-05-15' }
-]
-
-function foo(lessons) {
-  const months = lessons.reduce((acc, lesson) => {
-    const month = new Date(lesson.date).toLocaleString('eng', { month: 'long' })
-    acc[month] = (acc[month] || 0) + 1
-    return acc
-  }, {})
-
-  return months
-}
-
-const monthlyLessons = foo(lessons)
-console.log(monthlyLessons)
 
 onMounted(async () => {
 
