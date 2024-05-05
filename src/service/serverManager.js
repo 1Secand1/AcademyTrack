@@ -21,6 +21,8 @@ export class ServerManager {
 }
 
 export function createServerManager(path) {
-	if (!VITE_BASE_API_URL) throw new Error('VITE_BASE_API_URL is not defined')
+	if (!VITE_BASE_API_URL) {
+		throw new Error('VITE_BASE_API_URL is not defined')
+	}
 	return new ServerManager(VITE_BASE_API_URL, path)
 }
