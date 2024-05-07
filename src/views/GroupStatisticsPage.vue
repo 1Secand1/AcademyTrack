@@ -33,13 +33,17 @@
     </ColumnGroup>
     <Column field="fullName" />
     <Column
+      #body="slotProps"
       v-for='value in columnFields'
       :field="value"
-    />
+    >
+      {{ slotProps.data[value] || "" }}
+    </Column>
   </DataTable>
 </template>
 
 <script setup>
+import { getLessonPlan } from "@service/apiFunctions"
 import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 
@@ -75,57 +79,25 @@ const serverResponse = {
     }
   ]
 }
-const lessonPlan = {
-  "groupCode": "ИСП-216",
-  "teacherFullName": "Иванова Тамара Ивановна",
-  "subject": "Математика",
-  "lessonsAttendance": [
-    {
-      "lessonNumber": 1,
-      "date": "2024-09-15",
-      "status": "completed",
-      "attended": 25,
-      "absent": 3
-    },
-    {
-      "lessonNumber": 1,
-      "date": "2024-09-22",
-      "status": "completed",
-      "attended": 23,
-      "absent": 5
-    },
-    {
-      "lessonNumber": 1,
-      "date": "2024-10-15",
-      "status": "planned",
-    },
-    {
-      "lessonNumber": 1,
-      "date": "2024-10-22",
-      "status": "planned",
-    },
-    {
-      "lessonNumber": 1,
-      "date": "2024-12-22",
-      "status": "planned",
-    },
-  ]
-}
-
+const lessonPlan = ref([])
 const route = useRoute()
-const groupCode = ref(route.query.codeGroup)
+const groupCode = ref("")
 
-const lessonsByMonth = sortLessonsByMonth(lessonPlan.lessonsAttendance)
-const allLesson = srtAllClasses(lessonPlan.lessonsAttendance)
-const studentList = mergeStudentAndAttendance(serverResponse.students)
-const columnFields = getColumnFields(lessonPlan.lessonsAttendance)
+const lessonsByMonth = ref([])
+const allLesson = ref([])
+const studentList = ref([])
+const columnFields = ref([])
 
 function onCellEditComplete(event) {
   console.log(event)
 }
 
-
 function sortLessonsByMonth(lessons) {
+  if (!Array.isArray(lessons)) {
+    console.warn(1)
+    return
+  }
+
   return lessons.reduce((acc, { date }) => {
     const month = new Date(date).toLocaleString('ru', { month: 'long' })
     acc[month] = (acc[month] || 0) + 1
@@ -157,13 +129,26 @@ function mergeStudentAndAttendance(arr) {
   })
 }
 
+function log(e) {
+  console.log(e)
+}
+
 function getColumnFields(lessons) {
   return lessons.map(({ date }) => date)
 }
 
 onMounted(async () => {
-
+  groupCode.value = ref(route.query.codeGroup || "Неопределенно")
+  lessonPlan.value = await getLessonPlan()
+  lessonsByMonth.value = sortLessonsByMonth(lessonPlan.value.lessonsAttendance)
+  allLesson.value = srtAllClasses(lessonPlan.value.lessonsAttendance)
+  studentList.value = mergeStudentAndAttendance(serverResponse.students)
+  columnFields.value = getColumnFields(lessonPlan.value.lessonsAttendance)
 })
 </script>
 
-<style></style>
+<style>
+.your-style-here {
+  justify-content: center;
+}
+</style>

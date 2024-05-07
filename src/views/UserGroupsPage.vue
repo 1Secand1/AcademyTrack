@@ -43,29 +43,6 @@ import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import { computed, onMounted, ref } from 'vue'
 
-const students = ref([
-	{
-		codeGroup: 'Исп-211',
-		lessonName: 'Математика',
-		groupLeader: 'Когтев Д.А',
-		numberStudents: '24',
-		attendance: '57',
-	},
-	{
-		codeGroup: 'Исп-212',
-		lessonName: 'Математика',
-		groupLeader: 'Когтев Д.А',
-		numberStudents: '12',
-		attendance: '13',
-	},
-	{
-		codeGroup: 'Пкд-210',
-		lessonName: 'Математика',
-		groupLeader: 'Когтев Д.А',
-		numberStudents: '46',
-		attendance: '43',
-	},
-])
 const userGroup = ref()
 const search = ref('')
 const selectedProduct = ref({})
