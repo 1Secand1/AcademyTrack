@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { getLessonPlan } from "@service/apiFunctions"
+import { getLessonAttendanceReport, getLessonPlan } from "@service/apiFunctions"
 import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 
@@ -52,36 +52,11 @@ import ColumnGroup from 'primevue/columngroup'
 import DataTable from 'primevue/datatable'
 import Row from 'primevue/row'
 
-const serverResponse = {
-  "dateOfTheLastLesson": "2024-10-22",
-  "teacherFullName": "Иванова Тамара Ивановна",
-  "groupCode": "ИСП-216",
-  "totalStudents": 2,
-  "students": [
-    {
-      "fullName": "Боев Владислав Владимирович",
-      "attendance": {
-        "2024-09-15": "attended",
-        "2024-09-22": "attended",
-        "2024-10-15": "attended",
-        "2024-10-22": "sick"
-      }
-    },
-
-    {
-      "fullName": "Иванов Иван Иваныч",
-      "attendance": {
-        "2024-09-15": "attended",
-        "2024-09-22": "attended",
-        "2024-10-15": "attended",
-        "2024-10-22": "attended"
-      }
-    }
-  ]
-}
-const lessonPlan = ref([])
 const route = useRoute()
 const groupCode = ref("")
+
+const lessonAttendanceReport = ref({})
+const lessonPlan = ref([])
 
 const lessonsByMonth = ref([])
 const allLesson = ref([])
@@ -140,9 +115,10 @@ function getColumnFields(lessons) {
 onMounted(async () => {
   groupCode.value = ref(route.query.codeGroup || "Неопределенно")
   lessonPlan.value = await getLessonPlan()
+  lessonAttendanceReport.value = await getLessonAttendanceReport()
   lessonsByMonth.value = sortLessonsByMonth(lessonPlan.value.lessonsAttendance)
   allLesson.value = srtAllClasses(lessonPlan.value.lessonsAttendance)
-  studentList.value = mergeStudentAndAttendance(serverResponse.students)
+  studentList.value = mergeStudentAndAttendance(lessonAttendanceReport.value.students)
   columnFields.value = getColumnFields(lessonPlan.value.lessonsAttendance)
 })
 </script>

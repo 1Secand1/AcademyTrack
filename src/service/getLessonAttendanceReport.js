@@ -1,4 +1,4 @@
-export function serverResponse() {
+export function getLessonAttendanceReport() {
 	const serverResponse = {
 		dateOfTheLastLesson: '2024-10-22',
 		teacherFullName: 'Иванова Тамара Ивановна',
