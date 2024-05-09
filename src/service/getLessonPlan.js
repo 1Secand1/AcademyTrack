@@ -33,6 +33,11 @@ export async function getLessonPlan() {
 				date: '2024-12-22',
 				status: 'planned',
 			},
+			{
+				lessonNumber: 1,
+				date: '2024-05-09',
+				status: 'planned',
+			},
 		],
 	}
 

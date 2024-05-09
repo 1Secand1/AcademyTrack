@@ -1,7 +1,30 @@
 <template>
-  Группа
-  {{ groupCode }}
-  <router-link to="/userGroups"></router-link>
+  <div class="heder">
+    <div class="row">
+      Группа {{ groupCode }}
+      <router-link to="/userGroups">Вернутся</router-link>
+    </div>
+
+    <div class="row">
+      <Button
+        @click="visible = true"
+        label="добавить отчёт"
+      />
+    </div>
+  </div>
+
+  <Dialog
+    v-model:visible="visible"
+    modal
+    header="Отчёт о посещаемости"
+    :style="{ width: '30rem' }"
+  >
+    <attendanceListSelectionForm
+      :list='studentsList'
+      :reportableDates='allLessonDates'
+      @change='updateLessonAttendanceReport'
+    />
+  </Dialog>
 
   <DataTable
     editMode="cell"
@@ -34,7 +57,7 @@
     <Column field="fullName" />
     <Column
       #body="slotProps"
-      v-for='value in columnFields'
+      v-for='value in allLessonDates'
       :field="value"
     >
       {{ slotProps.data[value] || "" }}
@@ -43,25 +66,44 @@
 </template>
 
 <script setup>
-import { getLessonAttendanceReport, getLessonPlan } from "@service/apiFunctions"
 import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 
+import Button from 'primevue/button'
 import Column from 'primevue/column'
 import ColumnGroup from 'primevue/columngroup'
 import DataTable from 'primevue/datatable'
+import Dialog from 'primevue/dialog'
 import Row from 'primevue/row'
+
+
+import { getLessonAttendanceReport, getLessonPlan } from "@service/apiFunctions"
+
+import attendanceListSelectionForm from '@components/attendanceListSelectionForm.vue'
+
+const visible = ref(false)
 
 const route = useRoute()
 const groupCode = ref("")
 
 const lessonAttendanceReport = ref({})
 const lessonPlan = ref([])
-
+const studentsList = ref()
 const lessonsByMonth = ref([])
 const allLesson = ref([])
 const studentList = ref([])
-const columnFields = ref([])
+const allLessonDates = ref([])
+
+onMounted(async () => {
+  groupCode.value = ref(route.query.codeGroup || "Неопределенно")
+  lessonPlan.value = await getLessonPlan()
+  lessonAttendanceReport.value = await getLessonAttendanceReport()
+  studentsList.value = getListOfStudents(lessonAttendanceReport.value.students)
+  lessonsByMonth.value = sortLessonsByMonth(lessonPlan.value.lessonsAttendance)
+  allLesson.value = srtAllClasses(lessonPlan.value.lessonsAttendance)
+  studentList.value = mergeStudentAndAttendance(lessonAttendanceReport.value.students)
+  allLessonDates.value = getColumnFields(lessonPlan.value.lessonsAttendance)
+})
 
 function onCellEditComplete(event) {
   console.log(event)
@@ -69,7 +111,7 @@ function onCellEditComplete(event) {
 
 function sortLessonsByMonth(lessons) {
   if (!Array.isArray(lessons)) {
-    console.warn(1)
+    console.warn("lessons in not Array")
     return
   }
 
@@ -104,27 +146,34 @@ function mergeStudentAndAttendance(arr) {
   })
 }
 
-function log(e) {
-  console.log(e)
-}
-
 function getColumnFields(lessons) {
   return lessons.map(({ date }) => date)
 }
 
-onMounted(async () => {
-  groupCode.value = ref(route.query.codeGroup || "Неопределенно")
-  lessonPlan.value = await getLessonPlan()
-  lessonAttendanceReport.value = await getLessonAttendanceReport()
-  lessonsByMonth.value = sortLessonsByMonth(lessonPlan.value.lessonsAttendance)
-  allLesson.value = srtAllClasses(lessonPlan.value.lessonsAttendance)
-  studentList.value = mergeStudentAndAttendance(lessonAttendanceReport.value.students)
-  columnFields.value = getColumnFields(lessonPlan.value.lessonsAttendance)
-})
+function getListOfStudents(studentsArr) {
+  return studentsArr.map(({ fullName }) => fullName)
+}
+
+function updateLessonAttendanceReport(event) {
+  console.log(event)
+}
+
+
 </script>
 
-<style>
+<style scoped>
 .your-style-here {
   justify-content: center;
+}
+
+.row {
+  display: flex;
+}
+
+.heder {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+  align-items: center;
 }
 </style>
