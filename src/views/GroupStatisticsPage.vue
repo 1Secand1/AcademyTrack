@@ -154,8 +154,9 @@ function getListOfStudents(studentsArr) {
   return studentsArr.map(({ fullName }) => fullName)
 }
 
-function updateLessonAttendanceReport(event) {
-  console.log(event)
+function updateLessonAttendanceReport(report) {
+  visible.value = false
+  console.log(report)
 }
 
 
