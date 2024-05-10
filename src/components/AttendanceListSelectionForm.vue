@@ -46,6 +46,7 @@
 </template>
 
 <script setup>
+import { toRaw } from '@vue/reactivity'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import Dropdown from 'primevue/dropdown'
@@ -68,6 +69,7 @@ const optionsDays = computed(() => {
 const selectedDay = ref(currentDaySearch(optionsDays.value))
 
 const attendanceList = ref([])
+
 
 function currentMonthSearch(optionsMonths) {
     const nameMonth = new Date().toLocaleString("ru", { month: "long" });
@@ -108,7 +110,7 @@ function change() {
 
 	emit("change", {
 		date: selectedDay.value.reportableDates,
-		attendanceList: attendanceList.value
+		attendanceList: toRaw(attendanceList.value)
 	})
 }
 </script>
