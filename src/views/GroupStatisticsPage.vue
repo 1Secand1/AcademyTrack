@@ -84,7 +84,7 @@ import { getLessonAttendanceReport, getLessonPlan } from "@service/apiFunctions"
 import attendanceListSelectionForm from '@components/attendanceListSelectionForm.vue'
 
 const route = useRoute()
-const groupCode = ref(route.query.codeGroup || "Неопределенно")
+const groupCode = ref(route.query.codeGroup ?? "Неопределенно")
 
 const visible = ref(false)
 
@@ -93,10 +93,10 @@ const lessonPlan = ref([])
 
 const studentNames = ref([])
 
-const lessonsByMonth = computed(() => sortLessonsByMonth(lessonPlan.value.lessonsAttendance))
-const allLesson = computed(() => srtAllClasses(lessonPlan.value.lessonsAttendance))
-const studentAttendanceDetails = computed(() => mergeStudentAndAttendance(lessonAttendanceReport.value.students))
-const allLessonDates = computed(() => getColumnFields(lessonPlan.value.lessonsAttendance))
+const lessonsByMonth = computed(() => sortLessonsByMonth(lessonPlan.value.lessonsAttendance ?? []))
+const allLesson = computed(() => srtAllClasses(lessonPlan.value.lessonsAttendance ?? []))
+const studentAttendanceDetails = computed(() => mergeStudentAndAttendance(lessonAttendanceReport.value.students ?? []))
+const allLessonDates = computed(() => getColumnFields(lessonPlan.value.lessonsAttendance ?? []))
 
 onMounted(async () => {
   lessonPlan.value = await getLessonPlan()
