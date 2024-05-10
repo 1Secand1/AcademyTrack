@@ -160,14 +160,18 @@ function getListOfStudents(studentsArr) {
     return []
   }
 
+  if (studentsArr.length === 0) []
+
   return studentsArr.map(({ fullName }) => fullName)
 }
 
 function updateLessonAttendanceReport({ attendanceList, date }) {
   visible.value = false
 
+  const attendanceSet = new Set(attendanceList)
+
   lessonAttendanceReport.value.students.forEach((student) => {
-    const attendanceStatus = attendanceList.includes(student.fullName)
+    const attendanceStatus = attendanceSet.has(student.fullName)
       ? "attended"
       : "absent"
 
