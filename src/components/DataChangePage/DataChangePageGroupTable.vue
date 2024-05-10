@@ -30,14 +30,18 @@ import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 
 import { getStudentGroups } from '@service/apiFunctions'
-import { onMounted, ref } from 'vue'
+import { defineEmits, onMounted, ref, toRaw } from 'vue'
+
+const emit = defineEmits(["onRowSelect"])
 
 const selectedProduct = ref([])
-const onRowSelect = ref([])
-
 const valued = ref([])
+
 onMounted(async () => {
 	valued.value = await getStudentGroups.get()
 })
 
+function onRowSelect({ data }) {
+	emit('onRowSelect', toRaw(data))
+}
 </script>

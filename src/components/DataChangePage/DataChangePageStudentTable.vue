@@ -32,7 +32,9 @@
 import { studentsService } from '@service/apiFunctions'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
-import { onMounted, ref } from 'vue'
+import { defineEmits, onMounted, ref, toRaw } from 'vue'
+
+const emit = defineEmits(["onRowSelect"])
 
 const selectedProduct = ref(null)
 const valued = ref([])
@@ -41,8 +43,8 @@ onMounted(async () => {
 	valued.value = await studentsService.get()
 })
 
-function onRowSelect(event) {
-	console.log(event.data)
+function onRowSelect({ data }) {
+	emit('onRowSelect', toRaw(data))
 }
 
 </script>
