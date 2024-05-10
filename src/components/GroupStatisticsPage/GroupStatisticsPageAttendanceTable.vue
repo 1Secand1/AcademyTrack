@@ -57,7 +57,6 @@ const emit = defineEmits(['cell-edit-complete'])
 
 const lessonsByMonth = computed(() => sortLessonsByMonth(props.lessonPlan.lessonsAttendance ?? []))
 const allLessons = computed(() => sortAllClasses(props.lessonPlan.lessonsAttendance ?? []))
-console.log(props.lessonAttendanceReport)
 const studentAttendanceDetails = computed(() => mergeStudentAndAttendance(props.lessonAttendanceReport.students ?? []))
 const allLessonDates = computed(() => getColumnFields(props.lessonPlan.lessonsAttendance ?? []))
 
