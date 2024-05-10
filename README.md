@@ -12,6 +12,7 @@
 
 ## Требования
 - **Для веб-версии:** не требуются специальные зависимости или настройки.
+- **node 8.19.2 и выше 
 - **Для десктопной версии:** необходимо установить [Rust](https://www.rust-lang.org/learn/get-started) и [Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/ru/visual-cpp-build-tools/) для сборки приложения.
 
 ## Установка и запуск
