@@ -3,7 +3,7 @@
 		<SelectButton
 			pt:root:class='settings__select-button'
 			@change="event => handleChange('changeDataCategory', event)"
-			v-model="catigoriesNameValue"
+			v-model="categoryNameValue"
 			:options="Object.values(userRoleNames)"
 			aria-labelledby="basic"
 			:allowEmpty="false"
@@ -45,11 +45,38 @@ const emit = defineEmits([
 	'changeMethodAddingData'
 ])
 
-const catigoriesNameValue = ref(userRoleNames.students)
+const props = defineProps({
+	category: {
+		validator(value, props) {
+			return Object.values(userRoleNames).includes(value)
+		},
+		default() {
+			return userRoleNames.students
+		}
+	},
+	dataChangeType: {
+		validator(value, props) {
+			return Object.values(dataChangeTypeNames).includes(value)
+		},
+		default() {
+			return dataChangeTypeNames.modify
+		}
+	},
+	additionMethod: {
+		validator(value, props) {
+			return Object.values(namesOfDataAdditionMethods).includes(value)
+		},
+		default() {
+			return namesOfDataAdditionMethods.manually
+		}
+	}
+})
 
-const dataChangeTypeNamesValue = ref(dataChangeTypeNames.modify)
+const categoryNameValue = ref(props.category)
 
-const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
+const dataChangeTypeNamesValue = ref(props.dataChangeType)
+
+const namesOfDataAdditionMethodsValue = ref(props.additionMethod)
 
 function handleChange(emitEvent, event) {
 	emit(emitEvent, event.value)
@@ -60,7 +87,7 @@ function changeTypeDataModification(event) {
 
 	if (event.value === dataChangeTypeNames.modify) {
 		changeMethodAddingData({ value: namesOfDataAdditionMethods.manually })
-		emit('changeDataCategory', catigoriesNameValue.value)
+		emit('changeDataCategory', categoryNameValue.value)
 	}
 }
 
@@ -68,7 +95,7 @@ function changeMethodAddingData(event) {
 	console.log(event)
 	emit('changeMethodAddingData', event.value)
 	if (event.value === namesOfDataAdditionMethods.manually) {
-		emit('changeDataCategory', catigoriesNameValue.value)
+		emit('changeDataCategory', categoryNameValue.value)
 	}
 }
 
