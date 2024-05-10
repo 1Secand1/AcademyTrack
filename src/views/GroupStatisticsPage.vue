@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 
 import Button from 'primevue/button'
@@ -83,30 +83,27 @@ import { getLessonAttendanceReport, getLessonPlan } from "@service/apiFunctions"
 
 import attendanceListSelectionForm from '@components/attendanceListSelectionForm.vue'
 
-const visible = ref(false)
-
 const route = useRoute()
-const groupCode = ref("")
+const groupCode = ref(route.query.codeGroup || "Неопределенно")
+
+const visible = ref(false)
 
 const lessonAttendanceReport = ref({})
 const lessonPlan = ref([])
 
-const studentNames = ref()
-const lessonsByMonth = ref([])
-const allLesson = ref([])
-const studentAttendanceDetails = ref([])
-const allLessonDates = ref([])
+const studentNames = ref([])
+
+const lessonsByMonth = computed(() => sortLessonsByMonth(lessonPlan.value.lessonsAttendance))
+const allLesson = computed(() => srtAllClasses(lessonPlan.value.lessonsAttendance))
+const studentAttendanceDetails = computed(() => mergeStudentAndAttendance(lessonAttendanceReport.value.students))
+const allLessonDates = computed(() => getColumnFields(lessonPlan.value.lessonsAttendance))
 
 onMounted(async () => {
-  groupCode.value = ref(route.query.codeGroup || "Неопределенно")
   lessonPlan.value = await getLessonPlan()
   lessonAttendanceReport.value = await getLessonAttendanceReport()
-  lessonsByMonth.value = sortLessonsByMonth(lessonPlan.value.lessonsAttendance)
-  allLesson.value = srtAllClasses(lessonPlan.value.lessonsAttendance)
   studentNames.value = getListOfStudents(lessonAttendanceReport.value.students)
-  studentAttendanceDetails.value = mergeStudentAndAttendance(lessonAttendanceReport.value.students)
-  allLessonDates.value = getColumnFields(lessonPlan.value.lessonsAttendance)
 })
+
 
 function onCellEditComplete(event) {
   console.log(event)
@@ -169,7 +166,13 @@ function getListOfStudents(studentsArr) {
 function updateLessonAttendanceReport({ attendanceList, date }) {
   visible.value = false
 
-  console.log(attendanceList)
+  lessonAttendanceReport.value.students.forEach((student) => {
+    const attendanceStatus = attendanceList.includes(student.fullName)
+      ? "attended"
+      : "absent"
+
+    student.attendance[date] = attendanceStatus
+  })
 }
 
 
