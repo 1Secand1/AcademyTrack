@@ -10,7 +10,10 @@
 			/>
 		</section>
 
-		<component :is='currentActiveTable'></component>
+		<component
+			:is='currentActiveTable'
+			@onRowSelect='onRowSelect'
+		/>
 	</div>
 </template>
 
@@ -62,11 +65,14 @@ function changeTypeDataModificationMethod(value) {
 }
 
 function changeMethodAddingData(value) {
-	console.log(value)
 	currentNamesOfDataAdditionMethods.value = value
 	if (value = namesOfDataAdditionMethods.excel) {
 		currentActiveForm.value = DataChangePageImportForm
 	}
+}
+
+function onRowSelect(e) {
+	console.log(e)
 }
 </script>
 
