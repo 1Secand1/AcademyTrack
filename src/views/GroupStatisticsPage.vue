@@ -20,7 +20,7 @@
     :style="{ width: '30rem' }"
   >
     <attendanceListSelectionForm
-      :list='studentsList'
+      :list='studentNames'
       :reportableDates='allLessonDates'
       @change='updateLessonAttendanceReport'
     />
@@ -29,7 +29,7 @@
   <DataTable
     editMode="cell"
     @cell-edit-complete="onCellEditComplete"
-    :value="studentList"
+    :value="studentAttendanceDetails"
     stripedRows
     showGridlines
   >
@@ -50,6 +50,7 @@
       <Row>
         <Column
           v-for='lesson in allLesson'
+          :key='lesson'
           :header="lesson"
         />
       </Row>
@@ -58,6 +59,7 @@
     <Column
       #body="slotProps"
       v-for='value in allLessonDates'
+      :key='value'
       :field="value"
     >
       {{ slotProps.data[value] || "" }}
@@ -88,20 +90,21 @@ const groupCode = ref("")
 
 const lessonAttendanceReport = ref({})
 const lessonPlan = ref([])
-const studentsList = ref()
+
+const studentNames = ref()
 const lessonsByMonth = ref([])
 const allLesson = ref([])
-const studentList = ref([])
+const studentAttendanceDetails = ref([])
 const allLessonDates = ref([])
 
 onMounted(async () => {
   groupCode.value = ref(route.query.codeGroup || "Неопределенно")
   lessonPlan.value = await getLessonPlan()
   lessonAttendanceReport.value = await getLessonAttendanceReport()
-  studentsList.value = getListOfStudents(lessonAttendanceReport.value.students)
   lessonsByMonth.value = sortLessonsByMonth(lessonPlan.value.lessonsAttendance)
   allLesson.value = srtAllClasses(lessonPlan.value.lessonsAttendance)
-  studentList.value = mergeStudentAndAttendance(lessonAttendanceReport.value.students)
+  studentNames.value = getListOfStudents(lessonAttendanceReport.value.students)
+  studentAttendanceDetails.value = mergeStudentAndAttendance(lessonAttendanceReport.value.students)
   allLessonDates.value = getColumnFields(lessonPlan.value.lessonsAttendance)
 })
 
@@ -112,7 +115,7 @@ function onCellEditComplete(event) {
 function sortLessonsByMonth(lessons) {
   if (!Array.isArray(lessons)) {
     console.warn("lessons in not Array")
-    return
+    return []
   }
 
   return lessons.reduce((acc, { date }) => {
@@ -125,7 +128,7 @@ function sortLessonsByMonth(lessons) {
 function srtAllClasses(arr) {
   if (!Array.isArray(arr)) {
     console.error("The value passed must be an Array")
-    return
+    return []
   }
 
   return arr.map((lesson) => {
@@ -138,7 +141,7 @@ function srtAllClasses(arr) {
 function mergeStudentAndAttendance(arr) {
   if (!Array.isArray(arr)) {
     console.error("The value passed must be an Array")
-    return
+    return []
   }
 
   return arr.map(({ fullName, attendance }) => {
@@ -147,16 +150,26 @@ function mergeStudentAndAttendance(arr) {
 }
 
 function getColumnFields(lessons) {
+  if (!Array.isArray(lessons)) {
+    console.error("The value passed must be an Array")
+    return []
+  }
   return lessons.map(({ date }) => date)
 }
 
 function getListOfStudents(studentsArr) {
+  if (!Array.isArray(studentsArr)) {
+    console.error("The value passed must be an Array")
+    return []
+  }
+
   return studentsArr.map(({ fullName }) => fullName)
 }
 
-function updateLessonAttendanceReport(report) {
+function updateLessonAttendanceReport({ attendanceList, date }) {
   visible.value = false
-  console.log(report)
+
+  console.log(attendanceList)
 }
 
 
