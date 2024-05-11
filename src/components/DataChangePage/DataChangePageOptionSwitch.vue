@@ -2,7 +2,6 @@
 	<section class='settings__options'>
 		<SelectButton
 			pt:root:class='settings__select-button'
-			@change="event => handleChange('changeDataCategory', event)"
 			v-model="categoryNameValue"
 			:options="Object.values(userRoleNames)"
 			aria-labelledby="basic"
@@ -12,7 +11,6 @@
 
 		<SelectButton
 			pt:root:class='settings__select-button'
-			@change="changeTypeDataModification"
 			v-model="dataChangeTypeNamesValue"
 			:options="Object.values(dataChangeTypeNames)"
 			aria-labelledby="basic"
@@ -22,9 +20,8 @@
 
 		<SelectButton
 			v-if='dataChangeTypeNamesValue === dataChangeTypeNames.adding'
-			@change="changeMethodAddingData"
 			pt:root:class='settings__select-button'
-			v-model="namesOfDataAdditionMethodsValue"
+			v-model="additionMethodNameValue"
 			:options="Object.values(namesOfDataAdditionMethods)"
 			aria-labelledby="basic"
 			:allowEmpty="false"
@@ -35,61 +32,20 @@
 
 <script setup>
 import SelectButton from 'primevue/selectbutton'
-import { computed, defineEmits } from 'vue'
+import { watch } from 'vue'
 
 import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization'
 
-const emit = defineEmits([
-	'changeDataCategory',
-	'changeTypeDataModification',
-	'changeMethodAddingData'
-])
+const categoryNameValue = defineModel("category")
+const additionMethodNameValue = defineModel("additionMethod")
+const dataChangeTypeNamesValue = defineModel("dataChangeType")
 
-const props = defineProps({
-	category: {
-		validator(value, props) {
-			return Object.values(userRoleNames).includes(value)
-		},
-		default() {
-			return userRoleNames.students
-		}
-	},
-	dataChangeType: {
-		validator(value, props) {
-			return Object.values(dataChangeTypeNames).includes(value)
-		},
-		default() {
-			return dataChangeTypeNames.adding
-		}
-	},
-	additionMethod: {
-		validator(value, props) {
-			return Object.values(namesOfDataAdditionMethods).includes(value)
-		},
-		default() {
-			return namesOfDataAdditionMethods.manually
-		}
+watch(dataChangeTypeNamesValue, (additionMethod) => {
+	if (additionMethod === dataChangeTypeNames.modify) {
+		additionMethodNameValue.value = namesOfDataAdditionMethods.manually
 	}
 })
 
-const categoryNameValue = computed(() => props.category)
-
-const dataChangeTypeNamesValue = computed(() => props.dataChangeType)
-
-const namesOfDataAdditionMethodsValue = computed(() => props.additionMethod)
-
-function handleChange(emitEvent, event) {
-	emit(emitEvent, event.value)
-}
-
-function changeTypeDataModification(event) {
-	emit('changeTypeDataModification', event.value)
-
-	if (event.value === dataChangeTypeNames.modify) {
-		changeMethodAddingData({ value: namesOfDataAdditionMethods.manually })
-		emit('changeDataCategory', categoryNameValue.value)
-	}
-}
 
 function changeMethodAddingData(event) {
 	console.log(event)

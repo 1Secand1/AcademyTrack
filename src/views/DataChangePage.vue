@@ -4,12 +4,9 @@
 			<component :is='currentActiveForm' />
 
 			<DataChangePageOptionSwitch
-				:category="catagoriesNameValue"
-				:dataChangeType="dataChangeTypeNamesValue"
-				:additionMethod='namesOfDataAdditionMethodsValue'
-				@changeDataCategory='changeDataCategory'
-				@changeTypeDataModification='changeTypeDataModificationMethod'
-				@changeMethodAddingData='changeMethodAddingData'
+				v-model:category="catagoriesNameValue"
+				v-model:dataChangeType='dataChangeTypeNamesValue'
+				v-model:additionMethod='namesOfDataAdditionMethodsValue'
 			/>
 		</section>
 
@@ -30,20 +27,19 @@ import DataChangePageStudentForm from "@components/DataChangePage/DataChangePage
 import DataChangePageStudentTable from '@components/DataChangePage/DataChangePageStudentTable.vue'
 import DataChangePageTeachersForm from '@components/DataChangePage/DataChangePageTeachersForm.vue'
 
-import { ref, shallowRef } from 'vue'
+import { ref, shallowRef, watch } from 'vue'
 
 import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization'
 
 const currentActiveForm = shallowRef(DataChangePageStudentForm)
 const currentActiveTable = shallowRef(DataChangePageStudentTable)
 
-const currentNamesOfDataAdditionMethods = ref(namesOfDataAdditionMethods.manually)
-
 const catagoriesNameValue = ref(userRoleNames.students)
 const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding)
 const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 
-function changeDataCategory(nameCategory) {
+
+function categorizeComponent(nameCategory) {
 	const dataChangePageStudentTableAndFormComponents = {
 		[userRoleNames.students]: {
 			form: DataChangePageStudentForm,
@@ -59,24 +55,26 @@ function changeDataCategory(nameCategory) {
 		}
 	}
 
-	const componentType = dataChangePageStudentTableAndFormComponents[nameCategory]
+	return dataChangePageStudentTableAndFormComponents[nameCategory]
+}
+watch(catagoriesNameValue, (nameCategory) => {
+	const component = categorizeComponent(nameCategory)
 
-	if (currentNamesOfDataAdditionMethods.value === namesOfDataAdditionMethods.manually) {
-		currentActiveForm.value = componentType.form
+	if (namesOfDataAdditionMethodsValue.value === namesOfDataAdditionMethods.manually) {
+		currentActiveForm.value = component.form
 	}
+	currentActiveTable.value = component.table
+})
 
-	currentActiveTable.value = componentType.table
-}
-
-function changeTypeDataModificationMethod(value) {
-}
-
-function changeMethodAddingData(value) {
-	currentNamesOfDataAdditionMethods.value = value
-	if (value = namesOfDataAdditionMethods.excel) {
+watch(namesOfDataAdditionMethodsValue, (value) => {
+	if (value == namesOfDataAdditionMethods.excel) {
 		currentActiveForm.value = DataChangePageImportForm
 	}
-}
+	if (value == namesOfDataAdditionMethods.manually) {
+		const component = categorizeComponent(catagoriesNameValue.value)
+		currentActiveForm.value = component.form
+	}
+})
 
 function onRowSelect(e) {
 	dataChangeTypeNamesValue.value = dataChangeTypeNames.modify
