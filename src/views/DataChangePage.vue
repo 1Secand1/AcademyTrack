@@ -4,6 +4,9 @@
 			<component :is='currentActiveForm' />
 
 			<DataChangePageOptionSwitch
+				:category="catagoriesNameValue"
+				:dataChangeType="dataChangeTypeNamesValue"
+				:additionMethod='namesOfDataAdditionMethodsValue'
 				@changeDataCategory='changeDataCategory'
 				@changeTypeDataModification='changeTypeDataModificationMethod'
 				@changeMethodAddingData='changeMethodAddingData'
@@ -21,6 +24,7 @@
 
 import DataChangePageGroupForm from '@components/DataChangePage/DataChangePageGroupForm.vue'
 import DataChangePageGroupTable from '@components/DataChangePage/DataChangePageGroupTable.vue'
+import DataChangePageImportForm from '@components/DataChangePage/DataChangePageImportForm.vue'
 import DataChangePageOptionSwitch from '@components/DataChangePage/DataChangePageOptionSwitch.vue'
 import DataChangePageStudentForm from "@components/DataChangePage/DataChangePageStudentForm.vue"
 import DataChangePageStudentTable from '@components/DataChangePage/DataChangePageStudentTable.vue'
@@ -28,13 +32,16 @@ import DataChangePageTeachersForm from '@components/DataChangePage/DataChangePag
 
 import { ref, shallowRef } from 'vue'
 
-import DataChangePageImportForm from '@components/DataChangePage/DataChangePageImportForm.vue'
-import { namesOfDataAdditionMethods, userRoleNames } from '@constants/localization'
+import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization'
 
 const currentActiveForm = shallowRef(DataChangePageStudentForm)
 const currentActiveTable = shallowRef(DataChangePageStudentTable)
 
 const currentNamesOfDataAdditionMethods = ref(namesOfDataAdditionMethods.manually)
+
+const catagoriesNameValue = ref(userRoleNames.students)
+const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding)
+const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 
 function changeDataCategory(nameCategory) {
 	const dataChangePageStudentTableAndFormComponents = {
@@ -72,6 +79,7 @@ function changeMethodAddingData(value) {
 }
 
 function onRowSelect(e) {
+	dataChangeTypeNamesValue.value = dataChangeTypeNames.modify
 	console.log(e)
 }
 </script>

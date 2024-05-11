@@ -35,7 +35,7 @@
 
 <script setup>
 import SelectButton from 'primevue/selectbutton'
-import { defineEmits, ref } from 'vue'
+import { computed, defineEmits } from 'vue'
 
 import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization'
 
@@ -59,7 +59,7 @@ const props = defineProps({
 			return Object.values(dataChangeTypeNames).includes(value)
 		},
 		default() {
-			return dataChangeTypeNames.modify
+			return dataChangeTypeNames.adding
 		}
 	},
 	additionMethod: {
@@ -72,11 +72,11 @@ const props = defineProps({
 	}
 })
 
-const categoryNameValue = ref(props.category)
+const categoryNameValue = computed(() => props.category)
 
-const dataChangeTypeNamesValue = ref(props.dataChangeType)
+const dataChangeTypeNamesValue = computed(() => props.dataChangeType)
 
-const namesOfDataAdditionMethodsValue = ref(props.additionMethod)
+const namesOfDataAdditionMethodsValue = computed(() => props.additionMethod)
 
 function handleChange(emitEvent, event) {
 	emit(emitEvent, event.value)
