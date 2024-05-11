@@ -9,7 +9,7 @@
 			</keep-alive>
 
 			<DataChangePageOptionSwitch
-				v-model:category="catagoriesNameValue"
+				v-model:category="categoryNameValue"
 				v-model:dataChangeType='dataChangeTypeNamesValue'
 				v-model:additionMethod='namesOfDataAdditionMethodsValue'
 			/>
@@ -40,7 +40,7 @@ import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '
 const currentActiveForm = shallowRef(DataChangePageStudentForm)
 const currentActiveTable = shallowRef(DataChangePageStudentTable)
 
-const catagoriesNameValue = ref(userRoleNames.students)
+const categoryNameValue = ref(userRoleNames.students)
 const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding)
 const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 
@@ -62,7 +62,7 @@ const groupedComponentCatalog = {
 }
 
 function updateComponents() {
-	const component = groupedComponentCatalog[catagoriesNameValue.value]
+	const component = groupedComponentCatalog[categoryNameValue.value]
 
 	if (!component) return
 
@@ -74,7 +74,7 @@ function updateComponents() {
 	currentActiveTable.value = component.table
 }
 
-watch([catagoriesNameValue, namesOfDataAdditionMethodsValue], updateComponents)
+watch([categoryNameValue, namesOfDataAdditionMethodsValue], updateComponents)
 
 watch(dataChangeTypeNamesValue, (newDataChangeTypeNamesValue) => {
 	if (newDataChangeTypeNamesValue == dataChangeTypeNames.adding) {
