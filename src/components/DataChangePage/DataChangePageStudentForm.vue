@@ -23,7 +23,7 @@
 		/>
 		<InputText
 			class="settings__input-search"
-			v-model="studentData.codeGroupe"
+			v-model="studentData.groupCode"
 			placeholder="Код группы"
 		/>
 
@@ -33,8 +33,9 @@
 		/>
 	</form>
 </template>
+
 <script setup>
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 
 import { studentsService } from '@service/apiFunctions'
 import Button from 'primevue/button'
@@ -44,7 +45,17 @@ const studentData = reactive({
 	surname: "",
 	name: "",
 	patronymic: "",
-	codeGroupe: "",
+	groupCode: "",
+})
+
+const formData = defineModel()
+
+watch(formData, (newFormData) => {
+	console.log(1)
+	studentData.surname = newFormData?.surname
+	studentData.name = newFormData?.name
+	studentData.patronymic = newFormData?.patronymic
+	studentData.groupCode = newFormData?.groupCode
 })
 
 </script>

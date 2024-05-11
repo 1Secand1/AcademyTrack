@@ -2,7 +2,7 @@
 	<DataTable
 		class="table"
 		@row-select="onRowSelect"
-		v-model:selection="selectedProduct"
+		v-model:selection="selectedRow"
 		:value="valued"
 		:sortOrder="-1"
 		sortField="attendance"
@@ -36,7 +36,7 @@ import { defineEmits, onMounted, ref, toRaw } from 'vue'
 
 const emit = defineEmits(["onRowSelect"])
 
-const selectedProduct = ref(null)
+const selectedRow = defineModel("selectedRow")
 const valued = ref([])
 
 onMounted(async () => {

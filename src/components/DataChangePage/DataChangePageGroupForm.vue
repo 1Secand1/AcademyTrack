@@ -8,7 +8,7 @@
 		</h2>
 		<InputText
 			class="settings__input-search"
-			v-model="groupData.codeGroupe"
+			v-model="groupData.groupСode"
 			placeholder="Код группы"
 		/>
 		<InputText
@@ -36,7 +36,7 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 
 const groupData = reactive({
-	codeGroupe: '',
+	groupСode: '',
 	yearOfEntry: '',
 	yearOfIssue: '',
 })

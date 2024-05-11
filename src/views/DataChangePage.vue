@@ -1,7 +1,13 @@
 <template>
 	<div class="wrapper">
 		<section class="settings">
-			<component :is='currentActiveForm' />
+			<keep-alive>
+
+				<component
+					:is='currentActiveForm'
+					v-model='selectedRow'
+				/>
+			</keep-alive>
 
 			<DataChangePageOptionSwitch
 				v-model:category="catagoriesNameValue"
@@ -12,6 +18,7 @@
 
 		<component
 			:is='currentActiveTable'
+			v-model:selectedRow='selectedRow'
 			@onRowSelect='onRowSelect'
 		/>
 	</div>
@@ -38,6 +45,7 @@ const catagoriesNameValue = ref(userRoleNames.students)
 const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding)
 const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 
+const selectedRow = ref()
 
 function categorizeComponent(nameCategory) {
 	const dataChangePageStudentTableAndFormComponents = {
@@ -69,16 +77,27 @@ watch(catagoriesNameValue, (nameCategory) => {
 watch(namesOfDataAdditionMethodsValue, (value) => {
 	if (value == namesOfDataAdditionMethods.excel) {
 		currentActiveForm.value = DataChangePageImportForm
+		return
 	}
+
 	if (value == namesOfDataAdditionMethods.manually) {
 		const component = categorizeComponent(catagoriesNameValue.value)
 		currentActiveForm.value = component.form
+		return
 	}
 })
 
-function onRowSelect(e) {
+watch(dataChangeTypeNamesValue, (newDataChangeTypeNamesValue) => {
+	if (newDataChangeTypeNamesValue == dataChangeTypeNames.adding) {
+		selectedRow.value = {}
+	}
+	if (newDataChangeTypeNamesValue == dataChangeTypeNames.modify) {
+		console.log(selectedRow.value)
+	}
+})
+
+function onRowSelect() {
 	dataChangeTypeNamesValue.value = dataChangeTypeNames.modify
-	console.log(e)
 }
 </script>
 
