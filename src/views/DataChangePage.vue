@@ -2,7 +2,6 @@
 	<div class="wrapper">
 		<section class="settings">
 			<keep-alive>
-
 				<component
 					:is='currentActiveForm'
 					v-model='selectedRow'
@@ -47,52 +46,39 @@ const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually)
 
 const selectedRow = ref()
 
-function categorizeComponent(nameCategory) {
-	const dataChangePageStudentTableAndFormComponents = {
-		[userRoleNames.students]: {
-			form: DataChangePageStudentForm,
-			table: DataChangePageStudentTable
-		},
-		[userRoleNames.teachers]: {
-			form: DataChangePageTeachersForm,
-			table: DataChangePageStudentTable
-		},
-		[userRoleNames.groups]: {
-			form: DataChangePageGroupForm,
-			table: DataChangePageGroupTable
-		}
-	}
-
-	return dataChangePageStudentTableAndFormComponents[nameCategory]
+const groupedComponentCatalog = {
+	[userRoleNames.students]: {
+		form: DataChangePageStudentForm,
+		table: DataChangePageStudentTable
+	},
+	[userRoleNames.teachers]: {
+		form: DataChangePageTeachersForm,
+		table: DataChangePageStudentTable
+	},
+	[userRoleNames.groups]: {
+		form: DataChangePageGroupForm,
+		table: DataChangePageGroupTable
+	},
 }
-watch(catagoriesNameValue, (nameCategory) => {
-	const component = categorizeComponent(nameCategory)
 
-	if (namesOfDataAdditionMethodsValue.value === namesOfDataAdditionMethods.manually) {
-		currentActiveForm.value = component.form
-	}
+function updateComponents() {
+	const component = groupedComponentCatalog[catagoriesNameValue.value]
+
+	if (!component) return
+
+	const currentForm = namesOfDataAdditionMethodsValue.value === namesOfDataAdditionMethods.excel
+		? DataChangePageImportForm
+		: component.form
+
+	currentActiveForm.value = currentForm
 	currentActiveTable.value = component.table
-})
+}
 
-watch(namesOfDataAdditionMethodsValue, (value) => {
-	if (value == namesOfDataAdditionMethods.excel) {
-		currentActiveForm.value = DataChangePageImportForm
-		return
-	}
-
-	if (value == namesOfDataAdditionMethods.manually) {
-		const component = categorizeComponent(catagoriesNameValue.value)
-		currentActiveForm.value = component.form
-		return
-	}
-})
+watch([catagoriesNameValue, namesOfDataAdditionMethodsValue], updateComponents)
 
 watch(dataChangeTypeNamesValue, (newDataChangeTypeNamesValue) => {
 	if (newDataChangeTypeNamesValue == dataChangeTypeNames.adding) {
 		selectedRow.value = {}
-	}
-	if (newDataChangeTypeNamesValue == dataChangeTypeNames.modify) {
-		console.log(selectedRow.value)
 	}
 })
 
