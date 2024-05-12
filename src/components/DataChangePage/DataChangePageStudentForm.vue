@@ -51,7 +51,6 @@ const studentData = reactive({
 const formData = defineModel()
 
 watch(formData, (newFormData) => {
-	console.log(1)
 	studentData.surname = newFormData?.surname
 	studentData.name = newFormData?.name
 	studentData.patronymic = newFormData?.patronymic
