@@ -46,16 +46,6 @@ watch(dataChangeTypeNamesValue, (additionMethod) => {
 	}
 })
 
-
-function changeMethodAddingData(event) {
-	console.log(event)
-	emit('changeMethodAddingData', event.value)
-	if (event.value === namesOfDataAdditionMethods.manually) {
-		emit('changeDataCategory', categoryNameValue.value)
-	}
-}
-
-
 </script>
 
 <style scoped>
