@@ -20,6 +20,11 @@ const routes = [
 				component: () => import('@views/GroupStatisticsPage.vue'),
 			},
 			{
+				path: 'studentGroup',
+				name: 'studentGroup',
+				component: () => import('@views/StudentGroupPage.vue'),
+			},
+			{
 				path: 'settingsGroups',
 				name: 'settingsGroups',
 				component: () => import('@views/DataChangePage.vue'),

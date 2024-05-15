@@ -13,6 +13,12 @@
 						Ваши группы
 					</router-link>
 				</li>
+				<li class="sidebar-menu__item">
+					<span class="pi pi-users"></span>
+					<router-link :to="{ name: 'studentGroup' }">
+						Группы
+					</router-link>
+				</li>
 				<li class="sidebar-menu__item sidebar-menu__item--title-category">
 					Администрирование
 				</li>
@@ -22,7 +28,6 @@
 						Управление
 					</router-link>
 				</li>
-
 			</ul>
 
 			<Button
