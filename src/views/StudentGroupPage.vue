@@ -1,9 +1,4 @@
 <template>
 	Страница групп
+	<router-view />
 </template>
-
-<script setup>
-
-</script>
-
-<style></style>

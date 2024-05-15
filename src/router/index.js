@@ -23,6 +23,14 @@ const routes = [
 				path: 'studentGroup',
 				name: 'studentGroup',
 				component: () => import('@views/StudentGroupPage.vue'),
+				children: [
+					{
+						alias: '',
+						path: 'selection',
+						name: 'groupSelection',
+						component: () => import('@views/GroupSelectionPage.vue'),
+					},
+				],
 			},
 			{
 				path: 'settingsGroups',

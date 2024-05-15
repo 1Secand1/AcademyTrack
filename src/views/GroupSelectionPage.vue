@@ -1,0 +1,3 @@
+<template>
+	Выберите группу
+</template>
