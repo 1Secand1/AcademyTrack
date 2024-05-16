@@ -31,8 +31,11 @@
 
 	<section class="group-cards">
 		<GroupCard
-			v-for=" i in 25"
-			:key='i'
+			v-for=" group in groups"
+			:key="group.groupCode"
+			@click='select(group.groupCode)'
+			:group-name="group.groupCode"
+			:numberOfStudents="group.numberOfStudents"
 		/>
 	</section>
 
@@ -58,6 +61,36 @@ const specialty = [
 	{ name: 'КС' },
 ]
 
+const groups = [
+	{
+		groupCode: "ИСП-216",
+		numberOfStudents: 20
+	},
+	{
+		groupCode: "ИСП-216В",
+		numberOfStudents: 25
+	},
+	{
+		groupCode: "ИСП-216В",
+		numberOfStudents: 20
+	},
+	{
+		groupCode: "ИСП-215",
+		numberOfStudents: 20
+	},
+	{
+		groupCode: "ИСП-216",
+		numberOfStudents: 20
+	},
+	{
+		groupCode: "ИСП-216",
+		numberOfStudents: 20
+	},
+]
+
+function select(e) {
+	console.log(e)
+}
 </script>
 
 <style scoped>

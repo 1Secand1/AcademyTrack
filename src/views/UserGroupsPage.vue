@@ -55,7 +55,6 @@ const filteredStudents = computed(() => {
 })
 
 function onRowSelect() {
-	console.log(selectedProduct.value)
 	router.push({
 		name: 'groupStatistics',
 		query: { codeGroup: selectedProduct.value.groupCode },
