@@ -28,8 +28,10 @@
 
 	border-radius: 5px;
 	background: white;
+	border: solid #9A9B9C 1px;
+	cursor: pointer;
 
-	padding: 5px 10px;
+	padding: 10px 10px;
 	gap: 10px;
 }
 

@@ -3,8 +3,8 @@
 		<h2>Загрузить файл</h2>
 
 		<FileUpload
+			class='fileUploadBox__button'
 			chooseLabel='Загрузить'
-			pt:root:class='fileUploadBox__button'
 			mode="basic"
 			name="demo[]"
 			url="/api/upload"
@@ -25,5 +25,6 @@ import FileUpload from 'primevue/fileupload'
 
 .fileUploadBox__button {
 	display: flex;
+	margin-top: 20px;
 }
 </style>
