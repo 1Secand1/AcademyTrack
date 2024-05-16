@@ -15,7 +15,7 @@
 				</li>
 				<li class="sidebar-menu__item">
 					<span class="pi pi-users"></span>
-					<router-link :to="{ name: 'studentGroup' }">
+					<router-link :to="{ name: 'groupSelection' }">
 						Группы
 					</router-link>
 				</li>
