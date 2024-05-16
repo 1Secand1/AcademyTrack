@@ -21,6 +21,11 @@ const dashboardRoutes = [
 				name: 'groupSelection',
 				component: () => import('@views/GroupSelectionPage.vue'),
 			},
+			{
+				path: 'profile',
+				name: 'groupProfile',
+				component: () => import('@views/GroupProfilePage.vue'),
+			},
 		],
 	},
 	{
