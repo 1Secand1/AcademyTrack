@@ -1,13 +1,51 @@
 <template>
-	<p>Профиль группы {{ groupCode }}</p>
+	<h2 class='titlePage'>
+		Профиль группы {{ groupCode }}
+	</h2>
+
+	<SelectButton
+		class='row qwe'
+		v-model="value"
+		@change='foo'
+		:options="buttonsOptions"
+		aria-labelledby="basic"
+	/>
 </template>
 
 <script setup>
+import SelectButton from 'primevue/selectbutton'
+
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
-
+const router = useRouter()
 const route = useRoute()
+
 const groupCode = ref(route.query.codeGroup)
 
+const value = ref('Студенты')
+const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость'])
+
+function foo({ value = undefined }) {
+	if (!value) throw new Error("value not found")
+	router.replace({ query: { ...route.query, category: value } })
+	console.log(value)
+}
 </script>
+
+<style scoped>
+.titlePage {
+	margin-top: 20px;
+}
+
+.row {
+	display: flex;
+	width: 100%;
+	margin-top: 15px;
+}
+
+::v-deep .p-button-group,
+::v-deep .p-button {
+	width: 100%;
+}
+</style>
