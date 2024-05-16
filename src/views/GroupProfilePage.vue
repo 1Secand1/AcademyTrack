@@ -23,7 +23,7 @@ const route = useRoute()
 
 const groupCode = ref(route.query.codeGroup)
 
-const value = ref('Студенты')
+const value = ref(route.query?.category ?? 'Студенты')
 const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость'])
 
 function foo({ value = undefined }) {
