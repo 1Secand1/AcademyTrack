@@ -2,7 +2,7 @@
 
 	<div class="row">
 		<Dropdown
-			class='qwe'
+			class='dropdown'
 			v-model="selectedCourses"
 			:options="courses"
 			showClear
@@ -20,7 +20,7 @@
 		</Dropdown>
 
 		<Dropdown
-			class='qwe'
+			class='dropdown'
 			v-model="selectedSpecialty"
 			:options="specialty"
 			showClear
@@ -61,7 +61,7 @@ const specialty = [
 </script>
 
 <style scoped>
-.qwe {
+.dropdown {
 	min-width: 200px;
 }
 
@@ -71,14 +71,6 @@ const specialty = [
 	margin-top: 20px;
 }
 
-.mh {
-	max-width: 200px;
-	min-height: auto;
-}
-
-.select-chips-control-min-height {
-	display: none;
-}
 
 .group-cards {
 	display: flex;
