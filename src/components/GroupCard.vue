@@ -3,14 +3,21 @@
 		<div class="group-card__avatar" />
 		<div class="">
 			<h5 class="group-card__title">
-				ИСП-215
+				{{ groupName }}
 			</h5>
 			<p class="group-card__text">
-				Студентов: 25
+				Студентов: {{ numberOfStudents }}
 			</p>
 		</div>
 	</div>
 </template>
+
+<script setup>
+const props = defineProps({
+	groupName: String,
+	numberOfStudents: [String, Number]
+})
+</script>
 
 <style>
 .group-card__avatar {
