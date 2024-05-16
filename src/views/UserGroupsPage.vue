@@ -22,14 +22,11 @@
 		<Column
 			field="groupCode"
 			header="Код группы"
-		></Column>
+		/>
 		<Column
 			field="subjectName"
 			header="Предмет"
-		></Column>
-		<!-- <Column field="" header="Староста"></Column> -->
-		<!-- <Column field="" header="Кол.Студентов" sortable></Column> -->
-		<!-- <Column field="" header="Посещаемость %" sortable></Column> -->
+		/>
 	</DataTable>
 </template>
 
@@ -58,9 +55,10 @@ const filteredStudents = computed(() => {
 })
 
 function onRowSelect() {
+	console.log(selectedProduct.value)
 	router.push({
 		name: 'groupStatistics',
-		query: { codeGroup: selectedProduct.value['groupCode'] },
+		query: { codeGroup: selectedProduct.value.groupCode },
 	})
 }
 
