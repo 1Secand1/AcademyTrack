@@ -43,6 +43,7 @@
 
 <script setup>
 import GroupCard from '@components/GroupCard.vue'
+import router from '@router/index'
 import Dropdown from 'primevue/dropdown'
 import { ref } from 'vue'
 
@@ -88,8 +89,11 @@ const groups = [
 	},
 ]
 
-function select(e) {
-	console.log(e)
+function select(groupCode) {
+	router.push({
+		name: 'groupProfile',
+		query: { codeGroup: groupCode },
+	})
 }
 </script>
 
