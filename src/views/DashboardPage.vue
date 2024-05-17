@@ -62,6 +62,7 @@ function logOut() {
 }
 
 .main {
+	overflow: hidden;
 	width: 100%;
 	padding: 0 20px;
 }
