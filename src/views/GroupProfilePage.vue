@@ -5,17 +5,21 @@
 
 	<SelectButton
 		class='row qwe'
-		v-model="value"
+		v-model="currentCategory"
 		@change='foo'
 		:options="buttonsOptions"
 		aria-labelledby="basic"
 	/>
+
+	<component :is='currentCategoryComponent' />
 </template>
 
 <script setup>
 import SelectButton from 'primevue/selectbutton'
 
-import { ref } from 'vue'
+import GroupProfileSchedule from '@components/GroupProfile/GroupProfileSchedule.vue'
+
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -23,7 +27,14 @@ const route = useRoute()
 
 const groupCode = ref(route.query.codeGroup)
 
-const value = ref(route.query?.category ?? 'Студенты')
+const mapCategoryComponent = {
+	"Расписание": GroupProfileSchedule
+}
+
+const currentCategory = ref(route.query?.category ?? 'Студенты')
+const currentCategoryComponent = computed(() => {
+	return mapCategoryComponent[currentCategory.value]
+})
 const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость'])
 
 function foo({ value = undefined }) {
