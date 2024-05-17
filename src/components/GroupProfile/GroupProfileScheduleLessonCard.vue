@@ -22,7 +22,10 @@
 
 <script setup>
 const props = defineProps({
-	lessonsForTheDayValues: Object
+	lessonsForTheDayValues: {
+		type: Object,
+		required: true,
+	}
 })
 
 </script>
@@ -50,14 +53,13 @@ const props = defineProps({
 
 	border-radius: 100%;
 	background: #2196F3;
-	color: white;
+	color: rgb(255, 255, 255);
 }
 
 .card__info-box {
 	display: grid;
 	margin-left: 10px;
 	width: 100%;
-	overflow: hidden;
 }
 
 .card__info-box-heder {
@@ -91,7 +93,7 @@ const props = defineProps({
 	white-space: nowrap;
 	height: min-content;
 
-	color: wheat;
+	color: white;
 	background: #2196F3;
 	margin-left: auto;
 	border-radius: 5px;

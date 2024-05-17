@@ -4,7 +4,7 @@
 	</h2>
 
 	<SelectButton
-		class='row qwe'
+		class='row '
 		v-model="currentCategory"
 		@change='foo'
 		:options="buttonsOptions"
@@ -48,6 +48,7 @@ function foo({ value = undefined }) {
 .titlePage {
 	margin-top: 20px;
 }
+
 
 .row {
 	display: flex;
