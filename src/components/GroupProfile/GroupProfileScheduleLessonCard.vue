@@ -1,19 +1,31 @@
 <template>
 	<div class="card">
-		<span class="card__lesson-number">1</span>
+		<span class="card__lesson-number">
+			{{ lessonsForTheDayValues?.lessonNumber }}
+		</span>
 		<div class="card__info-box">
 			<div class="card__info-box-heder">
-				<p class="card__teacher-name">Иванов Иван Иваныч</p>
-				<span class="card__cabinet-number">к 212</span>
+				<p class="card__teacher-name">
+					{{ lessonsForTheDayValues?.teacherName }}
+				</p>
+				<span class="card__cabinet-number">
+					К {{ lessonsForTheDayValues?.cabinetNumber }}
+				</span>
 			</div>
 
 			<p class="card__subject-name">
-				Элективные дисциплины (курсы) по физической культуре и спорту общая физическая
-				подготовка каф.ФКиС
+				{{ lessonsForTheDayValues?.subjectName }}
 			</p>
 		</div>
 	</div>
 </template>
+
+<script setup>
+const props = defineProps({
+	lessonsForTheDayValues: Object
+})
+
+</script>
 
 <style scoped>
 .card {
@@ -44,6 +56,7 @@
 .card__info-box {
 	display: grid;
 	margin-left: 10px;
+	width: 100%;
 	overflow: hidden;
 }
 
