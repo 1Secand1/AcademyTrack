@@ -1,15 +1,15 @@
 <template>
-	<div class="group-card">
-		<div class="group-card__avatar" />
-		<div class="">
-			<h5 class="group-card__title">
-				{{ groupName }}
-			</h5>
-			<p class="group-card__text">
-				Студентов: {{ numberOfStudents }}
-			</p>
-		</div>
-	</div>
+  <div class="group-card">
+    <div class="group-card__avatar" />
+    <div class="">
+      <h5 class="group-card__title">
+        {{ groupName }}
+      </h5>
+      <p class="group-card__text">
+        Студентов: {{ numberOfStudents }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup>

@@ -1,16 +1,16 @@
 <template>
-	<div class="day-schedule">
-		<h3 class='day-schedule__title'>
-			{{ weekdayName }}
-		</h3>
-		<div class="cards">
-			<GroupProfileScheduleLessonCard
-				v-for="lesson in lessonsForTheDay"
-				:key='lesson'
-				:lessonsForTheDayValues='lesson'
-			/>
-		</div>
-	</div>
+  <div class="day-schedule">
+    <h3 class="day-schedule__title">
+      {{ weekdayName }}
+    </h3>
+    <div class="cards">
+      <GroupProfileScheduleLessonCard
+        v-for="lesson in lessonsForTheDay"
+        :key="lesson"
+        :lessons-for-the-day-values="lesson"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup>

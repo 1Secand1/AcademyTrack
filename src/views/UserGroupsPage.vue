@@ -1,33 +1,33 @@
 <template>
-	<div class="group-search">
-		<h2>Ваши группы</h2>
-		<IconField iconPosition="left">
-			<InputIcon class="pi pi-search"> </InputIcon>
-			<InputText
-				class="group-search__input-search"
-				v-model="search"
-				placeholder="Поиск коду группы"
-			/>
-		</IconField>
-	</div>
-	<DataTable
-		@rowSelect="onRowSelect"
-		:value="filteredStudents"
-		stripedRows
-		sortField="attendance"
-		:sortOrder="-1"
-		selectionMode="single"
-		v-model:selection="selectedProduct"
-	>
-		<Column
-			field="groupCode"
-			header="Код группы"
-		/>
-		<Column
-			field="subjectName"
-			header="Предмет"
-		/>
-	</DataTable>
+  <div class="group-search">
+    <h2>Ваши группы</h2>
+    <IconField icon-position="left">
+      <InputIcon class="pi pi-search" />
+      <InputText
+        v-model="search"
+        class="group-search__input-search"
+        placeholder="Поиск коду группы"
+      />
+    </IconField>
+  </div>
+  <DataTable
+    v-model:selection="selectedProduct"
+    :value="filteredStudents"
+    striped-rows
+    sort-field="attendance"
+    :sort-order="-1"
+    selection-mode="single"
+    @row-select="onRowSelect"
+  >
+    <Column
+      field="groupCode"
+      header="Код группы"
+    />
+    <Column
+      field="subjectName"
+      header="Предмет"
+    />
+  </DataTable>
 </template>
 
 <script setup>

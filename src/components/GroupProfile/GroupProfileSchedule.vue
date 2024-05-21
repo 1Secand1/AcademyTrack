@@ -1,24 +1,23 @@
 <template>
-	<div class="day-schedule">
-		<div class="day-schedule__progress-bar">
-			<div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active "></div>
-			<div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active "></div>
-			<div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active "></div>
-			<div class="day-schedule__progress-bar-item"></div>
-			<div class="day-schedule__progress-bar-item"></div>
-			<div class="day-schedule__progress-bar-item"></div>
-		</div>
+  <div class="day-schedule">
+    <div class="day-schedule__progress-bar">
+      <div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active " />
+      <div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active " />
+      <div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active " />
+      <div class="day-schedule__progress-bar-item" />
+      <div class="day-schedule__progress-bar-item" />
+      <div class="day-schedule__progress-bar-item" />
+    </div>
 
-		<div class="day-schedule__day-cards">
-			<GroupProfileDayScheduleCards
-				v-for='schedule in weeklySchedule'
-				:key='schedule.weekdayTextName'
-				:weekdayName='schedule.weekdayTextName'
-				:lessonsForTheDay="schedule.schedule"
-			/>
-		</div>
-
-	</div>
+    <div class="day-schedule__day-cards">
+      <GroupProfileDayScheduleCards
+        v-for="schedule in weeklySchedule"
+        :key="schedule.weekdayTextName"
+        :weekday-name="schedule.weekdayTextName"
+        :lessons-for-the-day="schedule.schedule"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup>

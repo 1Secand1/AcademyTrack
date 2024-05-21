@@ -1,33 +1,33 @@
 <template>
-	<section class='settings__options'>
-		<SelectButton
-			pt:root:class='settings__select-button'
-			v-model="categoryNameValue"
-			:options="Object.values(userRoleNames)"
-			aria-labelledby="basic"
-			:allowEmpty="false"
-			:unselectable="false"
-		/>
+  <section class="settings__options">
+    <SelectButton
+      v-model="categoryNameValue"
+      pt:root:class="settings__select-button"
+      :options="Object.values(userRoleNames)"
+      aria-labelledby="basic"
+      :allow-empty="false"
+      :unselectable="false"
+    />
 
-		<SelectButton
-			pt:root:class='settings__select-button'
-			v-model="dataChangeTypeNamesValue"
-			:options="Object.values(dataChangeTypeNames)"
-			aria-labelledby="basic"
-			:allowEmpty="false"
-			:unselectable="false"
-		/>
+    <SelectButton
+      v-model="dataChangeTypeNamesValue"
+      pt:root:class="settings__select-button"
+      :options="Object.values(dataChangeTypeNames)"
+      aria-labelledby="basic"
+      :allow-empty="false"
+      :unselectable="false"
+    />
 
-		<SelectButton
-			v-if='dataChangeTypeNamesValue === dataChangeTypeNames.adding'
-			pt:root:class='settings__select-button'
-			v-model="additionMethodNameValue"
-			:options="Object.values(namesOfDataAdditionMethods)"
-			aria-labelledby="basic"
-			:allowEmpty="false"
-			:unselectable="false"
-		/>
-	</section>
+    <SelectButton
+      v-if="dataChangeTypeNamesValue === dataChangeTypeNames.adding"
+      v-model="additionMethodNameValue"
+      pt:root:class="settings__select-button"
+      :options="Object.values(namesOfDataAdditionMethods)"
+      aria-labelledby="basic"
+      :allow-empty="false"
+      :unselectable="false"
+    />
+  </section>
 </template>
 
 <script setup>

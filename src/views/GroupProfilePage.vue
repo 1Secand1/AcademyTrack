@@ -1,17 +1,17 @@
 <template>
-	<h2 class='titlePage'>
-		Профиль группы {{ groupCode }}
-	</h2>
+  <h2 class="titlePage">
+    Профиль группы {{ groupCode }}
+  </h2>
 
-	<SelectButton
-		class='row '
-		v-model="currentCategory"
-		@change='foo'
-		:options="buttonsOptions"
-		aria-labelledby="basic"
-	/>
+  <SelectButton
+    v-model="currentCategory"
+    class="row "
+    :options="buttonsOptions"
+    aria-labelledby="basic"
+    @change="foo"
+  />
 
-	<component :is='currentCategoryComponent' />
+  <component :is="currentCategoryComponent" />
 </template>
 
 <script setup>

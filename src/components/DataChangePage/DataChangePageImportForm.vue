@@ -1,18 +1,18 @@
 <template>
-	<section class='fileUploadBox'>
-		<h2>Загрузить файл</h2>
+  <section class="fileUploadBox">
+    <h2>Загрузить файл</h2>
 
-		<FileUpload
-			class='fileUploadBox__button'
-			chooseLabel='Загрузить'
-			mode="basic"
-			name="demo[]"
-			url="/api/upload"
-			accept="image/*"
-			:maxFileSize="1000000"
-			@upload=""
-		/>
-	</section>
+    <FileUpload
+      class="fileUploadBox__button"
+      choose-label="Загрузить"
+      mode="basic"
+      name="demo[]"
+      url="/api/upload"
+      accept="image/*"
+      :max-file-size="1000000"
+      @upload=""
+    />
+  </section>
 </template>
 
 <script setup>

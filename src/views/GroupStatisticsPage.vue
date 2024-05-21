@@ -2,13 +2,15 @@
   <div class="heder">
     <div class="row">
       Группа {{ groupCode }}
-      <router-link to="/userGroups">Вернуться</router-link>
+      <router-link to="/userGroups">
+        Вернуться
+      </router-link>
     </div>
 
     <div class="row">
       <Button
-        @click="visible = true"
         label="добавить отчёт"
+        @click="visible = true"
       />
     </div>
   </div>
@@ -21,14 +23,14 @@
   >
     <attendanceListSelectionForm
       :list="studentNames"
-      :reportableDates="allLessonDates"
+      :reportable-dates="allLessonDates"
       @change="updateLessonAttendanceReport"
     />
   </Dialog>
 
   <AttendanceDataTable
-    :lessonPlan="lessonPlan"
-    :lessonAttendanceReport="lessonAttendanceReport"
+    :lesson-plan="lessonPlan"
+    :lesson-attendance-report="lessonAttendanceReport"
     @cell-edit-complete="onCellEditComplete"
   />
 </template>

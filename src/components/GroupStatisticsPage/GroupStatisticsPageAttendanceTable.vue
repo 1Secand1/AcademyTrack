@@ -1,43 +1,43 @@
 <template>
-	<DataTable
-		editMode="cell"
-		@cell-edit-complete="onCellEditComplete"
-		:value="studentAttendanceDetails"
-		stripedRows
-		showGridlines
-	>
-		<ColumnGroup type="header">
-			<Row>
-				<Column
-					header="Фио"
-					:rowspan="2"
-					:colspan="1"
-				/>
-				<Column
-					v-for="(value, key) in lessonsByMonth"
-					:key="key"
-					:header="key"
-					:colspan="value"
-				/>
-			</Row>
-			<Row>
-				<Column
-					v-for="lesson in allLessons"
-					:key="lesson"
-					:header="lesson"
-				/>
-			</Row>
-		</ColumnGroup>
-		<Column field="fullName" />
-		<Column
-			#body="slotProps"
-			v-for="value in allLessonDates"
-			:key="value"
-			:field="value"
-		>
-			{{ slotProps.data[value] || "" }}
-		</Column>
-	</DataTable>
+  <DataTable
+    edit-mode="cell"
+    :value="studentAttendanceDetails"
+    striped-rows
+    show-gridlines
+    @cell-edit-complete="onCellEditComplete"
+  >
+    <ColumnGroup type="header">
+      <Row>
+        <Column
+          header="Фио"
+          :rowspan="2"
+          :colspan="1"
+        />
+        <Column
+          v-for="(value, key) in lessonsByMonth"
+          :key="key"
+          :header="key"
+          :colspan="value"
+        />
+      </Row>
+      <Row>
+        <Column
+          v-for="lesson in allLessons"
+          :key="lesson"
+          :header="lesson"
+        />
+      </Row>
+    </ColumnGroup>
+    <Column field="fullName" />
+    <Column
+      v-for="value in allLessonDates"
+      #body="slotProps"
+      :key="value"
+      :field="value"
+    >
+      {{ slotProps.data[value] || "" }}
+    </Column>
+  </DataTable>
 </template>
 
 <script setup>

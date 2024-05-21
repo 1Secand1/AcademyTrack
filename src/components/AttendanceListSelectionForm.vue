@@ -1,56 +1,56 @@
 <template>
-	<div class="heder">
-		<h4>Дата проведения занятия</h4>
+  <div class="heder">
+    <h4>
+      Дата проведения занятия
+    </h4>
 
-		<div class="">
-			<Dropdown
-				v-model="selectedMonths"
-				:options="optionsMonths"
-				optionLabel="month"
-				placeholder="Месяц"
-			/>
-			<Dropdown
-				v-model="selectedDay"
-				:options="optionsDays"
-				optionLabel="day"
-				placeholder="День"
-			/>
-		</div>
-	</div>
+    <div class="">
+      <Dropdown
+        v-model="selectedMonths"
+        :options="optionsMonths"
+        option-label="month"
+        placeholder="Месяц"
+      />
+      <Dropdown
+        v-model="selectedDay"
+        :options="optionsDays"
+        option-label="day"
+        placeholder="День"
+      />
+    </div>
+  </div>
 
-	<hr>
+  <hr />
 
-	<section>
-		<label
-			v-for='student in list '
-			:key="student.id"
-			class='studentSelectionBox'
-			:for="student"
-		>
-			<p>{{ student }}</p>
-			<Checkbox
-				v-model="attendanceList"
-				:inputId="student"
-				name="attendanceList"
-				:value="student"
-			/>
-		</label>
-	</section>
+  <section>
+    <label
+      v-for="student in list "
+      :key="student.id"
+      class="studentSelectionBox"
+      :for="student"
+    >
+      <p>{{ student }}</p>
+      <Checkbox
+        v-model="attendanceList"
+        :input-id="student"
+        name="attendanceList"
+        :value="student"
+      />
+    </label>
+  </section>
 
-	<Button
-		label="Отправить"
-		class='button'
-		@click='change'
-	/>
-
+  <Button
+    label="Отправить"
+    class="button"
+    @click="change"
+  />
 </template>
 
 <script setup>
-import { toRaw } from '@vue/reactivity'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import Dropdown from 'primevue/dropdown'
-import { computed, defineProps, ref } from 'vue'
+import { computed, defineProps, ref, toRaw } from 'vue'
 
 const emit = defineEmits(['change'])
 const props = defineProps({

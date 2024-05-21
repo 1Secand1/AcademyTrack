@@ -1,31 +1,31 @@
 <template>
-	<DataTable
-		class="table"
-		@row-select="onRowSelect"
-		v-model:selection="selectedRow"
-		:value="valued"
-		:sortOrder="-1"
-		sortField="attendance"
-		selectionMode="single"
-		stripedRows
-	>
-		<Column
-			field="groupCode"
-			header="Код группы"
-		/>
-		<Column
-			field="surname"
-			header="Фамилия"
-		/>
-		<Column
-			field="name"
-			header="Имя"
-		/>
-		<Column
-			field="patronymic"
-			header="Отчество"
-		/>
-	</DataTable>
+  <DataTable
+    v-model:selection="selectedRow"
+    class="table"
+    :value="valued"
+    :sort-order="-1"
+    sort-field="attendance"
+    selection-mode="single"
+    striped-rows
+    @row-select="onRowSelect"
+  >
+    <Column
+      field="groupCode"
+      header="Код группы"
+    />
+    <Column
+      field="surname"
+      header="Фамилия"
+    />
+    <Column
+      field="name"
+      header="Имя"
+    />
+    <Column
+      field="patronymic"
+      header="Отчество"
+    />
+  </DataTable>
 </template>
 
 <script setup>

@@ -1,33 +1,34 @@
 <template>
-	<form
-		class='addition-form'
-		action=''
-	>
-		<h2 class='settings__title'>
-			Изменить данные
-		</h2>
-		<InputText
-			class="settings__input-search"
-			v-model="groupData.groupCode"
-			placeholder="Код группы"
-		/>
-		<InputText
-			class="settings__input-search"
-			v-model="groupData.yearOfEntry"
-			placeholder="Год начала обучения"
-		/>
-		<InputText
-			class="settings__input-search"
-			v-model="groupData.yearOfIssue"
-			placeholder="Год окончания обучения"
-		/>
+  <form
+    class="addition-form"
+    action=""
+  >
+    <h2 class="settings__title">
+      Изменить данные
+    </h2>
+    <InputText
+      v-model="groupData.groupCode"
+      class="settings__input-search"
+      placeholder="Код группы"
+    />
+    <InputText
+      v-model="groupData.yearOfEntry"
+      class="settings__input-search"
+      placeholder="Год начала обучения"
+    />
+    <InputText
+      v-model="groupData.yearOfIssue"
+      class="settings__input-search"
+      placeholder="Год окончания обучения"
+    />
 
-		<Button
-			label="Изменить"
-			@click="add"
-		/>
-	</form>
+    <Button
+      label="Изменить"
+      @click="add"
+    />
+  </form>
 </template>
+
 <script setup>
 import { reactive, toRaw, watch } from 'vue'
 

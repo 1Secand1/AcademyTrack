@@ -1,23 +1,23 @@
 <template>
-	<div class="card">
-		<span class="card__lesson-number">
-			{{ lessonsForTheDayValues?.lessonNumber }}
-		</span>
-		<div class="card__info-box">
-			<div class="card__info-box-heder">
-				<p class="card__teacher-name">
-					{{ lessonsForTheDayValues?.teacherName }}
-				</p>
-				<span class="card__cabinet-number">
-					К {{ lessonsForTheDayValues?.cabinetNumber }}
-				</span>
-			</div>
+  <div class="card">
+    <span class="card__lesson-number">
+      {{ lessonsForTheDayValues?.lessonNumber }}
+    </span>
+    <div class="card__info-box">
+      <div class="card__info-box-heder">
+        <p class="card__teacher-name">
+          {{ lessonsForTheDayValues?.teacherName }}
+        </p>
+        <span class="card__cabinet-number">
+          К {{ lessonsForTheDayValues?.cabinetNumber }}
+        </span>
+      </div>
 
-			<p class="card__subject-name">
-				{{ lessonsForTheDayValues?.subjectName }}
-			</p>
-		</div>
-	</div>
+      <p class="card__subject-name">
+        {{ lessonsForTheDayValues?.subjectName }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup>

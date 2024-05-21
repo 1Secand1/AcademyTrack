@@ -1,46 +1,48 @@
 <template>
-	<div class="dashboard-content">
-		<menu class="sidebar-menu">
-			<h2 class="sidebar-menu__title">AcademyTrack</h2>
+  <div class="dashboard-content">
+    <menu class="sidebar-menu">
+      <h2 class="sidebar-menu__title">
+        AcademyTrack
+      </h2>
 
-			<ul class="sidebar-menu__list">
-				<li class="sidebar-menu__item sidebar-menu__item--title-category">
-					Категория
-				</li>
-				<li class="sidebar-menu__item">
-					<span class="pi pi-users"></span>
-					<router-link :to="{ name: 'userGroups' }">
-						Ваши группы
-					</router-link>
-				</li>
-				<li class="sidebar-menu__item">
-					<span class="pi pi-users"></span>
-					<router-link :to="{ name: 'groupSelection' }">
-						Группы
-					</router-link>
-				</li>
-				<li class="sidebar-menu__item sidebar-menu__item--title-category">
-					Администрирование
-				</li>
-				<li class="sidebar-menu__item sidebar-menu__item--title-category">
-					<span class="pi pi-credit-card"></span>
-					<router-link :to="{ name: 'settingsGroups' }">
-						Управление
-					</router-link>
-				</li>
-			</ul>
+      <ul class="sidebar-menu__list">
+        <li class="sidebar-menu__item sidebar-menu__item--title-category">
+          Категория
+        </li>
+        <li class="sidebar-menu__item">
+          <span class="pi pi-users" />
+          <router-link :to="{ name: 'userGroups' }">
+            Ваши группы
+          </router-link>
+        </li>
+        <li class="sidebar-menu__item">
+          <span class="pi pi-users" />
+          <router-link :to="{ name: 'groupSelection' }">
+            Группы
+          </router-link>
+        </li>
+        <li class="sidebar-menu__item sidebar-menu__item--title-category">
+          Администрирование
+        </li>
+        <li class="sidebar-menu__item sidebar-menu__item--title-category">
+          <span class="pi pi-credit-card" />
+          <router-link :to="{ name: 'settingsGroups' }">
+            Управление
+          </router-link>
+        </li>
+      </ul>
 
-			<Button
-				class="logOut-button"
-				label="Выйти"
-				severity="danger"
-				@click="logOut"
-			/>
-		</menu>
-		<main class="main">
-			<router-view />
-		</main>
-	</div>
+      <Button
+        class="logOut-button"
+        label="Выйти"
+        severity="danger"
+        @click="logOut"
+      />
+    </menu>
+    <main class="main">
+      <router-view />
+    </main>
+  </div>
 </template>
 
 <script setup>

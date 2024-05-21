@@ -1,26 +1,26 @@
 <template>
-	<div class="wrapper">
-		<section class="settings">
-			<keep-alive>
-				<component
-					:is='currentActiveForm'
-					v-model='selectedRow'
-				/>
-			</keep-alive>
+  <div class="wrapper">
+    <section class="settings">
+      <keep-alive>
+        <component
+          :is="currentActiveForm"
+          v-model="selectedRow"
+        />
+      </keep-alive>
 
-			<DataChangePageOptionSwitch
-				v-model:category="categoryNameValue"
-				v-model:dataChangeType='dataChangeTypeNamesValue'
-				v-model:additionMethod='namesOfDataAdditionMethodsValue'
-			/>
-		</section>
+      <DataChangePageOptionSwitch
+        v-model:category="categoryNameValue"
+        v-model:dataChangeType="dataChangeTypeNamesValue"
+        v-model:additionMethod="namesOfDataAdditionMethodsValue"
+      />
+    </section>
 
-		<component
-			:is='currentActiveTable'
-			v-model:selectedRow='selectedRow'
-			@onRowSelect='onRowSelect'
-		/>
-	</div>
+    <component
+      :is="currentActiveTable"
+      v-model:selectedRow="selectedRow"
+      @on-row-select="onRowSelect"
+    />
+  </div>
 </template>
 
 <script setup>

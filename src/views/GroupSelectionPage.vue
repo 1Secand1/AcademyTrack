@@ -1,44 +1,42 @@
 <template>
+  <div class="row">
+    <Dropdown
+      v-model="selectedCourses"
+      class="dropdown"
+      :options="courses"
+      show-clear
+      option-label="name"
+      placeholder="Выберите курс"
+    >
+      <template #value="slotProps">
+        <div v-if="slotProps.value">
+          Курс {{ slotProps.value.name }}
+        </div>
+        <span v-else>
+          {{ slotProps.placeholder }}
+        </span>
+      </template>
+    </Dropdown>
 
-	<div class="row">
-		<Dropdown
-			class='dropdown'
-			v-model="selectedCourses"
-			:options="courses"
-			showClear
-			optionLabel="name"
-			placeholder="Выберите курс"
-		>
-			<template #value="slotProps">
-				<div v-if="slotProps.value">
-					Курс {{ slotProps.value.name }}
-				</div>
-				<span v-else>
-					{{ slotProps.placeholder }}
-				</span>
-			</template>
-		</Dropdown>
+    <Dropdown
+      v-model="selectedSpecialty"
+      class="dropdown"
+      :options="specialty"
+      show-clear
+      option-label="name"
+      placeholder="Выберите специальность"
+    />
+  </div>
 
-		<Dropdown
-			class='dropdown'
-			v-model="selectedSpecialty"
-			:options="specialty"
-			showClear
-			optionLabel="name"
-			placeholder="Выберите специальность"
-		/>
-	</div>
-
-	<section class="group-cards">
-		<GroupCard
-			v-for=" group in groups"
-			:key="group.groupCode"
-			@click='select(group.groupCode)'
-			:group-name="group.groupCode"
-			:numberOfStudents="group.numberOfStudents"
-		/>
-	</section>
-
+  <section class="group-cards">
+    <GroupCard
+      v-for=" group in groups"
+      :key="group.groupCode"
+      :group-name="group.groupCode"
+      :number-of-students="group.numberOfStudents"
+      @click="select(group.groupCode)"
+    />
+  </section>
 </template>
 
 <script setup>

@@ -1,34 +1,35 @@
 <template>
-	<form
-		class='addition-form'
-		action=''
-	>
-		<h2 class='settings__title'>
-			Изменить данные
-		</h2>
-		<InputText
-			class="settings__input-search"
-			v-model="teachersData.surname"
-			placeholder="Фамилия"
-		/>
-		<InputText
-			class="settings__input-search"
-			v-model="teachersData.name"
-			placeholder="Имя"
-		/>
-		<InputText
-			class="settings__input-search"
-			v-model="teachersData.patronymic"
-			placeholder="Отчество"
-		/>
+  <form
+    class="addition-form"
+    action=""
+  >
+    <h2 class="settings__title">
+      Изменить данные
+    </h2>
+    <InputText
+      v-model="teachersData.surname"
+      class="settings__input-search"
+      placeholder="Фамилия"
+    />
+    <InputText
+      v-model="teachersData.name"
+      class="settings__input-search"
+      placeholder="Имя"
+    />
+    <InputText
+      v-model="teachersData.patronymic"
+      class="settings__input-search"
+      placeholder="Отчество"
+    />
 
-		<Button
-			class=""
-			label="Изменить"
-			@click=""
-		/>
-	</form>
+    <Button
+      class=""
+      label="Изменить"
+      @click=""
+    />
+  </form>
 </template>
+
 <script setup>
 import { reactive } from 'vue'
 

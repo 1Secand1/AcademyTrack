@@ -4,7 +4,9 @@
       class="login-form"
       @submit.prevent="handleSubmit"
     >
-      <h2 class="login-form__title">Вход в систему</h2>
+      <h2 class="login-form__title">
+        Вход в систему
+      </h2>
 
       <div class="login-form__input-box">
         <div class="login-form__named-input">
@@ -18,9 +20,9 @@
         <div class="login-form__named-input">
           <label for="password">Пароль</label>
           <InputText
-            type="password"
             id="password"
             v-model="formData.password"
+            type="password"
           />
         </div>
       </div>
