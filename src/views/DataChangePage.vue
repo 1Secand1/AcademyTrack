@@ -70,8 +70,13 @@
       ? DataChangeImportForm
       : component.form;
 
-    currentActiveForm.value = currentForm;
-    currentActiveTable.value = component.table;
+    if (currentActiveForm.value !== currentForm) {
+      currentActiveForm.value = currentForm;
+    }
+
+    if (currentActiveTable.value !== component.table) {
+      currentActiveTable.value = component.table;
+    }
   }
 
   watch([categoryNameValue, namesOfDataAdditionMethodsValue], updateComponents);
