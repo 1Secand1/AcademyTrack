@@ -15,40 +15,39 @@
 </template>
 
 <script setup>
-import SelectButton from 'primevue/selectbutton'
+  import SelectButton from 'primevue/selectbutton';
 
-import GroupProfileSchedule from '@components/GroupProfile/GroupProfileSchedule.vue'
+  import GroupProfileSchedule from '@components/GroupProfile/GroupProfileSchedule.vue';
 
-import { computed, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+  import { computed, ref } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
 
-const router = useRouter()
-const route = useRoute()
+  const router = useRouter();
+  const route = useRoute();
 
-const groupCode = ref(route.query.codeGroup)
+  const groupCode = ref(route.query.codeGroup);
 
-const mapCategoryComponent = {
-	"Расписание": GroupProfileSchedule
-}
+  const mapCategoryComponent = {
+    'Расписание': GroupProfileSchedule,
+  };
 
-const currentCategory = ref(route.query?.category ?? 'Студенты')
-const currentCategoryComponent = computed(() => {
-	return mapCategoryComponent[currentCategory.value]
-})
-const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость'])
+  const currentCategory = ref(route.query?.category ?? 'Студенты');
+  const currentCategoryComponent = computed(() => {
+    return mapCategoryComponent[currentCategory.value];
+  });
+  const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость']);
 
-function foo({ value = undefined }) {
-	if (!value) throw new Error("value not found")
-	router.replace({ query: { ...route.query, category: value } })
-	console.log(value)
-}
+  function foo({ value = undefined }) {
+    if (!value) throw new Error('value not found');
+    router.replace({ query: { ...route.query, category: value } });
+    console.log(value);
+  }
 </script>
 
 <style scoped>
 .titlePage {
 	margin-top: 20px;
 }
-
 
 .row {
 	display: flex;

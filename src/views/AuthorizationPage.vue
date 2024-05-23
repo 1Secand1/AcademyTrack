@@ -37,30 +37,30 @@
 </template>
 
 <script setup>
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
+  import Button from 'primevue/button';
+  import InputText from 'primevue/inputtext';
 
-import { getToken } from '@service/auth.js'
-import { reactive, ref } from 'vue'
+  import { getToken } from '@service/auth.js';
+  import { reactive, ref } from 'vue';
 
-import router from '@router/index.js'
-import { setCookie } from '@utils/cookie.js'
+  import router from '@router/index.js';
+  import { setCookie } from '@utils/cookie.js';
 
-const value = ref(null)
+  const value = ref(null);
 
-const formData = reactive({
-  login: '',
-  password: '',
-})
+  const formData = reactive({
+    login: '',
+    password: '',
+  });
 
-async function userAuthorizationPage(login, password) {
-  const token = await getToken(login, password)
+  async function userAuthorizationPage(login, password) {
+    const token = await getToken(login, password);
 
-  console.log(token)
-  if (!token) return
-  setCookie('token', 60 * 60 * 24 * 365, token)
-  router.push({ path: '/dashboard' })
-}
+    console.log(token);
+    if (!token) return;
+    setCookie('token', 60 * 60 * 24 * 365, token);
+    router.push({ path: '/dashboard' });
+  }
 </script>
 
 <style scoped>

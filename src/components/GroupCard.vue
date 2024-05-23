@@ -13,10 +13,10 @@
 </template>
 
 <script setup>
-const props = defineProps({
-	groupName: String,
-	numberOfStudents: [String, Number]
-})
+  const props = defineProps({
+    groupName: String,
+    numberOfStudents: [String, Number],
+  });
 </script>
 
 <style>

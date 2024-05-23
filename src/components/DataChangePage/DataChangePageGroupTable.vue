@@ -25,22 +25,22 @@
 </template>
 
 <script setup>
-import Column from 'primevue/column'
-import DataTable from 'primevue/datatable'
+  import Column from 'primevue/column';
+  import DataTable from 'primevue/datatable';
 
-import { getStudentGroups } from '@service/apiFunctions'
-import { onMounted, ref, toRaw } from 'vue'
+  import { getStudentGroups } from '@service/apiFunctions';
+  import { onMounted, ref, toRaw } from 'vue';
 
-const emit = defineEmits(["onRowSelect"])
+  const emit = defineEmits(['onRowSelect']);
 
-const selectedRow = defineModel("selectedRow")
-const valued = ref([])
+  const selectedRow = defineModel('selectedRow');
+  const valued = ref([]);
 
-onMounted(async () => {
-	valued.value = await getStudentGroups.get()
-})
+  onMounted(async () => {
+    valued.value = await getStudentGroups.get();
+  });
 
-function onRowSelect({ data }) {
-	emit('onRowSelect', toRaw(data))
-}
+  function onRowSelect({ data }) {
+    emit('onRowSelect', toRaw(data));
+  }
 </script>

@@ -30,29 +30,29 @@
 </template>
 
 <script setup>
-import { reactive, toRaw, watch } from 'vue'
+  import { reactive, toRaw, watch } from 'vue';
 
-import { useFetch } from '@service/useFetch'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
+  import { useFetch } from '@service/useFetch';
+  import Button from 'primevue/button';
+  import InputText from 'primevue/inputtext';
 
-const formData = defineModel()
+  const formData = defineModel();
 
-const groupData = reactive({
-	groupCode: '',
-	yearOfEntry: '',
-	yearOfIssue: '',
-})
+  const groupData = reactive({
+    groupCode: '',
+    yearOfEntry: '',
+    yearOfIssue: '',
+  });
 
-watch(formData, (newFormData) => {
-	groupData.groupCode = newFormData?.groupCode
-	groupData.yearOfEntry = newFormData?.yearOfEntry
-	groupData.yearOfIssue = newFormData?.yearOfIssue
-})
+  watch(formData, (newFormData) => {
+    groupData.groupCode = newFormData?.groupCode;
+    groupData.yearOfEntry = newFormData?.yearOfEntry;
+    groupData.yearOfIssue = newFormData?.yearOfIssue;
+  });
 
-function add() {
-	useFetch("http://localhost:80/group", "POST", toRaw(groupData))
-}
+  function add() {
+    useFetch('http://localhost:80/group', 'POST', toRaw(groupData));
+  }
 
 </script>
 

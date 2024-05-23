@@ -41,70 +41,70 @@
 </template>
 
 <script setup>
-import Column from 'primevue/column'
-import ColumnGroup from 'primevue/columngroup'
-import DataTable from 'primevue/datatable'
-import Row from 'primevue/row'
-import { computed, defineProps } from 'vue'
+  import Column from 'primevue/column';
+  import ColumnGroup from 'primevue/columngroup';
+  import DataTable from 'primevue/datatable';
+  import Row from 'primevue/row';
+  import { computed, defineProps } from 'vue';
 
-const props = defineProps({
-	lessonPlan: Object,
-	lessonAttendanceReport: Object
-})
+  const props = defineProps({
+    lessonPlan: Object,
+    lessonAttendanceReport: Object,
+  });
 
-const emit = defineEmits(['cell-edit-complete'])
+  const emit = defineEmits(['cell-edit-complete']);
 
-const lessonsByMonth = computed(() => sortLessonsByMonth(props.lessonPlan.lessonsAttendance ?? []))
-const allLessons = computed(() => sortAllClasses(props.lessonPlan.lessonsAttendance ?? []))
-const studentAttendanceDetails = computed(() => mergeStudentAndAttendance(props.lessonAttendanceReport.students ?? []))
-const allLessonDates = computed(() => getColumnFields(props.lessonPlan.lessonsAttendance ?? []))
+  const lessonsByMonth = computed(() => sortLessonsByMonth(props.lessonPlan.lessonsAttendance ?? []));
+  const allLessons = computed(() => sortAllClasses(props.lessonPlan.lessonsAttendance ?? []));
+  const studentAttendanceDetails = computed(() => mergeStudentAndAttendance(props.lessonAttendanceReport.students ?? []));
+  const allLessonDates = computed(() => getColumnFields(props.lessonPlan.lessonsAttendance ?? []));
 
-function onCellEditComplete(event) {
-	emit('cell-edit-complete', event)
-}
+  function onCellEditComplete(event) {
+    emit('cell-edit-complete', event);
+  }
 
-function sortLessonsByMonth(lessons) {
-	if (!Array.isArray(lessons)) {
-		console.warn("lessons in not Array")
-		return {}
-	}
+  function sortLessonsByMonth(lessons) {
+    if (!Array.isArray(lessons)) {
+      console.warn('lessons in not Array');
+      return {};
+    }
 
-	return lessons.reduce((acc, { date }) => {
-		const month = new Date(date).toLocaleString('ru', { month: 'long' })
-		acc[month] = (acc[month] || 0) + 1
-		return acc
-	}, {})
-}
+    return lessons.reduce((acc, { date }) => {
+      const month = new Date(date).toLocaleString('ru', { month: 'long' });
+      acc[month] = (acc[month] || 0) + 1;
+      return acc;
+    }, {});
+  }
 
-function sortAllClasses(arr) {
-	if (!Array.isArray(arr)) {
-		console.error("The value passed must be an Array")
-		return []
-	}
+  function sortAllClasses(arr) {
+    if (!Array.isArray(arr)) {
+      console.error('The value passed must be an Array');
+      return [];
+    }
 
-	return arr.map((lesson) => {
-		const { date } = lesson
-		const dayLesson = date.split('-')[2]
-		return dayLesson
-	})
-}
+    return arr.map((lesson) => {
+      const { date } = lesson;
+      const dayLesson = date.split('-')[2];
+      return dayLesson;
+    });
+  }
 
-function mergeStudentAndAttendance(arr) {
-	if (!Array.isArray(arr)) {
-		console.error("The value passed must be an Array")
-		return []
-	}
+  function mergeStudentAndAttendance(arr) {
+    if (!Array.isArray(arr)) {
+      console.error('The value passed must be an Array');
+      return [];
+    }
 
-	return arr.map(({ fullName, attendance }) => {
-		return { fullName, ...attendance }
-	})
-}
+    return arr.map(({ fullName, attendance }) => {
+      return { fullName, ...attendance };
+    });
+  }
 
-function getColumnFields(lessons) {
-	if (!Array.isArray(lessons)) {
-		console.error("The value passed must be an Array")
-		return []
-	}
-	return lessons.map(({ date }) => date)
-}
+  function getColumnFields(lessons) {
+    if (!Array.isArray(lessons)) {
+      console.error('The value passed must be an Array');
+      return [];
+    }
+    return lessons.map(({ date }) => date);
+  }
 </script>

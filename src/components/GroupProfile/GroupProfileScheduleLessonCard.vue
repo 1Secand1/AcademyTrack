@@ -21,12 +21,12 @@
 </template>
 
 <script setup>
-const props = defineProps({
-	lessonsForTheDayValues: {
-		type: Object,
-		required: true,
-	}
-})
+  const props = defineProps({
+    lessonsForTheDayValues: {
+      type: Object,
+      required: true,
+    },
+  });
 
 </script>
 
@@ -74,7 +74,6 @@ const props = defineProps({
 	display: -moz-flex;
 	display: -ms-flex;
 	display: -webkit-box;
-
 
 	-webkit-line-clamp: 2;
 	-moz-line-clamp: 2;

@@ -39,7 +39,7 @@ export async function getLessonPlan() {
 				status: 'planned',
 			},
 		],
-	}
+	};
 
-	return await Promise.resolve(lessonPlan)
+	return await Promise.resolve(lessonPlan);
 }

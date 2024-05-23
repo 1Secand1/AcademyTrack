@@ -31,16 +31,16 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+  import { reactive } from 'vue';
 
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
+  import Button from 'primevue/button';
+  import InputText from 'primevue/inputtext';
 
-const teachersData = reactive({
-	surname: "",
-	name: "",
-	patronymic: "",
-})
+  const teachersData = reactive({
+    surname: '',
+    name: '',
+    patronymic: '',
+  });
 
 </script>
 

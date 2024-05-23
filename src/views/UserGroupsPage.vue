@@ -31,39 +31,39 @@
 </template>
 
 <script setup>
-import router from '@router/index.js'
-import { getTeachersGroupsService } from '@service/apiFunctions'
-import Column from 'primevue/column'
-import DataTable from 'primevue/datatable'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import InputText from 'primevue/inputtext'
-import { computed, onMounted, ref } from 'vue'
+  import router from '@router/index.js';
+  import { getTeachersGroupsService } from '@service/apiFunctions';
+  import Column from 'primevue/column';
+  import DataTable from 'primevue/datatable';
+  import IconField from 'primevue/iconfield';
+  import InputIcon from 'primevue/inputicon';
+  import InputText from 'primevue/inputtext';
+  import { computed, onMounted, ref } from 'vue';
 
-const userGroup = ref()
-const search = ref('')
-const selectedProduct = ref({})
+  const userGroup = ref();
+  const search = ref('');
+  const selectedProduct = ref({});
 
-const filteredStudents = computed(() => {
-	if (!search.value) {
-		return userGroup.value
-	}
+  const filteredStudents = computed(() => {
+    if (!search.value) {
+      return userGroup.value;
+    }
 
-	return userGroup.value.filter(student =>
-		student.codeGroup.toLowerCase().includes(search.value.toLowerCase())
-	)
-})
+    return userGroup.value.filter(student =>
+      student.codeGroup.toLowerCase().includes(search.value.toLowerCase()),
+    );
+  });
 
-function onRowSelect() {
-	router.push({
-		name: 'groupStatistics',
-		query: { codeGroup: selectedProduct.value.groupCode },
-	})
-}
+  function onRowSelect() {
+    router.push({
+      name: 'groupStatistics',
+      query: { codeGroup: selectedProduct.value.groupCode },
+    });
+  }
 
-onMounted(async () => {
-	userGroup.value = await getTeachersGroupsService.get()
-})
+  onMounted(async () => {
+    userGroup.value = await getTeachersGroupsService.get();
+  });
 </script>
 
 <style>

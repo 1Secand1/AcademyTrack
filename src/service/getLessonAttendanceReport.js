@@ -25,6 +25,6 @@ export function getLessonAttendanceReport() {
 				},
 			},
 		],
-	}
-	return Promise.resolve(serverResponse)
+	};
+	return Promise.resolve(serverResponse);
 }

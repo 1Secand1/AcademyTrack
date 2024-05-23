@@ -31,20 +31,20 @@
 </template>
 
 <script setup>
-import SelectButton from 'primevue/selectbutton'
-import { watch } from 'vue'
+  import SelectButton from 'primevue/selectbutton';
+  import { watch } from 'vue';
 
-import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization'
+  import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization';
 
-const categoryNameValue = defineModel("category")
-const additionMethodNameValue = defineModel("additionMethod")
-const dataChangeTypeNamesValue = defineModel("dataChangeType")
+  const categoryNameValue = defineModel('category');
+  const additionMethodNameValue = defineModel('additionMethod');
+  const dataChangeTypeNamesValue = defineModel('dataChangeType');
 
-watch(dataChangeTypeNamesValue, (additionMethod) => {
-	if (additionMethod === dataChangeTypeNames.modify) {
-		additionMethodNameValue.value = namesOfDataAdditionMethods.manually
-	}
-})
+  watch(dataChangeTypeNamesValue, (additionMethod) => {
+    if (additionMethod === dataChangeTypeNames.modify) {
+      additionMethodNameValue.value = namesOfDataAdditionMethods.manually;
+    }
+  });
 
 </script>
 

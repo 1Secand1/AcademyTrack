@@ -40,59 +40,59 @@
 </template>
 
 <script setup>
-import GroupCard from '@components/GroupCard.vue'
-import router from '@router/index'
-import Dropdown from 'primevue/dropdown'
-import { ref } from 'vue'
+  import GroupCard from '@components/GroupCard.vue';
+  import router from '@router/index';
+  import Dropdown from 'primevue/dropdown';
+  import { ref } from 'vue';
 
-const selectedCourses = ref()
-const courses = ref([
-	{ name: '1' },
-	{ name: '2' },
-	{ name: '3' },
-	{ name: '4' },
-])
+  const selectedCourses = ref();
+  const courses = ref([
+    { name: '1' },
+    { name: '2' },
+    { name: '3' },
+    { name: '4' },
+  ]);
 
-const selectedSpecialty = ref()
-const specialty = [
-	{ name: 'ИСП' },
-	{ name: 'ПКД' },
-	{ name: 'КС' },
-]
+  const selectedSpecialty = ref();
+  const specialty = [
+    { name: 'ИСП' },
+    { name: 'ПКД' },
+    { name: 'КС' },
+  ];
 
-const groups = [
-	{
-		groupCode: "ИСП-216",
-		numberOfStudents: 20
-	},
-	{
-		groupCode: "ИСП-216В",
-		numberOfStudents: 25
-	},
-	{
-		groupCode: "ИСП-216В",
-		numberOfStudents: 20
-	},
-	{
-		groupCode: "ИСП-215",
-		numberOfStudents: 20
-	},
-	{
-		groupCode: "ИСП-216",
-		numberOfStudents: 20
-	},
-	{
-		groupCode: "ИСП-216",
-		numberOfStudents: 20
-	},
-]
+  const groups = [
+    {
+      groupCode: 'ИСП-216',
+      numberOfStudents: 20,
+    },
+    {
+      groupCode: 'ИСП-216В',
+      numberOfStudents: 25,
+    },
+    {
+      groupCode: 'ИСП-216В',
+      numberOfStudents: 20,
+    },
+    {
+      groupCode: 'ИСП-215',
+      numberOfStudents: 20,
+    },
+    {
+      groupCode: 'ИСП-216',
+      numberOfStudents: 20,
+    },
+    {
+      groupCode: 'ИСП-216',
+      numberOfStudents: 20,
+    },
+  ];
 
-function select(groupCode) {
-	router.push({
-		name: 'groupProfile',
-		query: { codeGroup: groupCode },
-	})
-}
+  function select(groupCode) {
+    router.push({
+      name: 'groupProfile',
+      query: { codeGroup: groupCode },
+    });
+  }
 </script>
 
 <style scoped>
@@ -105,7 +105,6 @@ function select(groupCode) {
 	gap: 20px;
 	margin-top: 20px;
 }
-
 
 .group-cards {
 	display: flex;

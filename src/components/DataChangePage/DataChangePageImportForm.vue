@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import FileUpload from 'primevue/fileupload'
+  import FileUpload from 'primevue/fileupload';
 
 </script>
 

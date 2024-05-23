@@ -14,18 +14,18 @@
 </template>
 
 <script setup>
-import GroupProfileScheduleLessonCard from "./GroupProfileScheduleLessonCard.vue"
+  import GroupProfileScheduleLessonCard from './GroupProfileScheduleLessonCard.vue';
 
-const props = defineProps({
-	weekdayName: {
-		type: String,
-		required: true,
-	},
-	lessonsForTheDay: {
-		type: Object,
-		required: true,
-	}
-})
+  const props = defineProps({
+    weekdayName: {
+      type: String,
+      required: true,
+    },
+    lessonsForTheDay: {
+      type: Object,
+      required: true,
+    },
+  });
 
 </script>
 

@@ -33,7 +33,7 @@ const dashboardRoutes = [
 		name: 'settingsGroups',
 		component: () => import('@views/DataChangePage.vue'),
 	},
-]
+];
 
 export const routes = [
 	{
@@ -48,4 +48,4 @@ export const routes = [
 		name: 'authorization',
 		component: () => import('@views/AuthorizationPage.vue'),
 	},
-]
+];
