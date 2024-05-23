@@ -8,7 +8,7 @@
         />
       </keep-alive>
 
-      <DataChangePageOptionSwitch
+      <DataChangeOptionSwitch
         v-model:category="categoryNameValue"
         v-model:dataChangeType="dataChangeTypeNamesValue"
         v-model:additionMethod="namesOfDataAdditionMethodsValue"
@@ -25,20 +25,20 @@
 
 <script setup>
 
-  import DataChangePageGroupForm from '@components/DataChangePage/DataChangePageGroupForm.vue';
-  import DataChangePageGroupTable from '@components/DataChangePage/DataChangePageGroupTable.vue';
-  import DataChangePageImportForm from '@components/DataChangePage/DataChangePageImportForm.vue';
-  import DataChangePageOptionSwitch from '@components/DataChangePage/DataChangePageOptionSwitch.vue';
-  import DataChangePageStudentForm from '@components/DataChangePage/DataChangePageStudentForm.vue';
-  import DataChangePageStudentTable from '@components/DataChangePage/DataChangePageStudentTable.vue';
-  import DataChangePageTeachersForm from '@components/DataChangePage/DataChangePageTeachersForm.vue';
+  import DataChangeGroupForm from '@components/DataChange/DataChangeGroupForm.vue';
+  import DataChangeGroupTable from '@components/DataChange/DataChangeGroupTable.vue';
+  import DataChangeImportForm from '@components/DataChange/DataChangeImportForm.vue';
+  import DataChangeOptionSwitch from '@components/DataChange/DataChangeOptionSwitch.vue';
+  import DataChangeStudentForm from '@components/DataChange/DataChangeStudentForm.vue';
+  import DataChangeStudentTable from '@components/DataChange/DataChangeStudentTable.vue';
+  import DataChangeTeachersForm from '@components/DataChange/DataChangeTeachersForm.vue';
 
   import { ref, shallowRef, watch } from 'vue';
 
   import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization';
 
-  const currentActiveForm = shallowRef(DataChangePageStudentForm);
-  const currentActiveTable = shallowRef(DataChangePageStudentTable);
+  const currentActiveForm = shallowRef(DataChangeStudentForm);
+  const currentActiveTable = shallowRef(DataChangeStudentTable);
 
   const categoryNameValue = ref(userRoleNames.students);
   const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding);
@@ -48,16 +48,16 @@
 
   const groupedComponentCatalog = {
     [userRoleNames.students]: {
-      form: DataChangePageStudentForm,
-      table: DataChangePageStudentTable,
+      form: DataChangeStudentForm,
+      table: DataChangeStudentTable,
     },
     [userRoleNames.teachers]: {
-      form: DataChangePageTeachersForm,
-      table: DataChangePageStudentTable,
+      form: DataChangeTeachersForm,
+      table: DataChangeStudentTable,
     },
     [userRoleNames.groups]: {
-      form: DataChangePageGroupForm,
-      table: DataChangePageGroupTable,
+      form: DataChangeGroupForm,
+      table: DataChangeGroupTable,
     },
   };
 
@@ -67,7 +67,7 @@
     if (!component) return;
 
     const currentForm = namesOfDataAdditionMethodsValue.value === namesOfDataAdditionMethods.excel
-      ? DataChangePageImportForm
+      ? DataChangeImportForm
       : component.form;
 
     currentActiveForm.value = currentForm;
