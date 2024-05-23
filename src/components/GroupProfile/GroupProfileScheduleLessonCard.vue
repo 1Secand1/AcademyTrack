@@ -8,8 +8,8 @@
         <p class="card__teacher-name">
           {{ lessonsForTheDayValues?.teacherName }}
         </p>
-        <span class="card__cabinet-number">
-          К {{ lessonsForTheDayValues?.cabinetNumber }}
+        <span class="card__classRoom-number">
+          К {{ lessonsForTheDayValues?.classRoomNumber }}
         </span>
       </div>
 
@@ -87,7 +87,7 @@
 	font-size: 12px;
 }
 
-.card__cabinet-number {
+.card__classRoom-number {
 	width: min-content;
 	white-space: nowrap;
 	height: min-content;
