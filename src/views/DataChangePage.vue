@@ -33,7 +33,7 @@
   import DataChangeStudentTable from '@components/DataChange/DataChangeStudentTable.vue';
   import DataChangeTeachersForm from '@components/DataChange/DataChangeTeachersForm.vue';
 
-  import { ref, shallowRef, watch } from 'vue';
+  import { markRaw, ref, shallowRef, watch } from 'vue';
 
   import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization';
 
@@ -41,23 +41,23 @@
   const currentActiveTable = shallowRef(DataChangeStudentTable);
 
   const categoryNameValue = ref(userRoleNames.students);
-  const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding);
   const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually);
+  const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding);
 
   const selectedRow = ref();
 
   const groupedComponentCatalog = {
     [userRoleNames.students]: {
-      form: DataChangeStudentForm,
-      table: DataChangeStudentTable,
+      form: markRaw(DataChangeStudentForm),
+      table: markRaw(DataChangeStudentTable),
     },
     [userRoleNames.teachers]: {
-      form: DataChangeTeachersForm,
-      table: DataChangeStudentTable,
+      form: markRaw(DataChangeTeachersForm),
+      table: markRaw(DataChangeStudentTable),
     },
     [userRoleNames.groups]: {
-      form: DataChangeGroupForm,
-      table: DataChangeGroupTable,
+      form: markRaw(DataChangeGroupForm),
+      table: markRaw(DataChangeGroupTable),
     },
   };
 
