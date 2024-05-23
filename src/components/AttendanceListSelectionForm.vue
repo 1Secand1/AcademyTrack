@@ -50,6 +50,8 @@
   import Button from 'primevue/button';
   import Checkbox from 'primevue/checkbox';
   import Dropdown from 'primevue/dropdown';
+
+  import { monthNameDateFormatter } from '@utils/monthNameDateFormatter'
   import { computed, defineProps, ref, toRaw } from 'vue';
 
   const emit = defineEmits(['change']);
@@ -70,8 +72,9 @@
 
   const attendanceList = ref([]);
 
+
   function currentMonthSearch(optionsMonths) {
-    const nameMonth = new Date().toLocaleString('ru', { month: 'long' });
+    const nameMonth = monthNameDateFormatter.format(new Date());
     return optionsMonths.find(monthObj => monthObj.month === nameMonth) || {};
   }
 
@@ -81,7 +84,7 @@
   }
 
   function getOptionsMonthsList(reportableDates) {
-    const uniqueDates = new Set(reportableDates.map(date => new Date(date).toLocaleString('ru', { month: 'long' })));
+    const uniqueDates = new Set(reportableDates.map(date => monthNameDateFormatter.format( new Date(date))));
     return Array.from(uniqueDates).map(nameMonth => ({ month: nameMonth }));
   }
 
@@ -92,7 +95,7 @@
 
     return dataArr.reduce((acc, reportableDates) => {
       const currentDate = new Date(reportableDates);
-      const nameMonth = currentDate.toLocaleString('ru', { month: 'long' });
+      const nameMonth = monthNameDateFormatter.format(currentDate);
       const day = currentDate.getDate();
 
       acc[nameMonth] = acc[nameMonth] || [];

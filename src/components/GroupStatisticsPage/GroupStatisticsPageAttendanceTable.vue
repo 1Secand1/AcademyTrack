@@ -45,6 +45,8 @@
   import ColumnGroup from 'primevue/columngroup';
   import DataTable from 'primevue/datatable';
   import Row from 'primevue/row';
+
+  import { monthNameDateFormatter } from '@utils/monthNameDateFormatter';
   import { computed, defineProps } from 'vue';
 
   const props = defineProps({
@@ -70,7 +72,7 @@
     }
 
     return lessons.reduce((acc, { date }) => {
-      const month = new Date(date).toLocaleString('ru', { month: 'long' });
+      const month = monthNameDateFormatter.format(new Date(date));
       acc[month] = (acc[month] || 0) + 1;
       return acc;
     }, {});

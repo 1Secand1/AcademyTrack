@@ -16,7 +16,7 @@
   </div>
 
   <Dialog
-    v-model:reportWindowVisible="reportWindowVisible"
+    v-model:visible="reportWindowVisible"
     modal
     header="Отчёт о посещаемости"
     :style="{ width: '30rem' }"
