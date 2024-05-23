@@ -36,10 +36,13 @@
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
 
-  const teachersData = reactive({
-    surname: '',
-    name: '',
-    patronymic: '',
+  const teachersData = defineModel({
+    type:Object,
+    default:{
+      surname: '',
+      name: '',
+      patronymic: '',
+    },
   });
 
 </script>

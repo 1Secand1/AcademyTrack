@@ -35,27 +35,20 @@
 </template>
 
 <script setup>
-  import { reactive, watch } from 'vue';
-
   import { studentsService } from '@service/apiFunctions';
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
 
-  const studentData = reactive({
-    surname: '',
-    name: '',
-    patronymic: '',
-    groupCode: '',
+  const studentData = defineModel({
+    type:Object,
+    default:{
+      surname: '',
+      name: '',
+      patronymic: '',
+      groupCode: '',
+    },
   });
 
-  const formData = defineModel();
-
-  watch(formData, (newFormData) => {
-    studentData.surname = newFormData?.surname;
-    studentData.name = newFormData?.name;
-    studentData.patronymic = newFormData?.patronymic;
-    studentData.groupCode = newFormData?.groupCode;
-  });
 
 </script>
 
