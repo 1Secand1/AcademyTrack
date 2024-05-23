@@ -40,7 +40,7 @@
   import InputText from 'primevue/inputtext';
   import { computed, onMounted, ref } from 'vue';
 
-  const userGroup = ref();
+  const userGroup = ref([]);
   const search = ref('');
   const selectedProduct = ref({});
 

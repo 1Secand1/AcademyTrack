@@ -45,15 +45,15 @@
   import Dropdown from 'primevue/dropdown';
   import { ref } from 'vue';
 
-  const selectedCourses = ref();
-  const courses = ref([
+  const selectedCourses = ref({});
+  const courses = [
     { name: '1' },
     { name: '2' },
     { name: '3' },
     { name: '4' },
-  ]);
+  ];
 
-  const selectedSpecialty = ref();
+  const selectedSpecialty = ref({});
   const specialty = [
     { name: 'ИСП' },
     { name: 'ПКД' },

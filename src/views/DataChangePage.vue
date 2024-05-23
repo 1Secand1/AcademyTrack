@@ -44,7 +44,7 @@
   const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually);
   const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding);
 
-  const selectedRow = ref();
+  const selectedRow = ref({});
 
   const groupedComponentCatalog = {
     [userRoleNames.students]: {
