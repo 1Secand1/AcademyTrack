@@ -32,7 +32,7 @@
 import { studentsService } from '@service/apiFunctions'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
-import { defineEmits, onMounted, ref, toRaw } from 'vue'
+import { onMounted, ref, toRaw } from 'vue'
 
 const emit = defineEmits(["onRowSelect"])
 

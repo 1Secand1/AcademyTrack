@@ -45,7 +45,7 @@ import Column from 'primevue/column'
 import ColumnGroup from 'primevue/columngroup'
 import DataTable from 'primevue/datatable'
 import Row from 'primevue/row'
-import { computed, defineEmits, defineProps } from 'vue'
+import { computed, defineProps } from 'vue'
 
 const props = defineProps({
 	lessonPlan: Object,
