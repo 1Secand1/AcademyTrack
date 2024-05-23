@@ -10,13 +10,13 @@
     <div class="row">
       <Button
         label="добавить отчёт"
-        @click="visible = true"
+        @click="reportWindowVisible = true"
       />
     </div>
   </div>
 
   <Dialog
-    v-model:visible="visible"
+    v-model:reportWindowVisible="reportWindowVisible"
     modal
     header="Отчёт о посещаемости"
     :style="{ width: '30rem' }"
@@ -47,48 +47,48 @@
   const route = useRoute();
   const groupCode = ref(route.query.codeGroup ?? 'Неопределенно');
 
-  const visible = ref(false);
+  const reportWindowVisible = ref(false);
+
   const lessonAttendanceReport = ref({});
   const lessonPlan = ref([]);
-  const studentNames = ref([]);
-
-  const allLessonDates = computed(() => {
-    if (!Array.isArray(lessonPlan.value.lessonsAttendance)) {
-      return [];
-    }
-    return lessonPlan.value.lessonsAttendance.map(({ date }) => date);
-  });
 
   onMounted(async () => {
     lessonPlan.value = await getLessonPlan();
     lessonAttendanceReport.value = await getLessonAttendanceReport();
-    studentNames.value = getListOfStudents(lessonAttendanceReport.value.students);
+  });
+
+  const studentNames = computed(() => {
+    const { students } = lessonAttendanceReport.value;
+
+    if (!Array.isArray(students) && !students.length === 0) {
+      console.error('The value passed must be an Array');
+      return [];
+    }
+
+    return students.map(({ fullName }) => fullName);
+  });
+
+  const allLessonDates = computed(() => {
+    const { lessonsAttendance } = lessonPlan.value;
+
+    if (!Array.isArray(lessonsAttendance) && !lessonsAttendance.length === 0) {
+      return [];
+    }
+
+    return lessonPlan.value.lessonsAttendance.map(({ date }) => date);
   });
 
   function onCellEditComplete(event) {
     console.log('Cell edit completed:', event);
   }
 
-  function getListOfStudents(studentsArr) {
-    if (!Array.isArray(studentsArr)) {
-      console.error('The value passed must be an Array');
-      return [];
-    }
-
-    if (studentsArr.length === 0) [];
-
-    return studentsArr.map(({ fullName }) => fullName);
-  }
-
   function updateLessonAttendanceReport({ attendanceList, date }) {
-    visible.value = false;
+    reportWindowVisible.value = false;
 
     const attendanceSet = new Set(attendanceList);
 
     lessonAttendanceReport.value.students.forEach((student) => {
-      const attendanceStatus = attendanceSet.has(student.fullName)
-        ? 'attended'
-        : 'absent';
+      const attendanceStatus = attendanceSet.has(student.fullName) ? 'attended' : 'absent';
 
       student.attendance[date] = attendanceStatus;
     });
