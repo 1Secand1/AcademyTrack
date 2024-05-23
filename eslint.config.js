@@ -7,7 +7,7 @@ export default [
   ...pluginVue.configs['flat/recommended'],
   {
     languageOptions: {
-      globals: globals.browser
+      globals: globals.browser,
     },
     rules: {
       // Запрещает неиспользуемые переменные в компонентах Vue
@@ -33,10 +33,10 @@ export default [
         'html': {
           'void': 'always',
           'normal': 'always',
-          'component': 'always'
+          'component': 'always',
         },
         'svg': 'always',
-        'math': 'always'
+        'math': 'always',
       }],
 
       // Требует, чтобы имена компонентов внутри шаблона были написаны в PascalCase
@@ -51,7 +51,7 @@ export default [
       // Требует, чтобы элементы с множеством атрибутов придерживались правила: один атрибут на строку
       'vue/max-attributes-per-line': ['error', {
         'singleline': 1,
-        'multiline': 1
+        'multiline': 1,
       }],
 
       // Требует, чтобы шаблоны компонента включали в себя только простые выражения
@@ -60,8 +60,8 @@ export default [
       // Требует, чтобы непустые значения HTML-атрибутов всегда были внутри кавычек
       'vue/html-quotes': ['error', 'double'],
 
-      // Требует использовать сокращения директив Vue 
-      "vue/v-on-style": ["error", "shorthand"],
+      // Требует использовать сокращения директив Vue
+      'vue/v-on-style': ['error', 'shorthand'],
 
       // Требует, чтобы атрибуты элемента (включая компоненты) сохраняли консистентность в порядке
       'vue/attributes-order': ['error', {
@@ -76,9 +76,9 @@ export default [
           'OTHER_DIRECTIVES',
           'OTHER_ATTR',
           'EVENTS',
-          'CONTENT'
+          'CONTENT',
         ],
-        'alphabetical': false
+        'alphabetical': false,
       }],
 
       // Требует добавлять одну пустую строку между многострочными свойствами
@@ -86,8 +86,80 @@ export default [
 
       // Требует чтобы порядок элементов в компоненте был template, script-setup,style-scoped
 
-      "vue/block-order": ["error", {
-        "order": [["template", "script[setup]"], "style[scoped]"]
-      }]
-    }
-  }]
+      'vue/block-order': ['error', {
+        'order': [['template', 'script[setup]'], 'style[scoped]'],
+      }],
+
+      // Это правило обеспечивает единый стиль отступов в <script>.
+      'vue/script-indent': [
+        'error',
+        2,
+        {
+          baseIndent: 1,
+          switchCase: 1,
+          ignores: [],
+        },
+      ],
+
+      // Использование одинарных кавычек
+      'quotes': ['error', 'single'],
+
+      // Всегда использовать точку с запятой
+      'semi': ['error', 'always'],
+
+      // Запрещать неиспользуемые переменные
+      'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
+
+      // Запрещать использование var, использовать let или const
+      'no-var': 'error',
+
+      // Предпочитать const если переменная не переопределяется
+      'prefer-const': 'error',
+
+      // Требовать пробелы до и после стрелочной функции
+      'arrow-spacing': ['error', { before: true, after: true }],
+
+      // Ограничение количества пустых строк
+      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+
+      // Запрещать пробелы в конце строки
+      'no-trailing-spaces': 'error',
+
+      // Требовать пробел перед блоками
+      'space-before-blocks': ['error', 'always'],
+
+      // Требовать пробелы до и после ключевых слов
+      'keyword-spacing': ['error', { before: true, after: true }],
+
+      // Требовать пробелы вокруг инфиксных операторов
+      'space-infix-ops': 'error',
+
+      // Запрещать пробелы внутри круглых скобок
+      'space-in-parens': ['error', 'never'],
+
+      // Запрещать пробелы внутри квадратных скобок массива
+      'array-bracket-spacing': ['error', 'never'],
+
+      // Требовать пробелы внутри фигурных скобок
+      'object-curly-spacing': ['error', 'always'],
+
+      // Требовать запятую после последнего элемента в многострочных структурах
+      'comma-dangle': ['error', 'always-multiline'],
+
+      // Запрещать использование async функции в исполнителе промиса
+      'no-async-promise-executor': 'error',
+
+      // Запрещать async функции без await
+      'require-await': 'error',
+
+      // Запрещать return await
+      'no-return-await': 'error',
+    },
+  },
+  {
+    files: ['*.vue'],
+    rules: {
+      'indent': 'off',
+    },
+  },
+]
