@@ -70,14 +70,14 @@
 .card__teacher-name {}
 
 .card__subject-name {
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
+	display: flex;
 	display: -webkit-box;
-
+  display: -moz-box;
+  display: -ms-flexbox;
 	-webkit-line-clamp: 2;
 	-moz-line-clamp: 2;
 	line-clamp: 2;
+
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 	text-overflow: ellipsis;
