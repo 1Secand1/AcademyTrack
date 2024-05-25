@@ -5,7 +5,6 @@ const mapServerManager = {};
 
 class ServerManager {
 	constructor(baseUrl, path) {
-		console.log(1);
 		this.baseUrl = baseUrl;
 		this.path = path;
 		this.url = `${this.baseUrl}/${this.path}`;
