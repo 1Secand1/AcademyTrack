@@ -81,7 +81,7 @@
           subjectName: 'Литература',
         },
         {
-          lessonNumber: '2',
+          lessonNumber: '3',
           teacherName: 'Сидоров Сидор Сидорович',
           classRoomNumber: '203',
           subjectName: 'Физика',
