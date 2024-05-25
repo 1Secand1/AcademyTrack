@@ -1,20 +1,22 @@
-import { fetchRequest } from './fetchRequest'
+import { fetchRequest } from './fetchRequest';
 
-const { VITE_BASE_API_URL } = import.meta.env
+const { VITE_BASE_API_URL } = import.meta.env;
+const mapServerManager = {};
 
-export class ServerManager {
+class ServerManager {
 	constructor(baseUrl, path) {
-		this.baseUrl = baseUrl
-		this.path = path
-		this.url = `${this.baseUrl}/${this.path}`
+		console.log(1);
+		this.baseUrl = baseUrl;
+		this.path = path;
+		this.url = `${this.baseUrl}/${this.path}`;
 	}
 
 	add(studentData) {
-		return fetchRequest(this.url, 'POST', studentData)
+		return fetchRequest(this.url, 'POST', studentData);
 	}
 
 	get() {
-		return fetchRequest(this.url)
+		return fetchRequest(this.url);
 	}
 
 	delete() { }
@@ -22,7 +24,12 @@ export class ServerManager {
 
 export function createServerManager(path) {
 	if (!VITE_BASE_API_URL) {
-		throw new Error('VITE_BASE_API_URL is not defined')
+		throw new Error('VITE_BASE_API_URL is not defined');
 	}
-	return new ServerManager(VITE_BASE_API_URL, path)
+
+	if (!(path in mapServerManager)) {
+		mapServerManager[path] = new ServerManager(VITE_BASE_API_URL, path);
+	}
+
+	return mapServerManager[path];
 }
