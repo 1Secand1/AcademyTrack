@@ -19,7 +19,7 @@
 
   import GroupProfileSchedule from '@components/GroupProfile/GroupProfileSchedule.vue';
 
-  import { computed, ref } from 'vue';
+  import { computed, markRaw, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
 
   const router = useRouter();
@@ -28,13 +28,15 @@
   const groupCode = ref(route.query.codeGroup);
 
   const mapCategoryComponent = {
-    'Расписание': GroupProfileSchedule,
+    'Расписание': markRaw(GroupProfileSchedule),
   };
 
   const currentCategory = ref(route.query?.category ?? 'Студенты');
+
   const currentCategoryComponent = computed(() => {
     return mapCategoryComponent[currentCategory.value];
   });
+
   const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость']);
 
   function foo({ value = undefined }) {
