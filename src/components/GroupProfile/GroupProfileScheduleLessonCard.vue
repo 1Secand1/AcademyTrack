@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <GroupProfileDayScheduleCard>
     <span class="card__lesson-number">
       {{ lessonsForTheDayValues?.lessonNumber }}
     </span>
@@ -17,10 +17,13 @@
         {{ lessonsForTheDayValues?.subjectName }}
       </p>
     </div>
-  </div>
+  </GroupProfileDayScheduleCard>
 </template>
 
 <script setup>
+  import GroupProfileDayScheduleCard from './GroupProfileDayScheduleCard/GroupProfileDayScheduleCard.vue';
+  import GroupProfileDayScheduleCardNoLessons from './GroupProfileDayScheduleCard/GroupProfileDayScheduleCardNoLessons.vue';
+
   const props = defineProps({
     lessonsForTheDayValues: {
       type: Object,
@@ -31,18 +34,6 @@
 </script>
 
 <style scoped>
-.card {
-	display: flex;
-	width: 380px;
-	height: 75px;
-
-	padding: 10px;
-	align-items: center;
-	border-radius: 5px;
-	border: solid 1px #2196F3;
-
-	cursor: pointer;
-}
 
 .card__lesson-number {
 	display: grid;
