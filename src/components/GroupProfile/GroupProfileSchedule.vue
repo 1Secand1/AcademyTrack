@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-  import GroupProfileDayScheduleCards from '@components/GroupProfile/GroupProfileDayScheduleCards.vue';
+  import GroupProfileDayScheduleCards from '@components/GroupProfile/GroupProfileDaySchedule.vue';
 
   const weeklySchedule = {
     monday: {
