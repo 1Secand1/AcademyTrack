@@ -49,10 +49,10 @@
   import Button from 'primevue/button';
 
   import router from '@router/index.js';
-  import { setCookie } from '@utils/cookie.js';
+  import { deleteCookie } from '@utils/cookie.js';
 
   function logOut() {
-    setCookie('token', 0);
+    deleteCookie('token');
     router.push({ path: '/authorization' });
   }
 </script>

@@ -56,9 +56,8 @@
   async function userAuthorizationPage(login, password) {
     const token = await getToken(login, password);
 
-    console.log(token);
     if (!token) return;
-    setCookie('token', 60 * 60 * 24 * 365, token);
+    setCookie('token',token,{ 'max-age':60 * 60 * 24 * 365 });
     router.push({ path: '/dashboard' });
   }
 </script>
