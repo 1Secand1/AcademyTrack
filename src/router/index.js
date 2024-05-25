@@ -10,12 +10,16 @@ const router = createRouter({
 const publiclyRoutes = ['authorization'];
 
 router.beforeEach(to => {
-	const thisUserAuthorized = !!getCookie('token');
-	const thisRoutePublic = publiclyRoutes.includes(to.name);
+  const isUserAuthorized = !!getCookie('token');
+  const isRoutePublic = publiclyRoutes.includes(to.name);
 
-	if (thisUserAuthorized && thisRoutePublic) router.push('/');
+ if (isUserAuthorized && isRoutePublic) {
+		router.push({ name:'userGroups' });
+ }
 
-	thisUserAuthorized || thisRoutePublic ? true : router.push('authorization');
+ if (!isUserAuthorized && !isRoutePublic) {
+	router.push({ name:'authorization' });
+ }
 });
 
 export default router;
