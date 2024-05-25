@@ -28,7 +28,7 @@
   import Column from 'primevue/column';
   import DataTable from 'primevue/datatable';
 
-  import { getStudentGroups } from '@service/apiFunctions';
+  import { getStudentGroups } from '@service/index';
   import { onMounted, ref, toRaw } from 'vue';
 
   const emit = defineEmits(['onRowSelect']);

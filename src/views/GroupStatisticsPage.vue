@@ -38,7 +38,7 @@
 <script setup>
   import attendanceListSelectionForm from '@components/AttendanceListSelectionForm.vue';
   import AttendanceDataTable from '@components/GroupStatisticsPage/GroupStatisticsPageAttendanceTable.vue';
-  import { getLessonAttendanceReport, getLessonPlan } from '@service/apiFunctions';
+  import { getLessonAttendanceReport, getLessonPlan } from '@service/index';
   import Button from 'primevue/button';
   import Dialog from 'primevue/dialog';
   import { computed, onMounted, ref } from 'vue';

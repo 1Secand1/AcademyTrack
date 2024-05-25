@@ -32,7 +32,7 @@
 
 <script setup>
   import router from '@router/index.js';
-  import { getTeachersGroupsService } from '@service/apiFunctions';
+  import { getTeachersGroupsService } from '@service/index';
   import Column from 'primevue/column';
   import DataTable from 'primevue/datatable';
   import IconField from 'primevue/iconfield';

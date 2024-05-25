@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-  import { studentsService } from '@service/apiFunctions';
+  import { studentsService } from '@service/index';
   import Column from 'primevue/column';
   import DataTable from 'primevue/datatable';
   import { onMounted, ref, toRaw } from 'vue';

@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-  import { studentsService } from '@service/apiFunctions';
+  import { studentsService } from '@service/index';
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
 
