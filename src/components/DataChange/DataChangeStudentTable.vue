@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-  import { studentsService } from '@service/index';
+  import { StudentsService } from '@service/index';
   import Column from 'primevue/column';
   import DataTable from 'primevue/datatable';
   import { onMounted, ref, toRaw } from 'vue';
@@ -40,7 +40,7 @@
   const valued = ref([]);
 
   onMounted(async () => {
-    valued.value = await studentsService.get();
+    valued.value = await StudentsService.get();
   });
 
   function onRowSelect({ data }) {

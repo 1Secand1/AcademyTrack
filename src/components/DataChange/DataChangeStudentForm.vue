@@ -29,13 +29,13 @@
 
     <Button
       label="Изменить"
-      @click="studentsService.add(studentData)"
+      @click="StudentsService.add(studentData)"
     />
   </form>
 </template>
 
 <script setup>
-  import { studentsService } from '@service/index';
+  import { StudentsService } from '@service/index';
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
 

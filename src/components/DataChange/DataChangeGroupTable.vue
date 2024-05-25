@@ -28,7 +28,7 @@
   import Column from 'primevue/column';
   import DataTable from 'primevue/datatable';
 
-  import { getStudentGroups } from '@service/index';
+  import { StudentGroupsService } from '@service/index';
   import { onMounted, ref, toRaw } from 'vue';
 
   const emit = defineEmits(['onRowSelect']);
@@ -37,7 +37,7 @@
   const valued = ref([]);
 
   onMounted(async () => {
-    valued.value = await getStudentGroups.get();
+    valued.value = await StudentGroupsService.get();
   });
 
   function onRowSelect({ data }) {
