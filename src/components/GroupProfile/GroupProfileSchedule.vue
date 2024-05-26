@@ -9,6 +9,16 @@
       <div class="day-schedule__progress-bar-item" />
     </div>
 
+    <div class="">
+      <button @click="backGroup">
+        Назад
+      </button>
+
+      <button @click="nextGroup">
+        Вперёд
+      </button>
+    </div>
+
     <div class="day-schedule__day-cards">
       <GroupProfileDayScheduleCards
         v-for="schedule in currentScheduleCardGroup"
@@ -26,10 +36,6 @@
   import { computed, ref, watch } from 'vue';
 
   const screenWidth = ref(document.documentElement.clientWidth);
-
-  window.addEventListener('resize', () => {
-    screenWidth.value = document.documentElement.clientWidth;
-  });
 
   const quantityElementsInGroup = computed(() => {
 
@@ -64,6 +70,29 @@
 
     return groups;
   }
+
+  function nextGroup() {
+
+    if (currentScheduleCardGroupNumber.value >= scheduleCardGroups.value.length - 1) {
+      return scheduleCardGroups.value.length - 1;
+    }
+
+    currentScheduleCardGroupNumber.value++;
+  }
+
+  function backGroup() {
+
+    if (currentScheduleCardGroupNumber.value <= 0) {
+      console.log(currentScheduleCardGroupNumber.value);
+      return 0;
+    }
+
+    currentScheduleCardGroupNumber.value--;
+  }
+
+  window.addEventListener('resize', () => {
+    screenWidth.value = document.documentElement.clientWidth;
+  });
 </script>
 
 <style scoped>
