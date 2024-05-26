@@ -182,7 +182,28 @@
     },
   ];
 
-  const quantityElementsInGroup = ref(3);
+  const screenWidth = ref(document.documentElement.clientWidth);
+
+  window.addEventListener('resize', () => {
+    screenWidth.value = document.documentElement.clientWidth;
+  });
+
+  const quantityElementsInGroup = computed(() => {
+
+    if (screenWidth.value > 1700) {
+      return 4;
+    }
+
+    if (screenWidth.value > 1400) {
+      return 3;
+    }
+
+    if (screenWidth.value > 1020) {
+      return 2;
+    }
+
+    return 1;
+  });
 
   const currentScheduleCardGroupNumber = ref(0);
 
