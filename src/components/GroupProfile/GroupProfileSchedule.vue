@@ -11,7 +11,7 @@
 
     <div class="day-schedule__day-cards">
       <GroupProfileDayScheduleCards
-        v-for="schedule in weeklySchedule"
+        v-for="schedule in currentScheduleCardGroup"
         :key="schedule.weekdayTextName"
         :weekday-name="schedule.weekdayTextName"
         :lessons-for-the-day="schedule.schedule"
@@ -22,9 +22,10 @@
 
 <script setup>
   import GroupProfileDayScheduleCards from '@components/GroupProfile/GroupProfileDaySchedule.vue';
+  import { computed, ref, watch } from 'vue';
 
-  const weeklySchedule = {
-    monday: {
+  const weekSchedules = [
+    {
       weekdayTextName: 'Понедельник',
       schedule: [
         {
@@ -71,7 +72,7 @@
         },
       ],
     },
-    tuesday: {
+    {
       weekdayTextName: 'Вторник',
       schedule: [
         {
@@ -88,11 +89,11 @@
         },
       ],
     },
-    wednesday: {
+    {
       weekdayTextName: 'Среда',
       schedule: [],
     },
-    thursday: {
+    {
       weekdayTextName: 'Четверг',
       schedule: [
         {
@@ -115,7 +116,7 @@
         },
       ],
     },
-    friday: {
+    {
       weekdayTextName: 'Пятница',
       schedule: [
         {
@@ -150,7 +151,7 @@
         },
       ],
     },
-    saturday: {
+    {
       weekdayTextName: 'Суббота',
       schedule: [
         {
@@ -179,8 +180,26 @@
         },
       ],
     },
-  };
+  ];
 
+  const quantityElementsInGroup = ref(3);
+
+  const currentScheduleCardGroupNumber = ref(0);
+
+  const scheduleCardGroups = computed(groupSchedulesSorted);
+  const currentScheduleCardGroup = computed(() => scheduleCardGroups.value[currentScheduleCardGroupNumber.value]);
+
+  function groupSchedulesSorted() {
+    const numberOfGroups = Math.ceil(weekSchedules.length / quantityElementsInGroup.value);
+    const groups = Array.from({ length: numberOfGroups }, () => []);
+
+    for (let index = 0; index < weekSchedules.length; index++) {
+      const groupNumber = Math.floor(index / quantityElementsInGroup.value);
+      groups[groupNumber].push(weekSchedules[index]);
+    }
+
+    return groups;
+  }
 </script>
 
 <style scoped>
