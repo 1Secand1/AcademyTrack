@@ -39,10 +39,6 @@
 
   const quantityElementsInGroup = computed(() => {
 
-    if (screenWidth.value > 1700) {
-      return 4;
-    }
-
     if (screenWidth.value > 1400) {
       return 3;
     }
