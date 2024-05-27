@@ -1,27 +1,38 @@
 <template>
   <div class="day-schedule">
-    <div class="">
-      <button @click="backGroup">
-        Назад
-      </button>
-
-      <button @click="nextGroup">
-        Вперёд
-      </button>
-    </div>
+    <div class="day-schedule__buttons" />
 
     <div class="day-schedule__day-cards">
+      <Button
+        class="button"
+        label=""
+        icon="pi pi-angle-left"
+        @click="backGroup"
+      />
+
       <GroupProfileDayScheduleCards
         v-for="schedule in currentScheduleCardGroup"
         :key="schedule.weekdayTextName"
         :weekday-name="schedule.weekdayTextName"
         :lessons-for-the-day="schedule.schedule"
       />
+
+      <Button
+        class="button"
+        label=""
+        icon="pi pi-angle-right"
+        icon-pos="right"
+        @click="nextGroup"
+      />
     </div>
+
+    <div class="day-schedule__navigation-buttons" />
   </div>
 </template>
 
 <script setup>
+  import Button from 'primevue/button';
+
   import GroupProfileDayScheduleCards from '@components/GroupProfile/GroupProfileDaySchedule.vue';
   import { weekSchedules } from '@service/weekSchedules';
   import { computed, ref, watch } from 'vue';
@@ -30,7 +41,7 @@
 
   const quantityElementsInGroup = computed(() => {
     if (screenWidth.value > 1400) return 3;
-    if (screenWidth.value > 1020) return 2;
+    if (screenWidth.value > 1130) return 2;
     return 1;
   });
 
@@ -86,8 +97,9 @@
 	overflow: auto;
 
 	justify-content: space-between;
+  align-items: center;
 
-	margin-top: 20px;
+	margin-top: 10px;
 	gap: 10px;
 }
 
@@ -107,10 +119,26 @@
 
 .day-schedule__progress-bar-item--active {
 	background: #627BFF;
+}
 
+.button{
+  height: 100%;
+  max-height: 50px;
+  max-width: 50px;
+  border-radius: 100%;
+}
+
+.day-schedule__buttons{
+  margin-top: 15px;
+}
+
+.day-schedule__navigation-buttons{
+  max-width: 200px;
+  display: flex;
+  gap: 10px;
 }
 
 .day-schedule {
-	width: 100%;
+  width: 100%;
 }
 </style>
