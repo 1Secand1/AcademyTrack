@@ -1,14 +1,5 @@
 <template>
   <div class="day-schedule">
-    <div class="day-schedule__progress-bar">
-      <div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active " />
-      <div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active " />
-      <div class="day-schedule__progress-bar-item day-schedule__progress-bar-item--active " />
-      <div class="day-schedule__progress-bar-item" />
-      <div class="day-schedule__progress-bar-item" />
-      <div class="day-schedule__progress-bar-item" />
-    </div>
-
     <div class="">
       <button @click="backGroup">
         Назад
