@@ -57,8 +57,8 @@
 	margin-top: 15px;
 }
 
-::v-deep .p-button-group,
-::v-deep .p-button {
-	width: 100%;
+:deep(.p-button-group),
+:deep(.p-button) {
+  width: 100%;
 }
 </style>
