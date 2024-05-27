@@ -92,7 +92,6 @@
 <style scoped>
 .day-schedule__day-cards {
 	width: 100%;
-	height: 80svh;
 	display: flex;
 	overflow: auto;
 
@@ -122,9 +121,8 @@
 }
 
 .button{
-  height: 100%;
-  max-height: 50px;
-  max-width: 50px;
+  height: 40px;
+  max-width: 40px;
   border-radius: 100%;
 }
 
