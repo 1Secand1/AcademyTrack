@@ -7,7 +7,7 @@
 <style scoped>
 .card {
 	display: flex;
-	width: 380px;
+	width: 100%;
 	height: 75px;
 
 	padding: 10px;
