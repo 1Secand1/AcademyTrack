@@ -38,22 +38,14 @@
   const screenWidth = ref(document.documentElement.clientWidth);
 
   const quantityElementsInGroup = computed(() => {
-
-    if (screenWidth.value > 1400) {
-      return 3;
-    }
-
-    if (screenWidth.value > 1020) {
-      return 2;
-    }
-
+    if (screenWidth.value > 1400) return 3;
+    if (screenWidth.value > 1020) return 2;
     return 1;
   });
 
-  const currentScheduleCardGroupNumber = ref(0);
-
   const scheduleCardGroups = computed(groupSchedulesSorted);
   const currentScheduleCardGroup = computed(() => scheduleCardGroups.value[currentScheduleCardGroupNumber.value]);
+  const currentScheduleCardGroupNumber = ref(0);
 
   watch(scheduleCardGroups,() => {
     currentScheduleCardGroupNumber.value = 0;
