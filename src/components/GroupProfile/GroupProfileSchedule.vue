@@ -55,6 +55,10 @@
   const scheduleCardGroups = computed(groupSchedulesSorted);
   const currentScheduleCardGroup = computed(() => scheduleCardGroups.value[currentScheduleCardGroupNumber.value]);
 
+  watch(scheduleCardGroups,() => {
+    currentScheduleCardGroupNumber.value = 0;
+  });
+
   function groupSchedulesSorted() {
     const numberOfGroups = Math.ceil(weekSchedules.length / quantityElementsInGroup.value);
     const groups = Array.from({ length: numberOfGroups }, () => []);
@@ -79,7 +83,7 @@
   function backGroup() {
 
     if (currentScheduleCardGroupNumber.value <= 0) {
-      console.log(currentScheduleCardGroupNumber.value);
+      currentScheduleCardGroupNumber.value;
       return 0;
     }
 
