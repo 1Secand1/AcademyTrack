@@ -8,7 +8,7 @@
     class="row "
     :options="buttonsOptions"
     aria-labelledby="basic"
-    @change="foo"
+    @change="linkUpdate"
   />
 
   <component :is="currentCategoryComponent" />
@@ -39,10 +39,9 @@
 
   const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость']);
 
-  function foo({ value = undefined }) {
+  function linkUpdate({ value = undefined }) {
     if (!value) throw new Error('value not found');
     router.replace({ query: { ...route.query, category: value } });
-    console.log(value);
   }
 </script>
 
