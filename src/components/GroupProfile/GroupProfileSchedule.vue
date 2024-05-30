@@ -1,28 +1,35 @@
 <template>
   <div class="day-schedule">
-    <div class="day-schedule__buttons" />
-
-    <div class="day-schedule__day-cards">
+    <div class="day-schedule__buttons">
       <Button
         class="button"
         label=""
         icon="pi pi-angle-left"
         @click="backGroup"
       />
-
-      <GroupProfileDayScheduleCards
-        v-for="schedule in currentScheduleCardGroup"
-        :key="schedule.weekdayTextName"
-        :weekday-name="schedule.weekdayTextName"
-        :lessons-for-the-day="schedule.schedule"
-      />
-
       <Button
         class="button"
         label=""
         icon="pi pi-angle-right"
         icon-pos="right"
         @click="nextGroup"
+      />
+
+      <SelectButton
+        v-model="selectWeekTypeValue"
+        class="select-week-type-button"
+        :options="selectWeekTypeOptions"
+        option-label="name"
+        aria-labelledby="basic"
+      />
+    </div>
+
+    <div class="day-schedule__day-cards">
+      <GroupProfileDayScheduleCards
+        v-for="schedule in currentScheduleCardGroup"
+        :key="schedule.weekdayTextName"
+        :weekday-name="schedule.weekdayTextName"
+        :lessons-for-the-day="schedule.schedule"
       />
     </div>
 
@@ -32,10 +39,19 @@
 
 <script setup>
   import Button from 'primevue/button';
+  import SelectButton from 'primevue/selectbutton';
 
   import GroupProfileDayScheduleCards from '@components/GroupProfile/GroupProfileDaySchedule.vue';
   import { weekSchedules } from '@service/weekSchedules';
-  import { computed, ref, watch } from 'vue';
+  import { computed, reactive, ref, watch } from 'vue';
+
+  const selectWeekTypeOptions = [
+    { name: 'Числитель', value: 'numerator' },
+    { name: 'Знаменатель', value: 'denominator' },
+  ];
+
+  const selectWeekTypeValue = ref(selectWeekTypeOptions[1]);
+  const currentWeekSchedules = computed(() => weekSchedules[selectWeekTypeValue.value.value]);
 
   const screenWidth = ref(document.documentElement.clientWidth);
 
@@ -47,19 +63,22 @@
 
   const scheduleCardGroups = computed(groupSchedulesSorted);
   const currentScheduleCardGroup = computed(() => scheduleCardGroups.value[currentScheduleCardGroupNumber.value]);
+
   const currentScheduleCardGroupNumber = ref(0);
 
-  watch(scheduleCardGroups,() => {
-    currentScheduleCardGroupNumber.value = 0;
+  watch(scheduleCardGroups,(newScheduleCardGroups,oldScheduleCardGroups) => {
+    if (newScheduleCardGroups.length !== oldScheduleCardGroups.length) {
+      currentScheduleCardGroupNumber.value = 0;
+    }
   });
 
   function groupSchedulesSorted() {
-    const numberOfGroups = Math.ceil(weekSchedules.length / quantityElementsInGroup.value);
+    const numberOfGroups = Math.ceil(currentWeekSchedules.value.length / quantityElementsInGroup.value);
     const groups = Array.from({ length: numberOfGroups }, () => []);
 
-    for (let index = 0; index < weekSchedules.length; index++) {
+    for (let index = 0; index < currentWeekSchedules.value.length; index++) {
       const groupNumber = Math.floor(index / quantityElementsInGroup.value);
-      groups[groupNumber].push(weekSchedules[index]);
+      groups[groupNumber].push(currentWeekSchedules.value[index]);
     }
 
     return groups;
@@ -75,7 +94,6 @@
   }
 
   function backGroup() {
-
     if (currentScheduleCardGroupNumber.value <= 0) {
       currentScheduleCardGroupNumber.value;
       return 0;
@@ -121,12 +139,17 @@
 }
 
 .button{
-  height: 40px;
-  max-width: 40px;
-  border-radius: 100%;
+  max-width: 100px;
+}
+
+.select-week-type-button{
+  max-width: 300px;
+  display: flex;
 }
 
 .day-schedule__buttons{
+  display: flex;
+  gap: 10px;
   margin-top: 15px;
 }
 
