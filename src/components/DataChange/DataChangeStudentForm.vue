@@ -41,14 +41,13 @@
 
   const studentData = defineModel({
     type:Object,
-    default:{
+    default:() => ({
       surname: '',
       name: '',
       patronymic: '',
       groupCode: '',
-    },
+    }),
   });
-
 
 </script>
 

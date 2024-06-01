@@ -34,14 +34,14 @@
   import InputText from 'primevue/inputtext';
 
   const groupData = defineModel({
-    type:Object,
-    default:{
+    type: Object,
+    default: () => ({
       groupCode: '',
       yearOfEntry: '',
       yearOfIssue: '',
-    },
+    }),
   });
-  
+
 </script>
 
 <style></style>

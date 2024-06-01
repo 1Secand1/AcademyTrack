@@ -38,11 +38,11 @@
 
   const teachersData = defineModel({
     type:Object,
-    default:{
+    default:() => ({
       surname: '',
       name: '',
       patronymic: '',
-    },
+    }),
   });
 
 </script>

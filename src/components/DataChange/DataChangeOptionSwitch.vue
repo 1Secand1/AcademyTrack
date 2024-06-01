@@ -36,6 +36,7 @@
 
   import { dataChangeTypeNames, namesOfDataAdditionMethods, userRoleNames } from '@constants/localization';
 
+  // TODO добавить тип и значения по умолчанию
   const categoryNameValue = defineModel('category');
   const additionMethodNameValue = defineModel('additionMethod');
   const dataChangeTypeNamesValue = defineModel('dataChangeType');

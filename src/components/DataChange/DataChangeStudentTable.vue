@@ -36,6 +36,7 @@
 
   const emit = defineEmits(['onRowSelect']);
 
+  // TODO добавить тип и значения по умолчанию
   const selectedRow = defineModel('selectedRow');
   const valued = ref([]);
 
