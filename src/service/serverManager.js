@@ -1,10 +1,11 @@
 import { fetchRequest } from './fetchRequest';
 
 const { VITE_BASE_API_URL } = import.meta.env;
-const mapServerManager = {};
+const mapServerManager = new Map();
 
 class ServerManager {
 	constructor(baseUrl, path) {
+		console.log(path);
 		this.baseUrl = baseUrl;
 		this.path = path;
 		this.url = `${this.baseUrl}/${this.path}`;
@@ -26,9 +27,9 @@ export function createServerManager(path) {
 		throw new Error('VITE_BASE_API_URL is not defined');
 	}
 
-	if (!(path in mapServerManager)) {
-		mapServerManager[path] = new ServerManager(VITE_BASE_API_URL, path);
+	if (!mapServerManager.has(path)) {
+		mapServerManager.set(path,new ServerManager(VITE_BASE_API_URL, path));
 	}
 
-	return mapServerManager[path];
+	return mapServerManager.get(path);
 }
