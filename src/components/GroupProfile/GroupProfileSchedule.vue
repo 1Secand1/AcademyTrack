@@ -5,14 +5,14 @@
         class="button"
         label=""
         icon="pi pi-angle-left"
-        @click="backGroup"
+        @click="currentScheduleCardGroupNumber--"
       />
       <Button
         class="button"
         label=""
         icon="pi pi-angle-right"
         icon-pos="right"
-        @click="nextGroup"
+        @click="currentScheduleCardGroupNumber++"
       />
 
       <SelectButton
@@ -50,7 +50,7 @@
     { name: 'Знаменатель', value: 'denominator' },
   ];
 
-  const selectWeekTypeValue = ref(selectWeekTypeOptions[1]);
+  const selectWeekTypeValue = ref(selectWeekTypeOptions[0]);
   const currentWeekSchedules = computed(() => weekSchedules[selectWeekTypeValue.value.value]);
 
   const screenWidth = ref(document.documentElement.clientWidth);
@@ -61,10 +61,20 @@
     return 1;
   });
 
+  const currentScheduleCardGroupNumber = ref(0);
+
   const scheduleCardGroups = computed(groupSchedulesSorted);
   const currentScheduleCardGroup = computed(() => scheduleCardGroups.value[currentScheduleCardGroupNumber.value]);
 
-  const currentScheduleCardGroupNumber = ref(0);
+  watch(currentScheduleCardGroupNumber,(newCardGroupNumber) => {
+    if (newCardGroupNumber >= scheduleCardGroups.value.length) {
+      currentScheduleCardGroupNumber.value--;
+    }
+
+    if (newCardGroupNumber < 0) {
+      currentScheduleCardGroupNumber.value++;
+    }
+  });
 
   watch(scheduleCardGroups,(newScheduleCardGroups,oldScheduleCardGroups) => {
     if (newScheduleCardGroups.length !== oldScheduleCardGroups.length) {
@@ -82,24 +92,6 @@
     }
 
     return groups;
-  }
-
-  function nextGroup() {
-
-    if (currentScheduleCardGroupNumber.value >= scheduleCardGroups.value.length - 1) {
-      return scheduleCardGroups.value.length - 1;
-    }
-
-    currentScheduleCardGroupNumber.value++;
-  }
-
-  function backGroup() {
-    if (currentScheduleCardGroupNumber.value <= 0) {
-      currentScheduleCardGroupNumber.value;
-      return 0;
-    }
-
-    currentScheduleCardGroupNumber.value--;
   }
 
   window.addEventListener('resize', () => {
