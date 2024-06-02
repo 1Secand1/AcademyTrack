@@ -49,13 +49,12 @@
     { name: 'Числитель', value: 'numerator' },
     { name: 'Знаменатель', value: 'denominator' },
   ];
-
-  
-  const screenWidth = ref(document.documentElement.clientWidth);
-  
-  const currentScheduleCardGroupNumber = ref(0);
-  
   const selectWeekTypeValue = ref(selectWeekTypeOptions[0]);
+
+  const screenWidth = ref(document.documentElement.clientWidth);
+
+  const currentScheduleCardGroupNumber = ref(0);
+
   const currentWeekSchedules = computed(() => weekSchedules[selectWeekTypeValue.value.value]);
 
   const scheduleCardGroups = computed(groupSchedulesSorted);

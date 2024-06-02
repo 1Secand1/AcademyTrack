@@ -1,17 +1,17 @@
 const dashboardRoutes = [
 	{
 		alias: '',
-		path: 'userGroups',
+		path: 'user-groups',
 		name: 'userGroups',
 		component: () => import('@views/UserGroupsPage.vue'),
 	},
 	{
-		path: 'groupStatistics',
+		path: 'group-statistics',
 		name: 'groupStatistics',
 		component: () => import('@views/GroupStatisticsPage.vue'),
 	},
 	{
-		path: 'studentGroup',
+		path: 'student-group',
 		name: 'studentGroup',
 		component: () => import('@views/StudentGroupPage.vue'),
 		children: [
@@ -29,7 +29,7 @@ const dashboardRoutes = [
 		],
 	},
 	{
-		path: 'settingsGroups',
+		path: 'settings-groups',
 		name: 'settingsGroups',
 		component: () => import('@views/DataChangePage.vue'),
 	},
