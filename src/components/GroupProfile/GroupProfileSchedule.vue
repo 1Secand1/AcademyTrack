@@ -50,21 +50,22 @@
     { name: 'Знаменатель', value: 'denominator' },
   ];
 
+  
+  const screenWidth = ref(document.documentElement.clientWidth);
+  
+  const currentScheduleCardGroupNumber = ref(0);
+  
   const selectWeekTypeValue = ref(selectWeekTypeOptions[0]);
   const currentWeekSchedules = computed(() => weekSchedules[selectWeekTypeValue.value.value]);
 
-  const screenWidth = ref(document.documentElement.clientWidth);
+  const scheduleCardGroups = computed(groupSchedulesSorted);
+  const currentScheduleCardGroup = computed(() => scheduleCardGroups.value[currentScheduleCardGroupNumber.value]);
 
   const quantityElementsInGroup = computed(() => {
     if (screenWidth.value > 1400) return 3;
     if (screenWidth.value > 1130) return 2;
     return 1;
   });
-
-  const currentScheduleCardGroupNumber = ref(0);
-
-  const scheduleCardGroups = computed(groupSchedulesSorted);
-  const currentScheduleCardGroup = computed(() => scheduleCardGroups.value[currentScheduleCardGroupNumber.value]);
 
   watch(currentScheduleCardGroupNumber,(newCardGroupNumber) => {
     if (newCardGroupNumber >= scheduleCardGroups.value.length) {
