@@ -32,7 +32,7 @@
 
 <script setup>
   import router from '@router/index.js';
-  import { GroupsAssignedToTeacherService } from '@service/index';
+  import { groupsService } from '@service';
   import Column from 'primevue/column';
   import DataTable from 'primevue/datatable';
   import IconField from 'primevue/iconfield';
@@ -62,7 +62,7 @@
   }
 
   onMounted(async () => {
-    userGroup.value = await GroupsAssignedToTeacherService.get();
+    userGroup.value = await groupsService.get();
   });
 </script>
 

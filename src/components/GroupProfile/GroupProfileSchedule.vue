@@ -42,8 +42,8 @@
   import SelectButton from 'primevue/selectbutton';
 
   import GroupProfileDayScheduleCards from '@components/GroupProfile/GroupProfileDaySchedule.vue';
-  import { weekSchedules } from '@service/weekSchedules';
-  import { computed, reactive, ref, watch } from 'vue';
+  import { computed, ref, watch } from 'vue';
+  import { weekSchedules } from '@service';
 
   const selectWeekTypeOptions = [
     { name: 'Числитель', value: 'numerator' },

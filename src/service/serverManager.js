@@ -1,35 +1,29 @@
-import { fetchRequest } from './fetchRequest';
+import { apiClient } from '@service/apiClient.js';
 
-const { VITE_BASE_API_URL } = import.meta.env;
-const mapServerManager = new Map();
+export class ServerManager {
+	endpointName = '';
 
-class ServerManager {
-	constructor(baseUrl, path) {
-		console.log(path);
-		this.baseUrl = baseUrl;
-		this.path = path;
-		this.url = `${this.baseUrl}/${this.path}`;
+	constructor(endpointName) {
+		if (!endpointName) {throw new Error('Endpoint is required');}
+		this.endpointName = endpointName;
 	}
 
-	add(studentData) {
-		return fetchRequest(this.url, 'POST', studentData);
+	create(body) {
+		return apiClient.post(this.endpointName, {
+			json: body,
+		}).json();
 	}
 
 	get() {
-		return fetchRequest(this.url);
+		return apiClient.get(this.endpointName).json();
 	}
 
-	delete() { }
-}
-
-export function createServerManager(path) {
-	if (!VITE_BASE_API_URL) {
-		throw new Error('VITE_BASE_API_URL is not defined');
+	update(body) {
+		return  apiClient.put(this.endpointName, {
+			json: body,
+		}).json();
 	}
-
-	if (!mapServerManager.has(path)) {
-		mapServerManager.set(path,new ServerManager(VITE_BASE_API_URL, path));
+	remove() {
+		return	apiClient.delete(this.endpointName).json();
 	}
-
-	return mapServerManager.get(path);
 }
