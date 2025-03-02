@@ -23,18 +23,18 @@
     />
 
     <Button
-      class=""
-      label="Изменить"
-      @click=""
+      :label="buttonName"
     />
   </form>
 </template>
 
 <script setup>
-  import { reactive } from 'vue';
+  import { computed, reactive } from 'vue';
 
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
+  import { dataChangeTypeNames } from '@constants/localization.js';
+  const dataChangeTypeNamesValue = defineModel('dataChangeType');
 
   const teachersData = defineModel({
     type:Object,
@@ -44,6 +44,8 @@
       patronymic: '',
     }),
   });
+
+  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.adding.name ? 'Добавить' : 'Изменить');
 
 </script>
 

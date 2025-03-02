@@ -12,14 +12,17 @@
     <SelectButton
       v-model="dataChangeTypeNamesValue"
       pt:root:class="settings__select-button"
-      :options="Object.values(dataChangeTypeNames)"
+      :options="dataChangeTypeNames"
+      option-value="name"
+      option-label="text"
       aria-labelledby="basic"
       :allow-empty="false"
+      data-key="text"
       :unselectable="false"
     />
 
     <SelectButton
-      v-if="dataChangeTypeNamesValue === dataChangeTypeNames.adding"
+      v-if="dataChangeTypeNamesValue === dataChangeTypeNames.adding.name"
       v-model="additionMethodNameValue"
       pt:root:class="settings__select-button"
       :options="Object.values(namesOfDataAdditionMethods)"

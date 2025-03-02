@@ -23,8 +23,7 @@
     />
 
     <Button
-      label="Изменить"
-      @click="add"
+      :label="buttonName"
     />
   </form>
 </template>
@@ -32,6 +31,10 @@
 <script setup>
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
+  import { dataChangeTypeNames } from '@constants/localization.js';
+  import { computed } from 'vue';
+
+  const dataChangeTypeNamesValue = defineModel('dataChangeType');
 
   const groupData = defineModel({
     type: Object,
@@ -41,6 +44,8 @@
       yearOfIssue: '',
     }),
   });
+
+  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.adding.name ? 'Добавить' : 'Изменить');
 
 </script>
 

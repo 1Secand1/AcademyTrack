@@ -5,6 +5,7 @@
         <component
           :is="currentActiveForm"
           v-model="selectedRow"
+          v-model:dataChangeType="dataChangeTypeNamesValue"
         />
       </keep-alive>
 
@@ -92,7 +93,7 @@
 
   const categoryNameValue = ref(userRoleNames.students);
   const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually);
-  const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding);
+  const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding.name);
 
   const selectedRow = ref({});
 
@@ -103,9 +104,8 @@
   watch([categoryNameValue, namesOfDataAdditionMethodsValue], updateComponents);
 
   watch(dataChangeTypeNamesValue, (newDataChangeTypeNamesValue) => {
-    if (newDataChangeTypeNamesValue == dataChangeTypeNames.adding) {
-      selectedRow.value = {};
-    }
+    if (newDataChangeTypeNamesValue !== dataChangeTypeNames.adding.name) {return;}
+    selectedRow.value = {};
   });
 
   function onRowSelect() {
@@ -126,10 +126,7 @@
     }
 
     currentDateTable.value = await component.data();
-
     currentActiveTable.value = component.table;
-
-    // if (currentActiveTable.value !== component.table) {}
   }
 
 </script>

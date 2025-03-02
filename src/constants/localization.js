@@ -5,8 +5,8 @@ export const userRoleNames = {
 };
 
 export const dataChangeTypeNames = {
-	adding: 'Добавление',
-	modify: 'Изменение',
+	adding: { name:'adding', text:'Добавление' },
+	modify:  { name:'modify', text:'Изменение' },
 };
 
 export const namesOfDataAdditionMethods = {

@@ -28,16 +28,18 @@
     />
 
     <Button
-      label="Изменить"
-      @click="studentsService.create(studentData)"
+      :label="buttonName"
     />
   </form>
 </template>
 
 <script setup>
-  import { studentsService } from '@service/index.js';
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
+  import { computed } from 'vue';
+  import { dataChangeTypeNames } from '@constants/localization.js';
+
+  const dataChangeTypeNamesValue = defineModel('dataChangeType');
 
   const studentData = defineModel({
     type:Object,
@@ -48,6 +50,8 @@
       groupCode: '',
     }),
   });
+
+  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.adding.name ? 'Добавить' : 'Изменить');
 
 </script>
 
