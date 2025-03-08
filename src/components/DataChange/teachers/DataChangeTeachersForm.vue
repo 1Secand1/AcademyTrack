@@ -24,16 +24,20 @@
 
     <Button
       :label="buttonName"
+      @click="$emit('formSubmission',{...teachersData})"
     />
   </form>
 </template>
 
 <script setup>
-  import { computed, reactive } from 'vue';
+  import { computed } from 'vue';
 
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
   import { dataChangeTypeNames } from '@constants/localization.js';
+
+  defineEmits(['formSubmission']);
+
   const dataChangeTypeNamesValue = defineModel('dataChangeType');
 
   const teachersData = defineModel({
@@ -45,7 +49,7 @@
     }),
   });
 
-  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.adding.name ? 'Добавить' : 'Изменить');
+  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.create.name ? 'Добавить' : 'Изменить');
 
 </script>
 

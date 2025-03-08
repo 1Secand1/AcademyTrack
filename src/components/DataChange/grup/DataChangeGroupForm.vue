@@ -11,19 +11,15 @@
       class="settings__input-search"
       placeholder="Код группы"
     />
-    <InputText
+    <InputNumber
       v-model="groupData.yearOfEntry"
       class="settings__input-search"
       placeholder="Год начала обучения"
     />
-    <InputText
-      v-model="groupData.yearOfIssue"
-      class="settings__input-search"
-      placeholder="Год окончания обучения"
-    />
 
     <Button
       :label="buttonName"
+      @click="$emit('formSubmission',{...groupData})"
     />
   </form>
 </template>
@@ -31,8 +27,11 @@
 <script setup>
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
+  import InputNumber from 'primevue/inputnumber';
   import { dataChangeTypeNames } from '@constants/localization.js';
   import { computed } from 'vue';
+
+  defineEmits(['formSubmission']);
 
   const dataChangeTypeNamesValue = defineModel('dataChangeType');
 
@@ -45,7 +44,7 @@
     }),
   });
 
-  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.adding.name ? 'Добавить' : 'Изменить');
+  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.create.name ? 'Добавить' : 'Изменить');
 
 </script>
 

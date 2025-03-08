@@ -42,7 +42,7 @@ export class ServerManager {
 
 	async update(id, body) {
 		try {
-			return await apiClient.put(`${this.endpointName}/${id}`, { json: body }).json();
+			return await apiClient.patch(`${this.endpointName}/${id}`, { json: body }).json();
 		} catch (error) {
 			console.error('Ошибка при обновлении:', {
 				endpoint: this.endpointName,

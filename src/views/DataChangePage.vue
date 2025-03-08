@@ -6,6 +6,7 @@
           :is="currentActiveForm"
           v-model="selectedRow"
           v-model:dataChangeType="dataChangeTypeNamesValue"
+          @form-submission="sendRequest"
         />
       </keep-alive>
 
@@ -51,38 +52,55 @@
   import { groupsService } from '@service/api-endpoints/groups.js';
 
   const tableRows = {
-    [userRoleNames.students]: [
+    [userRoleNames.students.name]: [
       { text:'Код группы',valueKey:'groupCode' },
       { text:'Фамилия',valueKey:'surname' },
       { text:'Имя',valueKey:'name' },
       { text:'Отчество',valueKey:'patronymic' },
     ],
-    [userRoleNames.teachers]: [
+    [userRoleNames.teachers.name]: [
       { text:'Фамилия',valueKey:'surname' },
       { text:'Имя',valueKey:'name' },
       { text:'Отчество',valueKey:'patronymic' },
       { text:'Предметы',valueKey:'' },
     ],
-    [userRoleNames.groups]: [
-      { text:'Код группы',valueKey:'code' },
+    [userRoleNames.groups.name]: [
+      { text:'Код группы',valueKey:'groupCode' },
       { text:'Год начала обучения',valueKey:'yearOfEntry' },
     ],
   };
 
+  const serverRequests = {
+    [userRoleNames.students.name]: {
+      [dataChangeTypeNames.update.name]: ({ studentId,...body }) => studentsService.update(studentId,body),
+      [dataChangeTypeNames.create.name]: (body) => studentsService.create(body),
+    },
+    [userRoleNames.teachers.name]: {
+      [dataChangeTypeNames.update.name]:  ({ teacherId, ...body }) => teachersService.update(teacherId,body),
+      [dataChangeTypeNames.create.name]: (body) => teachersService.create(body),
+    },
+    [userRoleNames.groups.name]: {
+      [dataChangeTypeNames.update.name]: ({ groupId,groupCode,yearOfEntry }) => groupsService.update(groupId,{
+        groupCode ,yearOfEntry,
+      }),
+      [dataChangeTypeNames.create.name]: (body) => groupsService.create(body),
+    },
+  };
+
   const groupedComponentCatalog = {
-    [userRoleNames.students]: {
+    [userRoleNames.students.name]: {
       form: markRaw(DataChangeStudentForm),
-      table:tableRows[userRoleNames.students],
+      table:tableRows[userRoleNames.students.name],
       data: () =>  studentsService.get(),
     },
-    [userRoleNames.teachers]: {
+    [userRoleNames.teachers.name]: {
       form: markRaw(DataChangeTeachersForm),
-      table:tableRows[userRoleNames.teachers],
+      table:tableRows[userRoleNames.teachers.name],
       data: () =>  teachersService.get(),
     },
-    [userRoleNames.groups]: {
+    [userRoleNames.groups.name]: {
       form: markRaw(DataChangeGroupForm),
-      table:tableRows[userRoleNames.groups],
+      table:tableRows[userRoleNames.groups.name],
       data: () => groupsService.get(),
     },
   };
@@ -91,9 +109,9 @@
   const currentActiveTable = ref([]);
   const currentDateTable = ref([]);
 
-  const categoryNameValue = ref(userRoleNames.students);
+  const categoryNameValue = ref(userRoleNames.students.name);
   const namesOfDataAdditionMethodsValue = ref(namesOfDataAdditionMethods.manually);
-  const dataChangeTypeNamesValue = ref(dataChangeTypeNames.adding.name);
+  const dataChangeTypeNamesValue = ref(dataChangeTypeNames.create.name);
 
   const selectedRow = ref({});
 
@@ -104,12 +122,12 @@
   watch([categoryNameValue, namesOfDataAdditionMethodsValue], updateComponents);
 
   watch(dataChangeTypeNamesValue, (newDataChangeTypeNamesValue) => {
-    if (newDataChangeTypeNamesValue !== dataChangeTypeNames.adding.name) {return;}
+    if (newDataChangeTypeNamesValue !== dataChangeTypeNames.create.name) {return;}
     selectedRow.value = {};
   });
 
   function onRowSelect() {
-    dataChangeTypeNamesValue.value = dataChangeTypeNames.modify;
+    dataChangeTypeNamesValue.value = dataChangeTypeNames.update.name;
   }
 
   async function updateComponents() {
@@ -127,6 +145,11 @@
 
     currentDateTable.value = await component.data();
     currentActiveTable.value = component.table;
+  }
+
+  async function sendRequest(data) {
+    await serverRequests[categoryNameValue.value][dataChangeTypeNamesValue.value](data);
+    await updateComponents();
   }
 
 </script>

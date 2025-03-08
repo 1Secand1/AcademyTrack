@@ -22,13 +22,14 @@
       placeholder="Отчество"
     />
     <InputText
-      v-model="studentData.groupCode"
+      v-model.number="studentData.groupId"
       class="settings__input-search"
       placeholder="Код группы"
     />
 
     <Button
       :label="buttonName"
+      @click="$emit('formSubmission',{...studentData})"
     />
   </form>
 </template>
@@ -39,6 +40,8 @@
   import { computed } from 'vue';
   import { dataChangeTypeNames } from '@constants/localization.js';
 
+  defineEmits(['formSubmission']);
+
   const dataChangeTypeNamesValue = defineModel('dataChangeType');
 
   const studentData = defineModel({
@@ -47,11 +50,11 @@
       surname: '',
       name: '',
       patronymic: '',
-      groupCode: '',
+      groupId: '',
     }),
   });
 
-  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.adding.name ? 'Добавить' : 'Изменить');
+  const buttonName = computed(() => dataChangeTypeNamesValue.value === dataChangeTypeNames.create.name ? 'Добавить' : 'Изменить');
 
 </script>
 

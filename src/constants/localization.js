@@ -1,12 +1,12 @@
 export const userRoleNames = {
-	students: 'Студенты',
-	teachers: 'Учителя',
-	groups: 'Группы',
+	students:{ name:'students', text: 'Студенты' } ,
+	teachers: { name:'teachers', text: 'Учителя' },
+	groups:{ name:'groups', text: 'Группы' },
 };
 
 export const dataChangeTypeNames = {
-	adding: { name:'adding', text:'Добавление' },
-	modify:  { name:'modify', text:'Изменение' },
+	create: { name:'create', text:'Добавление' },
+	update:  { name:'update', text:'Изменение' },
 };
 
 export const namesOfDataAdditionMethods = {

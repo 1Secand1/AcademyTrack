@@ -3,7 +3,9 @@
     <SelectButton
       v-model="categoryNameValue"
       pt:root:class="settings__select-button"
-      :options="Object.values(userRoleNames)"
+      :options="userRoleNames"
+      option-value="name"
+      option-label="text"
       aria-labelledby="basic"
       :allow-empty="false"
       :unselectable="false"
@@ -22,7 +24,7 @@
     />
 
     <SelectButton
-      v-if="dataChangeTypeNamesValue === dataChangeTypeNames.adding.name"
+      v-if="dataChangeTypeNamesValue === dataChangeTypeNames.create.name"
       v-model="additionMethodNameValue"
       pt:root:class="settings__select-button"
       :options="Object.values(namesOfDataAdditionMethods)"
@@ -45,7 +47,7 @@
   const dataChangeTypeNamesValue = defineModel('dataChangeType');
 
   watch(dataChangeTypeNamesValue, (additionMethod) => {
-    if (additionMethod === dataChangeTypeNames.modify) {
+    if (additionMethod === dataChangeTypeNames.update.name) {
       additionMethodNameValue.value = namesOfDataAdditionMethods.manually;
     }
   });
