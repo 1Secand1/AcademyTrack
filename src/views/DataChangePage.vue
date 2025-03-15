@@ -6,6 +6,7 @@
           :is="currentActiveForm"
           v-model="selectedRow"
           v-model:dataChangeType="dataChangeTypeNamesValue"
+          :disabled="dataChangeTypeNames.update.name === dataChangeTypeNamesValue && Object.keys(selectedRow).length === 0"
           @form-submission="sendRequest"
         />
       </keep-alive>
@@ -72,7 +73,7 @@
 
   const serverRequests = {
     [userRoleNames.students.name]: {
-      [dataChangeTypeNames.update.name]: ({ studentId,...body }) => studentsService.update(studentId,body),
+      [dataChangeTypeNames.update.name]: ({ studentId,groupCode,...body }) => studentsService.update(studentId,body),
       [dataChangeTypeNames.create.name]: (body) => studentsService.create(body),
     },
     [userRoleNames.teachers.name]: {
@@ -121,11 +122,6 @@
 
   watch([categoryNameValue, namesOfDataAdditionMethodsValue], updateComponents);
 
-  watch(dataChangeTypeNamesValue, (newDataChangeTypeNamesValue) => {
-    if (newDataChangeTypeNamesValue !== dataChangeTypeNames.create.name) {return;}
-    selectedRow.value = {};
-  });
-
   function onRowSelect() {
     dataChangeTypeNamesValue.value = dataChangeTypeNames.update.name;
   }
@@ -134,6 +130,7 @@
     const component = groupedComponentCatalog[categoryNameValue.value];
 
     if (!component) return;
+    selectedRow.value = {};
 
     const currentForm = namesOfDataAdditionMethodsValue.value === namesOfDataAdditionMethods.excel
       ? DataChangeImportForm

@@ -8,27 +8,32 @@
     </h2>
     <InputText
       v-model="studentData.surname"
+      :disabled="disabled"
       class="settings__input-search"
       placeholder="Фамилия"
     />
     <InputText
       v-model="studentData.name"
+      :disabled="disabled"
       class="settings__input-search"
       placeholder="Имя"
     />
     <InputText
       v-model="studentData.patronymic"
+      :disabled="disabled"
       class="settings__input-search"
       placeholder="Отчество"
     />
     <InputText
       v-model.number="studentData.groupId"
+      :disabled="disabled"
       class="settings__input-search"
       placeholder="Код группы"
     />
 
     <Button
       :label="buttonName"
+      :disabled="disabled"
       @click="$emit('formSubmission',{...studentData})"
     />
   </form>
@@ -42,7 +47,12 @@
 
   defineEmits(['formSubmission']);
 
-  const dataChangeTypeNamesValue = defineModel('dataChangeType');
+  const dataChangeTypeNamesValue = defineModel('dataChangeType',{ type:String });
+
+  const disabled = defineModel('disabled',{
+    type:Boolean,
+    default: false,
+  });
 
   const studentData = defineModel({
     type:Object,

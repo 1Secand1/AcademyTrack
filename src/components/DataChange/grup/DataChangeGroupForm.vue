@@ -8,6 +8,7 @@
     </h2>
     <InputText
       v-model="groupData.groupCode"
+      :disabled="disabled"
       class="settings__input-search"
       placeholder="Код группы"
     />
@@ -15,10 +16,12 @@
       v-model="groupData.yearOfEntry"
       class="settings__input-search"
       placeholder="Год начала обучения"
+      :disabled="disabled"
     />
 
     <Button
       :label="buttonName"
+      :disabled="disabled"
       @click="$emit('formSubmission',{...groupData})"
     />
   </form>
@@ -33,7 +36,15 @@
 
   defineEmits(['formSubmission']);
 
-  const dataChangeTypeNamesValue = defineModel('dataChangeType');
+  const dataChangeTypeNamesValue = defineModel('dataChangeType', {
+    type:String,
+    default:'',
+  });
+
+  const disabled = defineModel('disabled',{
+    type:Boolean,
+    default: false,
+  });
 
   const groupData = defineModel({
     type: Object,
