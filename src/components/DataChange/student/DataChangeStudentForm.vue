@@ -24,33 +24,16 @@
       class="settings__input-search"
       placeholder="Отчество"
     />
-    <InputText
-      v-model.number="studentData.groupId"
-      :disabled="disabled"
-      class="settings__input-search"
+
+    <Dropdown
+      v-model="studentData.groupId"
+      :options="groups"
+      option-label="groupCode"
+      option-value="groupId"
       placeholder="Код группы"
+      class="w-full"
+      filter
     />
-
-    <Select
-      v-model="selectedCity"
-      :options="cities"
-      option-label="name"
-      placeholder="Select a City"
-      class="w-full md:w-56"
-    />
-
-    <script setup>
-      import { ref } from "vue";
-
-      const selectedCity = ref();
-      const cities = ref([
-      { name: 'New York', code: 'NY' },
-      { name: 'Rome', code: 'RM' },
-      { name: 'London', code: 'LDN' },
-      { name: 'Istanbul', code: 'IST' },
-      { name: 'Paris', code: 'PRS' }
-      ]);
-    </script>
 
     <Button
       :label="buttonName"
@@ -61,8 +44,8 @@
 </template>
 
 <script setup>
+  import Dropdown from 'primevue/dropdown';
   import Button from 'primevue/button';
-  import Select from 'primevue/';
   import InputText from 'primevue/inputtext';
   import { computed, defineProps } from 'vue';
   import { dataChangeTypeNames } from '@constants/localization.js';
