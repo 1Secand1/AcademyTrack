@@ -31,6 +31,27 @@
       placeholder="Код группы"
     />
 
+    <Select
+      v-model="selectedCity"
+      :options="cities"
+      option-label="name"
+      placeholder="Select a City"
+      class="w-full md:w-56"
+    />
+
+    <script setup>
+      import { ref } from "vue";
+
+      const selectedCity = ref();
+      const cities = ref([
+      { name: 'New York', code: 'NY' },
+      { name: 'Rome', code: 'RM' },
+      { name: 'London', code: 'LDN' },
+      { name: 'Istanbul', code: 'IST' },
+      { name: 'Paris', code: 'PRS' }
+      ]);
+    </script>
+
     <Button
       :label="buttonName"
       :disabled="disabled"
@@ -41,11 +62,19 @@
 
 <script setup>
   import Button from 'primevue/button';
+  import Select from 'primevue/';
   import InputText from 'primevue/inputtext';
-  import { computed } from 'vue';
+  import { computed, defineProps } from 'vue';
   import { dataChangeTypeNames } from '@constants/localization.js';
 
   defineEmits(['formSubmission']);
+
+  const props = defineProps({
+    groups: {
+      type: Array,
+      required: true,
+    },
+  });
 
   const dataChangeTypeNamesValue = defineModel('dataChangeType',{ type:String });
 

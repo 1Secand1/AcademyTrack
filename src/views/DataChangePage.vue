@@ -1,15 +1,14 @@
 <template>
   <div class="wrapper">
     <section class="settings">
-      <keep-alive>
-        <component
-          :is="currentActiveForm"
-          v-model="selectedRow"
-          v-model:dataChangeType="dataChangeTypeNamesValue"
-          :disabled="dataChangeTypeNames.update.name === dataChangeTypeNamesValue && Object.keys(selectedRow).length === 0"
-          @form-submission="sendRequest"
-        />
-      </keep-alive>
+      <component
+        :is="currentActiveForm"
+        v-model="selectedRow"
+        v-model:dataChangeType="dataChangeTypeNamesValue"
+        :groups="groupedComponentCatalog[userRoleNames.groups.name].data"
+        :disabled="dataChangeTypeNames.update.name === dataChangeTypeNamesValue && Object.keys(selectedRow).length === 0"
+        @form-submission="sendRequest"
+      />
 
       <DataChangeOptionSwitch
         v-model:category="categoryNameValue"
@@ -75,16 +74,18 @@
     [userRoleNames.students.name]: {
       [dataChangeTypeNames.update.name]: ({ studentId,groupCode,...body }) => studentsService.update(studentId,body),
       [dataChangeTypeNames.create.name]: (body) => studentsService.create(body),
+      [dataChangeTypeNames.get.name]: () => studentsService.get(),
     },
     [userRoleNames.teachers.name]: {
       [dataChangeTypeNames.update.name]:  ({ teacherId, ...body }) => teachersService.update(teacherId,body),
       [dataChangeTypeNames.create.name]: (body) => teachersService.create(body),
+      [dataChangeTypeNames.get.name]: () => teachersService.get(),
     },
     [userRoleNames.groups.name]: {
-      [dataChangeTypeNames.update.name]: ({ groupId,groupCode,yearOfEntry }) => groupsService.update(groupId,{
-        groupCode ,yearOfEntry,
-      }),
+      [dataChangeTypeNames.update.name]: ({ groupId,groupCode,yearOfEntry }) =>
+        groupsService.update(groupId,{ groupCode ,yearOfEntry }),
       [dataChangeTypeNames.create.name]: (body) => groupsService.create(body),
+      [dataChangeTypeNames.get.name]: () => groupsService.get(),
     },
   };
 
@@ -92,17 +93,17 @@
     [userRoleNames.students.name]: {
       form: markRaw(DataChangeStudentForm),
       table:tableRows[userRoleNames.students.name],
-      data: () =>  studentsService.get(),
+      data: {},
     },
     [userRoleNames.teachers.name]: {
       form: markRaw(DataChangeTeachersForm),
       table:tableRows[userRoleNames.teachers.name],
-      data: () =>  teachersService.get(),
+      data: {},
     },
     [userRoleNames.groups.name]: {
       form: markRaw(DataChangeGroupForm),
       table:tableRows[userRoleNames.groups.name],
-      data: () => groupsService.get(),
+      data: {},
     },
   };
 
@@ -140,7 +141,13 @@
       currentActiveForm.value = currentForm;
     }
 
-    currentDateTable.value = await component.data();
+    component.data = await serverRequests[categoryNameValue.value].get();
+
+    if (categoryNameValue.value === userRoleNames.students.name) {
+      groupedComponentCatalog[userRoleNames.groups.name].data =  await serverRequests[userRoleNames.groups.name].get();
+    }
+
+    currentDateTable.value = component.data;
     currentActiveTable.value = component.table;
   }
 

@@ -7,6 +7,7 @@ export const userRoleNames = {
 export const dataChangeTypeNames = {
 	create: { name:'create', text:'Добавление' },
 	update:  { name:'update', text:'Изменение' },
+	get:  { name:'get', text:'Получить' },
 };
 
 export const namesOfDataAdditionMethods = {

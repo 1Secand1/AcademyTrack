@@ -14,7 +14,7 @@
     <SelectButton
       v-model="dataChangeTypeNamesValue"
       pt:root:class="settings__select-button"
-      :options="dataChangeTypeNames"
+      :options="[dataChangeTypeNames.create,dataChangeTypeNames.update]"
       option-value="name"
       option-label="text"
       aria-labelledby="basic"
