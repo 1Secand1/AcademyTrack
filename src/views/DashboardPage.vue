@@ -26,6 +26,10 @@
         </li>
         <li class="sidebar-menu__item sidebar-menu__item--title-category">
           <span class="pi pi-credit-card" />
+          Расписания
+        </li>
+        <li class="sidebar-menu__item sidebar-menu__item--title-category">
+          <span class="pi pi-credit-card" />
           <router-link :to="{ name: 'settingsGroups' }">
             Управление
           </router-link>
