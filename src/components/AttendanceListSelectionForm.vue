@@ -1,42 +1,68 @@
 <template>
-  <div class="heder">
-    <h4>
-      Дата проведения занятия
-    </h4>
+  <div class="header">
+    <div class="header-row-wrapper">
+      <h4>
+        Дата проведения занятия
+      </h4>
 
-    <div class="">
-      <Dropdown
-        v-model="selectedMonths"
-        :options="optionsMonths"
-        option-label="month"
-        placeholder="Месяц"
-      />
-      <Dropdown
-        v-model="selectedDay"
-        :options="optionsDays"
-        option-label="day"
-        placeholder="День"
-      />
+      <div class="header__dropdown-row">
+        <Dropdown
+          v-model="selectedMonths"
+          :options="optionsMonths"
+          option-label="monthName"
+          placeholder="Месяц"
+        />
+        <Dropdown
+          v-model="selectedDay"
+          :options="optionsDays"
+          option-label="dayNumber"
+          placeholder="День"
+          @change="setDay"
+        />
+        <Dropdown
+          v-model="selectedLessons"
+          :options="optionsLessons"
+          option-label="lessonNumber"
+          placeholder="Пара"
+        />
+      </div>
     </div>
+
+    <SelectButton
+      v-model="classAttendanceStatus"
+      class="class-attendance-status-select"
+      :pt="{
+        root: { class: 'settings__select-button' },
+        button: { style: 'width:50% !important' }
+      }"
+      :options="fooOptions"
+      option-value="value"
+      option-label="name"
+      aria-labelledby="basic"
+      :allow-empty="false"
+      :unselectable="false"
+    />
   </div>
 
   <hr />
 
   <section>
-    <label
-      v-for="student in list "
-      :key="student.id"
-      class="studentSelectionBox"
-      :for="student"
-    >
-      <p>{{ student }}</p>
-      <Checkbox
-        v-model="attendanceList"
-        :input-id="student"
-        name="attendanceList"
-        :value="student"
-      />
-    </label>
+    <div class="studentSelectionWrapper">
+      <label
+        v-for="student in list"
+        :key="student.studentId"
+        class="studentSelectionBox"
+        :for="student"
+      >
+        <p>{{ student.fullName }}</p>
+        <Checkbox
+          v-model="attendanceList"
+          :input-id="`${student.studentId}`"
+          name="attendanceList"
+          :value="student"
+        />
+      </label>
+    </div>
   </section>
 
   <Button
@@ -51,8 +77,8 @@
   import Checkbox from 'primevue/checkbox';
   import Dropdown from 'primevue/dropdown';
 
-  import { monthNameDateFormatter } from '@utils/monthNameDateFormatter'
   import { computed, defineProps, ref, toRaw } from 'vue';
+  import SelectButton from 'primevue/selectbutton';
 
   const emit = defineEmits(['change']);
   const props = defineProps({
@@ -60,78 +86,97 @@
     reportableDates: Array,
   });
 
-  const groupDaysByMonth = getGroupDaysByMonth(props.reportableDates);
-
-  const optionsMonths = ref(getOptionsMonthsList(props.reportableDates));
+  const optionsMonths = ref(getOptionsMonthsList());
   const selectedMonths = ref(currentMonthSearch(optionsMonths.value));
 
   const optionsDays = computed(() => {
-    return groupDaysByMonth[selectedMonths.value.month];
+    const month = props.reportableDates.months[selectedMonths.value.monthNumber];
+    const daysArray = Object.values(month.days);
+    const dayNumbers =  daysArray.map(({ dayNumber }) => ({ dayNumber }));
+
+    return dayNumbers;
   });
-  const selectedDay = ref(currentDaySearch(optionsDays.value));
+  const selectedDay = ref(currentDaySearch());
+
+  const optionsLessons = computed(() => {
+    const month = props.reportableDates.months[selectedMonths.value.monthNumber];
+    const day = month.days[selectedDay.value.dayNumber];
+    const lessonsArray = Object.values(day.lessons);
+
+    return lessonsArray;
+  });
+  const selectedLessons = ref(currentLessonSearch());
 
   const attendanceList = ref([]);
 
+  const fooOptions = [
+    { name: 'Отметить присутствующих', value: true },
+    { name: 'Отметить отсутствующих', value: false },
+  ];
+
+  const classAttendanceStatus = ref(true);
 
   function currentMonthSearch(optionsMonths) {
-    const nameMonth = monthNameDateFormatter.format(new Date());
-    return optionsMonths.find(monthObj => monthObj.month === nameMonth) || {};
+    return optionsMonths[0];
   }
 
-  function currentDaySearch(optionsDays) {
-    const currentDay = new Date().getDate();
-    return optionsDays.find(optionsDay => optionsDay.day === currentDay) || {};
+  function currentDaySearch() {
+    return optionsDays.value[0];
   }
 
-  function getOptionsMonthsList(reportableDates) {
-    const uniqueDates = new Set(reportableDates.map(date => monthNameDateFormatter.format( new Date(date))));
-    return Array.from(uniqueDates).map(nameMonth => ({ month: nameMonth }));
+  function currentLessonSearch() {
+    return optionsLessons.value[0];
   }
 
-  function getGroupDaysByMonth(dataArr) {
-    if (!Array.isArray(dataArr)) {
-      throw new Error('dataArr is not Array');
-    }
+  function getOptionsMonthsList() {
+    const monthsArray = Object.values(props.reportableDates.months);
+    return monthsArray.map(({ monthName,monthNumber }) => ({ monthName,monthNumber }));
+  }
 
-    return dataArr.reduce((acc, reportableDates) => {
-      const currentDate = new Date(reportableDates);
-      const nameMonth = monthNameDateFormatter.format(currentDate);
-      const day = currentDate.getDate();
-
-      acc[nameMonth] = acc[nameMonth] || [];
-      acc[nameMonth].push({ day,reportableDates });
-      return acc;
-    }, {});
+  function setDay() {
+    selectedLessons.value = currentLessonSearch();
   }
 
   function change() {
-    if (!selectedDay.value.reportableDates) {
-      console.warn('reportableDates undefined');
-      return;
-    }
-
     emit('change', {
-      date: selectedDay.value.reportableDates,
+      date: selectedLessons.value.date,
+      scheduleId: selectedLessons.value.scheduleId,
       attendanceList: toRaw(attendanceList.value),
+      classAttendanceStatus: classAttendanceStatus.value,
     });
   }
 </script>
 
-<style>
+<style scoped>
+.header__dropdown-row{
+  display: flex;
+  gap: 10px;
+}
 .studentSelectionBox {
 	display: flex;
+  min-height: 35px;
 	justify-content: space-between;
 	align-items: center;
+  padding: 5px 10px;
 }
 
-.heder {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+.studentSelectionWrapper .studentSelectionBox:nth-child(2n) {
+  background-color: #f0f0f0;
+}
+
+.class-attendance-status-select{
+  margin-top: 10px;
+}
+
+.header-row-wrapper{
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
 }
 
 .button {
 	display: flex;
 	width: 100%;
+  margin-top: 10px;
 }
 </style>
