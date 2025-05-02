@@ -20,11 +20,11 @@
     @row-select="onRowSelect"
   >
     <Column
-      field="groupCode"
+      field="group.code"
       header="Код группы"
     />
     <Column
-      field="subjectName"
+      field="subject.name"
       header="Предмет"
     />
   </DataTable>
@@ -32,7 +32,7 @@
 
 <script setup>
   import router from '@router/index.js';
-  import { groupsService } from '@service';
+  import { teachingAssignmentsService } from '@service';
   import Column from 'primevue/column';
   import DataTable from 'primevue/datatable';
   import IconField from 'primevue/iconfield';
@@ -62,7 +62,7 @@
   }
 
   onMounted(async () => {
-    userGroup.value = await groupsService.get();
+    userGroup.value = await teachingAssignmentsService.get();
   });
 </script>
 
