@@ -50,6 +50,9 @@
   import { studentsService } from '@service/api-endpoints/students.js';
   import { teachersService } from '@service/api-endpoints/teachers.js';
   import { groupsService } from '@service/api-endpoints/groups.js';
+  import { useToast } from 'primevue/usetoast';
+
+  const toast = useToast();
 
   const tableRows = {
     [userRoleNames.students.name]: [
@@ -61,12 +64,11 @@
     [userRoleNames.teachers.name]: [
       { text:'Фамилия',valueKey:'surname' },
       { text:'Имя',valueKey:'name' },
-      { text:'Отчество',valueKey:'patronymic' },
-      { text:'Предметы',valueKey:'' },
+      { text:'Отчество',valueKey:'patronymic' }
     ],
     [userRoleNames.groups.name]: [
       { text:'Код группы',valueKey:'groupCode' },
-      { text:'Год начала обучения',valueKey:'yearOfEntry' },
+      { text:'Год поступления',valueKey:'yearOfEntry' }
     ],
   };
 
@@ -77,33 +79,128 @@
       [dataChangeTypeNames.get.name]: () => studentsService.get(),
     },
     [userRoleNames.teachers.name]: {
-      [dataChangeTypeNames.update.name]:  ({ teacherId, ...body }) => teachersService.update(teacherId,body),
-      [dataChangeTypeNames.create.name]: (body) => teachersService.create(body),
-      [dataChangeTypeNames.get.name]: () => teachersService.get(),
+      [dataChangeTypeNames.update.name]: async ({ teacherId, ...body }) => {
+        try {
+          console.log('Updating teacher:', { teacherId, ...body });
+          const response = await teachersService.update(teacherId, body);
+          console.log('Teacher updated successfully:', response);
+          return response;
+        } catch (error) {
+          console.error('Error updating teacher:', error);
+          console.error('Error details:', {
+            message: error.message,
+            response: error.response,
+            status: error.response?.status,
+            data: error.response?.data
+          });
+          throw error;
+        }
+      },
+      [dataChangeTypeNames.create.name]: async (body) => {
+        try {
+          console.log('Creating teacher:', body);
+          const response = await teachersService.create(body);
+          console.log('Teacher created successfully:', response);
+          return response;
+        } catch (error) {
+          console.error('Error creating teacher:', error);
+          console.error('Error details:', {
+            message: error.message,
+            response: error.response,
+            status: error.response?.status,
+            data: error.response?.data
+          });
+          throw error;
+        }
+      },
+      [dataChangeTypeNames.get.name]: async () => {
+        try {
+          console.log('Fetching teachers');
+          const response = await teachersService.get();
+          console.log('Teachers fetched successfully:', response);
+          return response;
+        } catch (error) {
+          console.error('Error fetching teachers:', error);
+          console.error('Error details:', {
+            message: error.message,
+            response: error.response,
+            status: error.response?.status,
+            data: error.response?.data
+          });
+          throw error;
+        }
+      },
     },
     [userRoleNames.groups.name]: {
-      [dataChangeTypeNames.update.name]: ({ groupId,groupCode,yearOfEntry }) =>
-        groupsService.update(groupId,{ groupCode ,yearOfEntry }),
-      [dataChangeTypeNames.create.name]: (body) => groupsService.create(body),
-      [dataChangeTypeNames.get.name]: () => groupsService.get(),
+      [dataChangeTypeNames.update.name]: async ({ groupId, groupCode, yearOfEntry }) => {
+        try {
+          console.log('Updating group:', { groupId, groupCode, yearOfEntry });
+          const response = await groupsService.update(groupId, { groupCode, yearOfEntry });
+          console.log('Group updated successfully:', response);
+          return response;
+        } catch (error) {
+          console.error('Error updating group:', error);
+          console.error('Error details:', {
+            message: error.message,
+            response: error.response,
+            status: error.response?.status,
+            data: error.response?.data
+          });
+          throw error;
+        }
+      },
+      [dataChangeTypeNames.create.name]: async (body) => {
+        try {
+          console.log('Creating group with data:', body);
+          const response = await groupsService.create(body);
+          console.log('Group created successfully:', response);
+          return response;
+        } catch (error) {
+          console.error('Error creating group:', error);
+          console.error('Error details:', {
+            message: error.message,
+            response: error.response,
+            status: error.response?.status,
+            data: error.response?.data
+          });
+          throw error;
+        }
+      },
+      [dataChangeTypeNames.get.name]: async () => {
+        try {
+          console.log('Fetching groups');
+          const response = await groupsService.getAll();
+          console.log('Groups fetched successfully:', response);
+          return response;
+        } catch (error) {
+          console.error('Error fetching groups:', error);
+          console.error('Error details:', {
+            message: error.message,
+            response: error.response,
+            status: error.response?.status,
+            data: error.response?.data
+          });
+          throw error;
+        }
+      },
     },
   };
 
   const groupedComponentCatalog = {
     [userRoleNames.students.name]: {
       form: markRaw(DataChangeStudentForm),
-      table:tableRows[userRoleNames.students.name],
-      data: {},
+      table: tableRows[userRoleNames.students.name],
+      data: [],
     },
     [userRoleNames.teachers.name]: {
       form: markRaw(DataChangeTeachersForm),
-      table:tableRows[userRoleNames.teachers.name],
-      data: {},
+      table: tableRows[userRoleNames.teachers.name],
+      data: [],
     },
     [userRoleNames.groups.name]: {
       form: markRaw(DataChangeGroupForm),
-      table:tableRows[userRoleNames.groups.name],
-      data: {},
+      table: tableRows[userRoleNames.groups.name],
+      data: [],
     },
   };
 
@@ -118,19 +215,27 @@
   const selectedRow = ref({});
 
   onMounted(() => {
+    console.log('Component mounted, calling updateComponents');
     updateComponents();
   });
 
-  watch([categoryNameValue, namesOfDataAdditionMethodsValue], updateComponents);
+  watch([categoryNameValue, namesOfDataAdditionMethodsValue], () => {
+    console.log('Category or method changed, calling updateComponents');
+    updateComponents();
+  });
 
   function onRowSelect() {
     dataChangeTypeNamesValue.value = dataChangeTypeNames.update.name;
   }
 
   async function updateComponents() {
+    console.log('updateComponents called with category:', categoryNameValue.value);
     const component = groupedComponentCatalog[categoryNameValue.value];
 
-    if (!component) return;
+    if (!component) {
+      console.error('No component found for category:', categoryNameValue.value);
+      return;
+    }
     selectedRow.value = {};
 
     const currentForm = namesOfDataAdditionMethodsValue.value === namesOfDataAdditionMethods.excel
@@ -141,19 +246,65 @@
       currentActiveForm.value = currentForm;
     }
 
-    component.data = await serverRequests[categoryNameValue.value].get();
+    try {
+      console.log('Fetching data for current category:', categoryNameValue.value);
+      component.data = await serverRequests[categoryNameValue.value].get();
+      
+      console.log('Fetching groups data');
+      const groupsData = await serverRequests[userRoleNames.groups.name].get();
+      console.log('Groups data received:', groupsData);
+      groupedComponentCatalog[userRoleNames.groups.name].data = groupsData;
 
-    if (categoryNameValue.value === userRoleNames.students.name) {
-      groupedComponentCatalog[userRoleNames.groups.name].data =  await serverRequests[userRoleNames.groups.name].get();
+      currentDateTable.value = component.data;
+      currentActiveTable.value = component.table;
+    } catch (error) {
+      console.error('Error updating components:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось загрузить данные',
+        life: 3000
+      });
     }
-
-    currentDateTable.value = component.data;
-    currentActiveTable.value = component.table;
   }
 
   async function sendRequest(data) {
-    await serverRequests[categoryNameValue.value][dataChangeTypeNamesValue.value](data);
-    await updateComponents();
+    try {
+      console.log('Sending request with data:', {
+        category: categoryNameValue.value,
+        type: dataChangeTypeNamesValue.value,
+        data
+      });
+      
+      await serverRequests[categoryNameValue.value][dataChangeTypeNamesValue.value](data);
+      await updateComponents();
+      toast.add({
+        severity: 'success',
+        summary: 'Успех',
+        detail: 'Операция выполнена успешно',
+        life: 3000
+      });
+    } catch (error) {
+      console.error('Error sending request:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: error.response?.data?.message || 'Не удалось выполнить операцию',
+        life: 3000
+      });
+    }
   }
 
 </script>

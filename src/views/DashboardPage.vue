@@ -26,12 +26,14 @@
         </li>
         <li class="sidebar-menu__item sidebar-menu__item--title-category">
           <span class="pi pi-credit-card" />
-          Расписания
-        </li>
-        <li class="sidebar-menu__item sidebar-menu__item--title-category">
-          <span class="pi pi-credit-card" />
           <router-link :to="{ name: 'settingsGroups' }">
             Управление
+          </router-link>
+        </li>
+        <li class="sidebar-menu__item">
+          <span class="pi pi-calendar-plus" />
+          <router-link :to="{ name: 'schedulePlanning' }">
+            Планирование расписания
           </router-link>
         </li>
       </ul>
@@ -46,11 +48,13 @@
     <main class="main">
       <router-view />
     </main>
+    <Toast />
   </div>
 </template>
 
 <script setup>
   import Button from 'primevue/button';
+  import Toast from 'primevue/toast';
 
   import router from '@router/index.js';
   import { deleteCookie } from '@utils/cookie.js';

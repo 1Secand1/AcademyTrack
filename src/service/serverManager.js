@@ -12,12 +12,22 @@ export class ServerManager {
 
 	async create(body) {
 		try {
-			return await apiClient.post(this.endpointName, { json: body }).json();
+			console.log('ServerManager: Creating with data:', {
+				endpoint: this.endpointName,
+				body
+			});
+			const response = await apiClient.post(this.endpointName, { json: body });
+			const data = await response.json();
+			console.log('ServerManager: Create successful:', data);
+			return data;
 		} catch (error) {
-			console.error('Ошибка при создании:', {
+			console.error('ServerManager: Error creating:', {
 				endpoint: this.endpointName,
 				request: body,
 				error: error.message,
+				status: error.response?.status,
+				statusText: error.response?.statusText,
+				response: error.response
 			});
 			throw error;
 		}
@@ -25,16 +35,19 @@ export class ServerManager {
 
 	async get(id = '', params = {}) {
 		const url = id ? `${this.endpointName}/${id}` : this.endpointName;
-
+		
 		try {
-			return await apiClient.get(url, {
-				searchParams: params,
+			const response = await apiClient.get(url, {
+				searchParams: params
 			}).json();
+			return Array.isArray(response) ? response : [response];
 		} catch (error) {
 			console.error('Ошибка при получении:', {
 				endpoint: this.endpointName,
-				request:{ id,params },
+				request: { id, params },
 				error: error.message,
+				status: error.response?.status,
+				statusText: error.response?.statusText
 			});
 			throw error;
 		}
@@ -48,6 +61,8 @@ export class ServerManager {
 				endpoint: this.endpointName,
 				request: { id, body },
 				error: error.message,
+				status: error.response?.status,
+				statusText: error.response?.statusText
 			});
 			throw error;
 		}
@@ -61,8 +76,10 @@ export class ServerManager {
 		} catch (error) {
 			console.error('Ошибка при удалении:', {
 				endpoint: this.endpointName,
-				request:{ id } ,
+				request: { id },
 				error: error.message,
+				status: error.response?.status,
+				statusText: error.response?.statusText
 			});
 			throw error;
 		}

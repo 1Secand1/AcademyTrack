@@ -1,51 +1,73 @@
-const dashboardRoutes = [
-	{
-		alias: '',
-		path: 'user-groups',
-		name: 'userGroups',
-		component: () => import('@views/UserGroupsPage.vue'),
-	},
-	{
-		path: 'group-statistics',
-		name: 'groupStatistics',
-		component: () => import('@views/GroupStatisticsPage.vue'),
-	},
-	{
-		path: 'student-group',
-		name: 'studentGroup',
-		component: () => import('@views/StudentGroupPage.vue'),
-		children: [
-			{
-				alias: '',
-				path: 'selection',
-				name: 'groupSelection',
-				component: () => import('@views/GroupSelectionPage.vue'),
-			},
-			{
-				path: 'profile',
-				name: 'groupProfile',
-				component: () => import('@views/GroupProfilePage.vue'),
-			},
-		],
-	},
-	{
-		path: 'settings-groups',
-		name: 'settingsGroups',
-		component: () => import('@views/DataChangePage.vue'),
-	},
-];
+import HomePage from '@views/HomePage.vue';
+import AuthorizationPage from '@views/AuthorizationPage.vue';
+import RegistrationPage from '@views/RegistrationPage.vue';
+import UserGroupsPage from '@views/UserGroupsPage.vue';
+import DataChangePage from '@views/DataChangePage.vue';
+import TeachingAssignmentsPage from '@views/TeachingAssignmentsPage.vue';
+import GroupProfilePage from '@views/GroupProfilePage.vue';
+import SchedulePlanningPage from '@views/SchedulePlanningPage.vue';
+import SubjectsPage from '@views/SubjectsPage.vue';
+import ScheduleManagementPage from '@views/ScheduleManagementPage.vue';
 
 export const routes = [
 	{
-		alias: '/',
-		path: '/dashboard',
-		name: 'dashboard',
-		component: () => import('@views/DashboardPage.vue'),
-		children: dashboardRoutes,
+		path: '/',
+		name: 'home',
+		component: HomePage,
+		meta: { requiresAuth: true }
 	},
 	{
-		path: '/authorization',
-		name: 'authorization',
-		component: () => import('@views/AuthorizationPage.vue'),
+		path: '/login',
+		name: 'login',
+		component: AuthorizationPage,
+		meta: { requiresAuth: false }
 	},
+	{
+		path: '/register',
+		name: 'register',
+		component: RegistrationPage,
+		meta: { requiresAuth: true, requiresAdmin: true }
+	},
+	{
+		path: '/user-groups',
+		name: 'userGroups',
+		component: UserGroupsPage,
+		meta: { requiresAuth: true }
+	},
+	{
+		path: '/data-change',
+		name: 'dataChange',
+		component: DataChangePage,
+		meta: { requiresAuth: true, requiresAdmin: true }
+	},
+	{
+		path: '/teaching-assignments',
+		name: 'teachingAssignments',
+		component: TeachingAssignmentsPage,
+		meta: { requiresAuth: true, requiresAdmin: true }
+	},
+	{
+		path: '/group/:groupId',
+		name: 'groupProfile',
+		component: GroupProfilePage,
+		meta: { requiresAuth: true }
+	},
+	{
+		path: '/schedule-planning',
+		name: 'schedulePlanning',
+		component: SchedulePlanningPage,
+		meta: { requiresAuth: true, requiresAdmin: true }
+	},
+	{
+		path: '/subjects',
+		name: 'subjects',
+		component: SubjectsPage,
+		meta: { requiresAuth: true, requiresAdmin: true }
+	},
+	{
+		path: '/schedule-management',
+		name: 'scheduleManagement',
+		component: ScheduleManagementPage,
+		meta: { requiresAuth: true, requiresAdmin: true }
+	}
 ];

@@ -3,7 +3,7 @@
     <SelectButton
       v-model="categoryNameValue"
       pt:root:class="settings__select-button"
-      :options="userRoleNames"
+      :options="Object.values(userRoleNames)"
       option-value="name"
       option-label="text"
       aria-labelledby="basic"

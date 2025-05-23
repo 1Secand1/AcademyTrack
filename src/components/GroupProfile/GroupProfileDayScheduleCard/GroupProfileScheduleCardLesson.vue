@@ -6,7 +6,7 @@
       <p class="card__teacher-name">
         {{ lessonsForTheDayValues?.teacherName }}
       </p>
-      <span class="card__classRoom-number">
+      <span class="card__classRoom-number" v-if="lessonsForTheDayValues?.classRoomNumber">
         К {{ lessonsForTheDayValues?.classRoomNumber }}
       </span>
     </div>
@@ -18,20 +18,18 @@
 </template>
 
 <script setup>
-  import GroupProfileDayScheduleCard from '@components/GroupProfile/GroupProfileDayScheduleCard/GroupProfileDayScheduleCard.vue';
-  import GroupProfileDayScheduleCardNumbered from '@components/GroupProfile/GroupProfileDayScheduleCard/GroupProfileDayScheduleCardNumbered.vue';
+import GroupProfileDayScheduleCard from '@components/GroupProfile/GroupProfileDayScheduleCard/GroupProfileDayScheduleCard.vue';
+import GroupProfileDayScheduleCardNumbered from '@components/GroupProfile/GroupProfileDayScheduleCard/GroupProfileDayScheduleCardNumbered.vue';
 
-  const props = defineProps({
-    lessonsForTheDayValues: {
-      type: Object,
-      required: true,
-    },
-  });
-
+const props = defineProps({
+  lessonsForTheDayValues: {
+    type: Object,
+    required: true,
+  }
+});
 </script>
 
 <style scoped>
-
 .card__info-box-heder {
 	display: flex;
 	justify-content: space-between;

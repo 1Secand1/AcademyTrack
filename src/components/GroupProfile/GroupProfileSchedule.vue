@@ -1,157 +1,172 @@
 <template>
   <div class="day-schedule">
-    <div class="day-schedule__buttons">
-      <Button
-        class="button"
-        label=""
-        icon="pi pi-angle-left"
-        @click="currentScheduleCardGroupNumber--"
-      />
-      <Button
-        class="button"
-        label=""
-        icon="pi pi-angle-right"
-        icon-pos="right"
-        @click="currentScheduleCardGroupNumber++"
-      />
-
-      <SelectButton
-        v-model="selectWeekTypeValue"
-        class="select-week-type-button"
-        :options="selectWeekTypeOptions"
-        option-label="name"
-        aria-labelledby="basic"
-      />
+    <div class="day-schedule__options">
+      <Checkbox v-model="hideEmptyDays" input-id="hideEmptyDays" :binary="true" />
+      <label for="hideEmptyDays" style="margin-left: 8px; cursor:pointer;">Скрывать пустые дни</label>
     </div>
 
-    <div class="day-schedule__day-cards">
+    <div v-if="loading" class="loading">
+      <ProgressSpinner />
+      <p>Загрузка расписания...</p>
+    </div>
+    <div v-else-if="schedule.length === 0" class="no-schedule">
+      <i class="pi pi-calendar-times" style="font-size: 2rem"></i>
+      <p>Расписание не найдено</p>
+    </div>
+    <div v-else class="day-schedule__day-cards">
       <GroupProfileDayScheduleCards
-        v-for="schedule in currentScheduleCardGroup"
+        v-for="schedule in filteredScheduleCardGroup"
         :key="schedule.weekdayTextName"
         :weekday-name="schedule.weekdayTextName"
-        :lessons-for-the-day="schedule.schedule"
+        :lessons-for-the-day="schedule.lessonsByPair"
       />
     </div>
-
-    <div class="day-schedule__navigation-buttons" />
   </div>
 </template>
 
 <script setup>
-  import Button from 'primevue/button';
-  import SelectButton from 'primevue/selectbutton';
+import GroupProfileDayScheduleCards from '@components/GroupProfile/GroupProfileDaySchedule.vue';
+import Checkbox from 'primevue/checkbox';
+import ProgressSpinner from 'primevue/progressspinner';
+import { computed, ref, watch, onMounted } from 'vue';
+import { scheduleService } from '@service/api-endpoints/schedule.js';
+import { useToast } from 'primevue/usetoast';
 
-  import GroupProfileDayScheduleCards from '@components/GroupProfile/GroupProfileDaySchedule.vue';
-  import { computed, ref, watch } from 'vue';
-  import { weekSchedules } from '@service';
+const props = defineProps({
+  groupDetails: { type: Object, required: true }
+});
 
-  const selectWeekTypeOptions = [
-    { name: 'Числитель', value: 'numerator' },
-    { name: 'Знаменатель', value: 'denominator' },
-  ];
-  const selectWeekTypeValue = ref(selectWeekTypeOptions[0]);
+const schedule = ref([]);
+const hideEmptyDays = ref(localStorage.getItem('hideEmptyDays') === 'true');
+const loading = ref(false);
+const toast = useToast();
 
-  const screenWidth = ref(document.documentElement.clientWidth);
+// Следим за изменением состояния чекбокса и сохраняем в localStorage
+watch(hideEmptyDays, (newValue) => {
+  localStorage.setItem('hideEmptyDays', newValue);
+});
 
-  const currentScheduleCardGroupNumber = ref(0);
-
-  const currentWeekSchedules = computed(() => weekSchedules[selectWeekTypeValue.value.value]);
-
-  const scheduleCardGroups = computed(groupSchedulesSorted);
-  const currentScheduleCardGroup = computed(() => scheduleCardGroups.value[currentScheduleCardGroupNumber.value]);
-
-  const quantityElementsInGroup = computed(() => {
-    if (screenWidth.value > 1400) return 3;
-    if (screenWidth.value > 1130) return 2;
-    return 1;
-  });
-
-  watch(currentScheduleCardGroupNumber,(newCardGroupNumber) => {
-    if (newCardGroupNumber >= scheduleCardGroups.value.length) {
-      currentScheduleCardGroupNumber.value--;
+const loadSchedule = async () => {
+  try {
+    loading.value = true;
+    console.log('Loading schedule for group:', props.groupDetails.id);
+    console.log('Current schedule data:', schedule.value);
+    
+    // Если расписание уже есть в groupDetails, используем его
+    if (props.groupDetails.schedule) {
+      console.log('Schedule from groupDetails:', props.groupDetails.schedule);
+      schedule.value = props.groupDetails.schedule.map(lesson => ({
+        ...lesson,
+        date: new Date(lesson.date),
+        exceptionDate: lesson.exceptionDate ? new Date(lesson.exceptionDate) : null
+      }));
+    } else {
+      // Получаем расписание для всей группы одним запросом
+      console.log('Fetching schedule from API...');
+      const response = await scheduleService.getGroupSchedule(props.groupDetails.id);
+      console.log('Schedule API response:', response);
+      const scheduleData = response?.schedule || [];
+      console.log('Processed schedule data:', scheduleData);
+      schedule.value = scheduleData.map(lesson => ({
+        ...lesson,
+        date: new Date(lesson.date),
+        exceptionDate: lesson.exceptionDate ? new Date(lesson.exceptionDate) : null
+      }));
     }
-
-    if (newCardGroupNumber < 0) {
-      currentScheduleCardGroupNumber.value++;
-    }
-  });
-
-  watch(scheduleCardGroups,(newScheduleCardGroups,oldScheduleCardGroups) => {
-    if (newScheduleCardGroups.length !== oldScheduleCardGroups.length) {
-      currentScheduleCardGroupNumber.value = 0;
-    }
-  });
-
-  function groupSchedulesSorted() {
-    const numberOfGroups = Math.ceil(currentWeekSchedules.value.length / quantityElementsInGroup.value);
-    const groups = Array.from({ length: numberOfGroups }, () => []);
-
-    for (let index = 0; index < currentWeekSchedules.value.length; index++) {
-      const groupNumber = Math.floor(index / quantityElementsInGroup.value);
-      groups[groupNumber].push(currentWeekSchedules.value[index]);
-    }
-
-    return groups;
+    
+    console.log('Final schedule data:', schedule.value);
+  } catch (error) {
+    console.error('Ошибка при загрузке расписания:', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Не удалось загрузить расписание',
+      life: 3000
+    });
+  } finally {
+    loading.value = false;
+    console.log('Loading state:', loading.value);
   }
+};
 
-  window.addEventListener('resize', () => {
-    screenWidth.value = document.documentElement.clientWidth;
-  });
+const currentScheduleCardGroup = computed(() => {
+  const byWeekday = {};
+  for (let i = 1; i <= 6; i++) {
+    byWeekday[i] = { weekdayTextName: getWeekdayName(i), lessonsByPair: [] };
+    for (let pair = 1; pair <= 7; pair++) {
+      byWeekday[i].lessonsByPair.push({
+        lessonNumber: pair,
+        lessons: []
+      });
+    }
+  }
+  for (const lesson of schedule.value) {
+    const date = new Date(lesson.date);
+    let weekday = date.getDay();
+    if (weekday === 0) weekday = 7;
+    if (!byWeekday[weekday]) continue;
+    const pairObj = byWeekday[weekday].lessonsByPair[lesson.lessonNumber - 1];
+    if (pairObj) pairObj.lessons.push(lesson);
+  }
+  return Object.values(byWeekday);
+});
+
+const filteredScheduleCardGroup = computed(() => {
+  if (!hideEmptyDays.value) return currentScheduleCardGroup.value;
+  return currentScheduleCardGroup.value.filter(day =>
+    day.lessonsByPair.some(pair => pair.lessons.length > 0)
+  );
+});
+
+function getWeekdayName(day) {
+  const weekdays = [null, 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+  return weekdays[day];
+}
+
+onMounted(loadSchedule);
+watch(() => props.groupDetails.id, (newId) => {
+  console.log('Group ID changed:', newId);
+  loadSchedule();
+}, { immediate: true });
 </script>
 
 <style scoped>
-.day-schedule__day-cards {
-	width: 100%;
-	display: flex;
-	overflow: auto;
-
-	justify-content: space-between;
-  align-items: center;
-
-	margin-top: 10px;
-	gap: 10px;
-}
-
-.day-schedule__progress-bar {
-	display: flex;
-
-	gap: 10px;
-	margin-top: 15px;
-}
-
-.day-schedule__progress-bar-item {
-	width: 100%;
-	height: 10px;
-	border-radius: 5px;
-	background: #D9D9D9;
-}
-
-.day-schedule__progress-bar-item--active {
-	background: #627BFF;
-}
-
-.button{
-  max-width: 100px;
-}
-
-.select-week-type-button{
-  max-width: 300px;
-  display: flex;
-}
-
-.day-schedule__buttons{
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.day-schedule__navigation-buttons{
-  max-width: 200px;
-  display: flex;
-  gap: 10px;
-}
-
 .day-schedule {
   width: 100%;
+}
+
+.day-schedule__options {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.day-schedule__day-cards {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.no-schedule {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-color-secondary);
+}
+
+.no-schedule i {
+  margin-bottom: 16px;
 }
 </style>

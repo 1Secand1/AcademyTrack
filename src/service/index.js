@@ -1,12 +1,17 @@
-export { apiClient } from '@service/apiClient.js';
+export * from './auth.js';
+export * from './apiClient.js';
+export * from './serverManager.js';
+export * from './exportService.js';
+export * from './api-endpoints/teachers.js';
+export * from './api-endpoints/students.js';
+export * from './api-endpoints/groups.js';
+export * from './api-endpoints/subject.js';
+export * from './api-endpoints/teaching-assignments.js';
 
 export { attendanceService  } from '@service/api-endpoints/attendance.js';
-export { groupsService } from '@service/api-endpoints/groups.js';
-export { studentsService } from '@service/api-endpoints/students.js';
 export { subjectService  } from '@service/api-endpoints/subject.js';
-export { teachersService  } from '@service/api-endpoints/teachers.js';
 export { teachingAssignmentsService } from '@service/api-endpoints/teaching-assignments.js';
+export { scheduleService } from '@service/api-endpoints/schedule.js';
 
 export { getLessonAttendanceReport } from '@service/api-endpoints/getLessonAttendanceReport.js';
 export { getLessonPlan } from '@service/api-endpoints/getLessonPlan.js';
-export { weekSchedules } from '@service/api-endpoints/weekSchedules.js';

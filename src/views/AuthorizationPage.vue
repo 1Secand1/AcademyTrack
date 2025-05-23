@@ -1,107 +1,98 @@
 <template>
-  <div class="login-container">
-    <form
-      class="login-form"
-      @submit.prevent="handleSubmit"
-    >
-      <h2 class="login-form__title">
-        Вход в систему
-      </h2>
-
-      <div class="login-form__input-box">
-        <div class="login-form__named-input">
-          <label for="username">Логин</label>
-          <InputText
-            id="username"
-            v-model="formData.login"
-          />
-        </div>
-
-        <div class="login-form__named-input">
-          <label for="password">Пароль</label>
-          <InputText
-            id="password"
-            v-model="formData.password"
-            type="password"
-          />
-        </div>
+  <div class="authorization-page">
+    <div class="authorization-container">
+      <h1>Авторизация</h1>
+      <div class="form-container">
+        <form @submit.prevent="handleSubmit">
+          <div class="form-group">
+            <label for="login">Логин</label>
+            <InputText id="login" v-model="login" class="w-full" />
+          </div>
+          <div class="form-group">
+            <label for="password">Пароль</label>
+            <InputText id="password" v-model="password" type="password" class="w-full" />
+          </div>
+          <div v-if="error" class="error-message">
+            {{ error }}
+          </div>
+          <Button type="submit" label="Войти" class="w-full" />
+        </form>
       </div>
-
-      <Button
-        class="login-form__button"
-        label="Войти"
-        @click="userAuthorizationPage(formData.login, formData.password)"
-      />
-    </form>
+    </div>
   </div>
 </template>
 
 <script setup>
-  import Button from 'primevue/button';
-  import InputText from 'primevue/inputtext';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { authService } from '@service/auth.js';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
 
-  import { getToken } from '@service/auth.js';
-  import { reactive, ref } from 'vue';
+const router = useRouter();
+const login = ref('');
+const password = ref('');
+const error = ref('');
 
-  import router from '@router/index.js';
-  import { setCookie } from '@utils/cookie.js';
+const handleSubmit = async () => {
+  try {
+    error.value = '';
+    const { user } = await authService.login({
+      login: login.value,
+      password: password.value
+    });
 
-  const value = ref(null);
-
-  const formData = reactive({
-    login: '',
-    password: '',
-  });
-
-  async function userAuthorizationPage(login, password) {
-    const token = await getToken(login, password);
-
-    if (!token) return;
-    setCookie('token',token,{ 'max-age':60 * 60 * 24 * 365 });
-    router.push({ path: '/dashboard' });
+    // Перенаправление в зависимости от роли
+    if (user.roles.includes('admin')) {
+      router.push('/data-change');
+    } else if (user.roles.includes('teacher')) {
+      router.push('/user-groups');
+    } else {
+      router.push('/');
+    }
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Ошибка авторизации';
   }
+};
 </script>
 
 <style scoped>
-.login-container {
-  max-width: 400px;
-
-  margin: auto;
-  margin-top: 20dvh;
-  padding: 20px;
-
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.authorization-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--surface-ground);
 }
 
-.login-form {
-  display: grid;
-}
-
-.login-form__title {
-  margin: 0;
-}
-
-input {
+.authorization-container {
+  background-color: var(--surface-card);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
+  max-width: 400px;
 }
 
-.login-form__button {
-  margin-top: 15px;
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-color);
 }
 
-.login-form__named-input {
-  display: grid;
-  gap: 8px;
+.form-group {
+  margin-bottom: 1rem;
 }
 
-.qwe>.p-inputtext {
-  display: none;
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
 }
 
-.login-form__input-box {
-  display: grid;
-  margin-top: 15px;
-  gap: 10px;
+.error-message {
+  color: var(--red-500);
+  margin-bottom: 1rem;
+  text-align: center;
 }
 </style>

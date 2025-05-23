@@ -3,8 +3,11 @@
     <div class="group-card__avatar" />
     <div class="">
       <h5 class="group-card__title">
-        {{ groupName }}
+        {{ groupCode }}
       </h5>
+      <p v-if="groupTitle" class="group-card__subtitle">
+        {{ groupTitle }}
+      </p>
       <p class="group-card__text">
         Студентов: {{ numberOfStudents }}
       </p>
@@ -14,7 +17,8 @@
 
 <script setup>
   const props = defineProps({
-    groupName: String,
+    groupCode: String,
+    groupTitle: String,
     numberOfStudents: [String, Number],
   });
 </script>
@@ -42,7 +46,15 @@
 	gap: 10px;
 }
 
-.group-card__title {}
-
+.group-card__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+.group-card__subtitle {
+  font-size: 0.95rem;
+  color: #888;
+  margin: 0 0 2px 0;
+}
 .group-card__text {}
 </style>

@@ -56,6 +56,7 @@
     groups: {
       type: Array,
       required: true,
+      default: () => [],
     },
   });
 

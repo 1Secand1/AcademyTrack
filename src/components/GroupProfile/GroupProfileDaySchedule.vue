@@ -5,61 +5,48 @@
     </h3>
     <div class="cards">
       <template
-        v-for="lesson in formattedLessonsForTheDay"
-        :key="lesson.lessonNumber"
+        v-for="pair in lessonsForTheDay"
+        :key="pair.lessonNumber"
       >
         <GroupProfileDayScheduleCardNumbered
-          v-if="lesson?.unplanned"
+          v-if="!pair.lessons || !pair.lessons.length"
           class="cards__lesson-card--unplanned"
-          :number="lesson.lessonNumber"
+          :number="pair.lessonNumber"
         >
           <p>Урок не запланирован</p>
         </GroupProfileDayScheduleCardNumbered>
-
-        <GroupProfileScheduleLessonCard
-          v-else
-          :lessons-for-the-day-values="lesson"
-        />
+        <template v-else>
+          <GroupProfileScheduleLessonCard
+            v-for="lesson in pair.lessons"
+            :key="lesson.lessonNumber + '-' + lesson.subjectName + '-' + lesson.teacherName"
+            :lessons-for-the-day-values="lesson"
+          />
+        </template>
       </template>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { computed } from 'vue';
-  import GroupProfileScheduleLessonCard from '@components/GroupProfile/GroupProfileDayScheduleCard/GroupProfileScheduleCardLesson.vue';
-  import GroupProfileDayScheduleCardNumbered from '@components/GroupProfile/GroupProfileDayScheduleCard/GroupProfileDayScheduleCardNumbered.vue';
+import GroupProfileScheduleLessonCard from '@components/GroupProfile/GroupProfileDayScheduleCard/GroupProfileScheduleCardLesson.vue';
+import GroupProfileDayScheduleCardNumbered from '@components/GroupProfile/GroupProfileDayScheduleCard/GroupProfileDayScheduleCardNumbered.vue';
 
-  const props = defineProps({
-    weekdayName: {
-      type: String,
-      required: true,
-    },
-    lessonsForTheDay: {
-      type: Array,
-      required: true,
-    },
-  });
-
-  const formattedLessonsForTheDay = computed(() => {
-    const lessonsMap = new Map();
-    for (let i = 1; i <= 7; i++) {
-      const template = {
-        lessonNumber: i,
-        unplanned: true,
-      };
-      lessonsMap.set(`${i}`, template);
-    }
-    props.lessonsForTheDay.forEach(lesson => lessonsMap.set(lesson.lessonNumber, lesson));
-    return [...lessonsMap.values()];
-  });
+const props = defineProps({
+  weekdayName: {
+    type: String,
+    required: true,
+  },
+  lessonsForTheDay: {
+    type: Array, // [{ lessonNumber, lessons: [ ... ] }]
+    required: true,
+  }
+});
 </script>
 
 <style scoped>
 .cards {
 	display: grid;
 	width: 100%;
-
 	gap: 10px;
 	margin-top: 10px;
 }
@@ -69,7 +56,7 @@
 }
 
 .cards__lesson-card--unplanned{
-opacity: 0.5;
+  opacity: 0.5;
 }
 
 .day-schedule {
