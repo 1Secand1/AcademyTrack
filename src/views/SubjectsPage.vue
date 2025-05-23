@@ -7,10 +7,13 @@
         label="Добавить предмет" 
         @click="showSubjectDialog = true"
         v-if="isAdmin"
+        class="add-button"
       />
     </div>
 
+    <!-- Десктопная версия -->
     <DataTable
+      v-if="!isMobile"
       v-model:selection="selectedSubject"
       :value="subjects"
       :loading="isLoading"
@@ -49,20 +52,62 @@
       </Column>
     </DataTable>
 
+    <!-- Мобильная версия -->
+    <div v-else class="subjects-list">
+      <div v-if="isLoading" class="loading">
+        <ProgressSpinner />
+      </div>
+      <div v-else-if="subjects.length === 0" class="no-data">
+        <p>Нет данных для отображения</p>
+      </div>
+      <div v-else v-for="subject in subjects" :key="subject.id" class="subject-card">
+        <div class="subject-card__header">
+          <h3 class="subject-card__title">{{ subject.name }}</h3>
+          <div v-if="isAdmin" class="subject-card__actions">
+            <Button 
+              icon="pi pi-pencil" 
+              class="p-button-rounded p-button-text"
+              @click="editSubject(subject)"
+            />
+            <Button 
+              icon="pi pi-trash" 
+              class="p-button-rounded p-button-text p-button-danger"
+              @click="confirmDelete(subject)"
+            />
+          </div>
+        </div>
+        <div class="subject-card__content">
+          <div class="subject-card__teachers">
+            <span class="label">Преподаватели:</span>
+            <div class="teachers-list">
+              <Chip 
+                v-for="teacher in subject.teachers" 
+                :key="teacher.id"
+                :label="teacher.fullName"
+                class="teacher-chip"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Диалог добавления/редактирования предмета -->
     <Dialog
       v-model:visible="showSubjectDialog"
       :header="selectedSubject ? 'Редактирование предмета' : 'Добавление предмета'"
       :modal="true"
       class="subject-dialog"
+      :style="{ width: isMobile ? '90vw' : '450px' }"
     >
       <div class="p-fluid">
         <div class="p-field">
-          <label for="subjectName">Название предмета</label>
+          <label class="form-label" for="subjectName">Название предмета</label>
           <InputText
             id="subjectName"
             v-model="subjectForm.name"
             :class="{ 'p-invalid': subjectFormErrors.name }"
+            class="w-full"
           />
           <small class="p-error" v-if="subjectFormErrors.name">
             {{ subjectFormErrors.name }}
@@ -70,17 +115,20 @@
         </div>
       </div>
       <template #footer>
-        <Button
-          label="Отмена"
-          icon="pi pi-times"
-          class="p-button-text"
-          @click="closeDialog"
-        />
-        <Button
-          :label="selectedSubject ? 'Сохранить' : 'Добавить'"
-          icon="pi pi-check"
-          @click="saveSubject"
-        />
+        <div class="dialog-footer">
+          <Button
+            label="Отмена"
+            icon="pi pi-times"
+            class="p-button-text w-full"
+            @click="closeDialog"
+          />
+          <Button
+            :label="selectedSubject ? 'Сохранить' : 'Добавить'"
+            icon="pi pi-check"
+            class="w-full"
+            @click="saveSubject"
+          />
+        </div>
       </template>
     </Dialog>
 
@@ -100,6 +148,7 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Chip from 'primevue/chip';
+import ProgressSpinner from 'primevue/progressspinner';
 import { authService } from '@service/auth.js';
 import { subjectsService } from '@service/api-endpoints/subjects.js';
 
@@ -115,6 +164,16 @@ const subjectForm = ref({
 });
 const subjectFormErrors = ref({
   name: ''
+});
+
+// Добавляем определение мобильного устройства
+const isMobile = ref(window.innerWidth <= 768);
+
+// Добавляем слушатель изменения размера окна
+onMounted(() => {
+  window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth <= 768;
+  });
 });
 
 onMounted(async () => {
@@ -239,49 +298,136 @@ async function saveSubject() {
 
 <style scoped>
 .subjects-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 2rem;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
 }
 
 .title {
   margin: 0;
+  font-size: 1.5rem;
   color: var(--text-color);
 }
 
 .teachers-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .teacher-chip {
-  background: var(--primary-50);
-  color: var(--primary-700);
+  background: var(--surface-hover);
 }
 
 .actions {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
-.subject-dialog {
-  min-width: 450px;
+.w-full {
+  width: 100%;
 }
 
-.p-field {
+.form-label {
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.dialog-footer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Стили для мобильной версии */
+.subjects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.subject-card {
+  background: var(--surface-card);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subject-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 1rem;
 }
 
-.p-field label {
-  display: block;
-  margin-bottom: 0.5rem;
+.subject-card__title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.subject-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.subject-card__teachers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color-secondary);
+}
+
+@media (max-width: 768px) {
+  .subjects-container {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .add-button {
+    width: 100%;
+  }
+
+  .subject-card {
+    padding: 0.75rem;
+  }
+
+  .dialog-footer {
+    flex-direction: column;
+  }
+
+  /* Стили для инпутов на мобильных устройствах */
+  :deep(.p-inputtext) {
+    width: 100%;
+    padding: 0.5rem;
+  }
 }
 </style> 

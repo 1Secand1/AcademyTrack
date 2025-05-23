@@ -122,7 +122,7 @@ const fetchTeachers = async () => {
 
 const fetchGroups = async () => {
   try {
-    const response = await groupsService.get();
+    const response = await groupsService.getAll();
     groups.value = response;
   } catch (error) {
     console.error('Error fetching groups:', error);

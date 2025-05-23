@@ -299,13 +299,13 @@ watch(() => props.groupDetails.students, (newVal) => {
   .students-header {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 10px;
     min-height: unset;
   }
   .students-actions {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 8px;
   }
   .search-container {
     width: 100%;

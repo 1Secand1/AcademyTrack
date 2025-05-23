@@ -343,7 +343,7 @@ onMounted(loadAttendanceSummary);
 @media (max-width: 768px) {
   .attendance-header {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
 
   .attendance-actions {

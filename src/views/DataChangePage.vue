@@ -1,39 +1,75 @@
 <template>
   <div class="wrapper">
-    <section class="settings">
-      <component
-        :is="currentActiveForm"
-        v-model="selectedRow"
-        v-model:dataChangeType="dataChangeTypeNamesValue"
-        :groups="groupedComponentCatalog[userRoleNames.groups.name].data"
-        :disabled="dataChangeTypeNames.update.name === dataChangeTypeNamesValue && Object.keys(selectedRow).length === 0"
-        @form-submission="sendRequest"
-      />
+    <div class="content-layout">
+      <section class="settings">
+        <component
+          :is="currentActiveForm"
+          v-model="selectedRow"
+          v-model:dataChangeType="dataChangeTypeNamesValue"
+          :groups="groupedComponentCatalog[userRoleNames.groups.name].data"
+          :disabled="dataChangeTypeNames.update.name === dataChangeTypeNamesValue && Object.keys(selectedRow).length === 0"
+          @form-submission="sendRequest"
+        />
 
-      <DataChangeOptionSwitch
-        v-model:category="categoryNameValue"
-        v-model:dataChangeType="dataChangeTypeNamesValue"
-        v-model:additionMethod="namesOfDataAdditionMethodsValue"
-      />
-    </section>
+        <DataChangeOptionSwitch
+          v-model:category="categoryNameValue"
+          v-model:dataChangeType="dataChangeTypeNamesValue"
+          v-model:additionMethod="namesOfDataAdditionMethodsValue"
+        />
+      </section>
 
-    <DataTable
-      v-model:selection="selectedRow"
-      class="table"
-      :value="currentDateTable"
-      :sort-order="-1"
-      sort-field="attendance"
-      selection-mode="single"
-      striped-rows
-      @row-select="onRowSelect"
-    >
-      <Column
-        v-for="row in currentActiveTable"
-        :key="row.valueKey"
-        :field="row.valueKey"
-        :header="row.text"
-      />
-    </DataTable>
+      <!-- Десктопная версия -->
+      <section class="table-section">
+        <DataTable
+          v-if="!isMobile"
+          v-model:selection="selectedRow"
+          class="table"
+          :value="currentDateTable"
+          :sort-order="-1"
+          sort-field="attendance"
+          selection-mode="single"
+          striped-rows
+          @row-select="onRowSelect"
+        >
+          <Column
+            v-for="row in currentActiveTable"
+            :key="row.valueKey"
+            :field="row.valueKey"
+            :header="row.text"
+          />
+        </DataTable>
+
+        <!-- Мобильная версия -->
+        <div v-else class="data-list">
+          <div v-if="currentDateTable.length === 0" class="no-data">
+            <p>Нет данных для отображения</p>
+          </div>
+          <div v-else v-for="item in currentDateTable" :key="item.id" 
+               class="data-card" 
+               :class="{ 'is-selected': selectedRow.id === item.id }"
+               @click="onRowSelect({ data: item })">
+            <div class="data-card__content">
+              <div class="data-card__header">
+                <h3 class="data-card__title">
+                  {{ getCardTitle(item) }}
+                </h3>
+                <div class="data-card__status" :class="{ 'is-selected': selectedRow.id === item.id }">
+                  <i class="pi pi-check" v-if="selectedRow.id === item.id"></i>
+                </div>
+              </div>
+              <div class="data-card__fields">
+                <template v-for="row in currentActiveTable" :key="row.valueKey">
+                  <div class="data-card__field" v-if="item[row.valueKey]">
+                    <span class="label">{{ row.text }}</span>
+                    <span class="value">{{ item[row.valueKey] }}</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -204,6 +240,13 @@
     },
   };
 
+  // Добавляем кэш для данных групп
+  const groupsDataCache = {
+    data: null,
+    timestamp: null,
+    maxAge: 5 * 60 * 1000, // 5 минут
+  };
+
   const currentActiveForm = shallowRef(DataChangeStudentForm);
   const currentActiveTable = ref([]);
   const currentDateTable = ref([]);
@@ -214,9 +257,16 @@
 
   const selectedRow = ref({});
 
+  // Добавляем определение мобильного устройства
+  const isMobile = ref(window.innerWidth <= 768);
+
+  // Добавляем слушатель изменения размера окна
   onMounted(() => {
     console.log('Component mounted, calling updateComponents');
     updateComponents();
+    window.addEventListener('resize', () => {
+      isMobile.value = window.innerWidth <= 768;
+    });
   });
 
   watch([categoryNameValue, namesOfDataAdditionMethodsValue], () => {
@@ -224,8 +274,54 @@
     updateComponents();
   });
 
-  function onRowSelect() {
+  function onRowSelect(event) {
+    const selectedData = event.data;
     dataChangeTypeNamesValue.value = dataChangeTypeNames.update.name;
+    
+    // Преобразуем данные в формат, ожидаемый формой
+    if (categoryNameValue.value === userRoleNames.students.name) {
+      selectedRow.value = {
+        id: selectedData.id,
+        studentId: selectedData.id,
+        groupCode: selectedData.groupCode,
+        surname: selectedData.surname,
+        name: selectedData.name,
+        patronymic: selectedData.patronymic
+      };
+    } else if (categoryNameValue.value === userRoleNames.teachers.name) {
+      selectedRow.value = {
+        id: selectedData.id,
+        teacherId: selectedData.id,
+        surname: selectedData.surname,
+        name: selectedData.name,
+        patronymic: selectedData.patronymic
+      };
+    } else if (categoryNameValue.value === userRoleNames.groups.name) {
+      selectedRow.value = {
+        id: selectedData.id,
+        groupId: selectedData.id,
+        groupCode: selectedData.groupCode,
+        yearOfEntry: selectedData.yearOfEntry
+      };
+    }
+  }
+
+  // Функция для получения данных групп с кэшированием
+  async function getGroupsData() {
+    const now = Date.now();
+    if (groupsDataCache.data && groupsDataCache.timestamp && (now - groupsDataCache.timestamp < groupsDataCache.maxAge)) {
+      return groupsDataCache.data;
+    }
+
+    try {
+      const data = await serverRequests[userRoleNames.groups.name].get();
+      groupsDataCache.data = data;
+      groupsDataCache.timestamp = now;
+      return data;
+    } catch (error) {
+      console.error('Error fetching groups data:', error);
+      throw error;
+    }
   }
 
   async function updateComponents() {
@@ -250,10 +346,12 @@
       console.log('Fetching data for current category:', categoryNameValue.value);
       component.data = await serverRequests[categoryNameValue.value].get();
       
-      console.log('Fetching groups data');
-      const groupsData = await serverRequests[userRoleNames.groups.name].get();
-      console.log('Groups data received:', groupsData);
-      groupedComponentCatalog[userRoleNames.groups.name].data = groupsData;
+      // Загружаем данные групп только если мы в разделе студентов
+      if (categoryNameValue.value === userRoleNames.students.name) {
+        console.log('Fetching groups data for students form');
+        const groupsData = await getGroupsData();
+        groupedComponentCatalog[userRoleNames.groups.name].data = groupsData;
+      }
 
       currentDateTable.value = component.data;
       currentActiveTable.value = component.table;
@@ -274,6 +372,14 @@
     }
   }
 
+  // Добавляем функцию для принудительного обновления кэша групп
+  async function refreshGroupsCache() {
+    groupsDataCache.data = null;
+    groupsDataCache.timestamp = null;
+    await getGroupsData();
+  }
+
+  // Обновляем функцию sendRequest для обновления кэша после изменений
   async function sendRequest(data) {
     try {
       console.log('Sending request with data:', {
@@ -282,8 +388,43 @@
         data
       });
       
+      // Проверяем наличие необходимых данных
+      if (dataChangeTypeNamesValue.value === dataChangeTypeNames.update.name) {
+        if (!data.id) {
+          throw new Error('ID не указан для обновления');
+        }
+      }
+
+      // Добавляем дополнительные проверки в зависимости от категории
+      if (categoryNameValue.value === userRoleNames.students.name) {
+        if (!data.surname || !data.name) {
+          throw new Error('Фамилия и имя обязательны для заполнения');
+        }
+      } else if (categoryNameValue.value === userRoleNames.teachers.name) {
+        if (!data.surname || !data.name) {
+          throw new Error('Фамилия и имя обязательны для заполнения');
+        }
+      } else if (categoryNameValue.value === userRoleNames.groups.name) {
+        if (!data.groupCode) {
+          throw new Error('Код группы обязателен для заполнения');
+        }
+      }
+      
       await serverRequests[categoryNameValue.value][dataChangeTypeNamesValue.value](data);
+      
+      // Обновляем кэш групп если мы работаем с группами или студентами
+      if (categoryNameValue.value === userRoleNames.groups.name || 
+          categoryNameValue.value === userRoleNames.students.name) {
+        await refreshGroupsCache();
+      }
+      
       await updateComponents();
+      
+      // Очищаем выбранную строку после успешного обновления
+      if (dataChangeTypeNamesValue.value === dataChangeTypeNames.update.name) {
+        selectedRow.value = {};
+      }
+      
       toast.add({
         severity: 'success',
         summary: 'Успех',
@@ -301,59 +442,390 @@
       toast.add({
         severity: 'error',
         summary: 'Ошибка',
-        detail: error.response?.data?.message || 'Не удалось выполнить операцию',
+        detail: error.response?.data?.message || error.message || 'Не удалось выполнить операцию',
         life: 3000
       });
     }
+  }
+
+  // Добавляем функцию для получения заголовка карточки
+  function getCardTitle(item) {
+    if (categoryNameValue.value === userRoleNames.students.name) {
+      return `${item.surname} ${item.name} ${item.patronymic || ''}`;
+    } else if (categoryNameValue.value === userRoleNames.teachers.name) {
+      return `${item.surname} ${item.name} ${item.patronymic || ''}`;
+    } else if (categoryNameValue.value === userRoleNames.groups.name) {
+      return item.groupCode;
+    }
+    return '';
   }
 
 </script>
 
 <style scoped>
 .wrapper {
-	display: flex;
-	gap: 20px;
+  padding: 2rem;
+  height: 100%;
+}
+
+.content-layout {
+  display: flex;
+  gap: 2rem;
+  height: 100%;
 }
 
 .settings {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	max-width: 350px;
-
-	gap: 10px;
-
-	padding: 10px;
-
-	height: 100svh;
-	border-radius: 5px;
-	background: white;
+  flex: 0 0 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
 }
 
-.settings__title {}
-
-.addition-form {
-	display: grid;
-	gap: 10px;
+/* Стили для форм и инпутов */
+:deep(.p-form) {
+  width: 100%;
 }
 
-.addition-form__title {
-	margin: 0;
+:deep(.p-form-field) {
+  width: 100%;
 }
 
-.settings__input-search {
-	width: 100%;
+:deep(.p-inputtext),
+:deep(.p-dropdown),
+:deep(.p-calendar),
+:deep(.p-inputnumber),
+:deep(.p-inputtextarea) {
+  width: 100% !important;
+}
+
+:deep(.p-dropdown-panel) {
+  width: 100% !important;
+  max-width: 100vw;
+}
+
+:deep(.p-button) {
+  width: 100%;
+}
+
+/* Стили для переключателей */
+:deep(.p-radiobutton),
+:deep(.p-checkbox) {
+  margin-right: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+:deep(.p-radiobutton-label),
+:deep(.p-checkbox-label) {
+  margin-left: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+:deep(.p-radiobutton-box),
+:deep(.p-checkbox-box) {
+  margin-right: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+:deep(.p-radiobutton-box.p-highlight),
+:deep(.p-checkbox-box.p-highlight) {
+  transition: all 0.2s ease;
+}
+
+:deep(.p-radiobutton-box.p-highlight .p-radiobutton-icon),
+:deep(.p-checkbox-box.p-highlight .p-checkbox-icon) {
+  transition: all 0.2s ease;
+}
+
+:deep(.p-radiobutton:not(.p-disabled):hover .p-radiobutton-box),
+:deep(.p-checkbox:not(.p-disabled):hover .p-checkbox-box) {
+  transition: all 0.2s ease;
+}
+
+:deep(.p-radiobutton:not(.p-disabled):hover .p-radiobutton-label),
+:deep(.p-checkbox:not(.p-disabled):hover .p-checkbox-label) {
+  transition: color 0.2s ease;
+}
+
+/* Добавляем плавные переходы для карточек */
+.data-card {
+  transition: all 0.3s ease;
+}
+
+.data-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.data-card.is-selected {
+  transition: all 0.3s ease;
+}
+
+/* Добавляем плавные переходы для статуса */
+.data-card__status {
+  transition: all 0.3s ease;
+}
+
+.data-card__status.is-selected {
+  transition: all 0.3s ease;
+}
+
+/* Добавляем плавные переходы для полей */
+.data-card__field {
+  transition: all 0.2s ease;
+}
+
+/* Добавляем плавные переходы для кнопок */
+:deep(.p-button) {
+  transition: all 0.2s ease;
+}
+
+:deep(.p-button:hover) {
+  transition: all 0.2s ease;
+}
+
+/* Добавляем плавные переходы для инпутов */
+:deep(.p-inputtext),
+:deep(.p-dropdown),
+:deep(.p-calendar),
+:deep(.p-inputnumber),
+:deep(.p-inputtextarea) {
+  transition: all 0.2s ease;
+}
+
+:deep(.p-inputtext:focus),
+:deep(.p-dropdown:focus),
+:deep(.p-calendar:focus),
+:deep(.p-inputnumber:focus),
+:deep(.p-inputtextarea:focus) {
+  transition: all 0.2s ease;
+}
+
+.table-section {
+  flex: 1;
+  min-width: 0; /* Для корректной работы flex-shrink */
 }
 
 .table {
-	width: 100%;
+  width: 100%;
+  height: 100%;
+}
 
-	padding: 10px;
-	padding-top: 20px;
+/* Стили для мобильной версии */
+.data-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-	height: 100svh;
-	border-radius: 5px;
-	background: white;
+.data-card {
+  background: var(--surface-card);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.data-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.data-card__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.data-card__status {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-ground);
+  color: var(--primary-color);
+}
+
+.data-card__status.is-selected {
+  background: var(--primary-color);
+  color: white;
+}
+
+.data-card__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.data-card__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: var(--surface-ground);
+  border-radius: 6px;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-color-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value {
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color-secondary);
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    padding: 1rem;
+  }
+
+  .content-layout {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .settings {
+    flex: none;
+    width: 100%;
+  }
+
+  .table-section {
+    width: 100%;
+  }
+
+  .data-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .data-card {
+    background: var(--surface-card);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+  }
+
+  .data-card.is-selected {
+    border-color: var(--primary-color);
+    background: var(--primary-50);
+  }
+
+  .data-card__content {
+    width: 100%;
+  }
+
+  .data-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .data-card__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    flex: 1;
+    padding-right: 1rem;
+  }
+
+  .data-card__status {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--surface-ground);
+    color: var(--primary-color);
+    flex-shrink: 0;
+  }
+
+  .data-card__status.is-selected {
+    background: var(--primary-color);
+    color: white;
+  }
+
+  .data-card__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .data-card__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.375rem;
+    background: var(--surface-ground);
+    border-radius: 6px;
+  }
+
+  .label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .value {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    font-weight: 500;
+    word-break: break-word;
+  }
+
+  /* Стили для форм на мобильных устройствах */
+  :deep(.p-inputtext),
+  :deep(.p-dropdown),
+  :deep(.p-calendar) {
+    width: 100%;
+  }
+
+  :deep(.p-dropdown-panel) {
+    width: 100% !important;
+    max-width: 100vw;
+  }
+
+  :deep(.p-button) {
+    width: 100%;
+  }
+
+  :deep(.p-form) {
+    width: 100%;
+  }
+
+  :deep(.p-form-field) {
+    width: 100%;
+  }
 }
 </style>

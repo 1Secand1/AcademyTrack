@@ -1,89 +1,139 @@
 <template>
-  <div class="sidebar">
-    <div class="logo">
-      <img src="@assets/logo.svg" alt="Logo" />
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>AcademyTrack</h2>
     </div>
-    <nav class="nav">
-      <router-link to="/" class="nav-item">
+    <nav class="sidebar-nav">
+      <button class="nav-item" :class="{ active: $route.path === '/' }" @click="handleNavigation('/')">
         <i class="pi pi-home"></i>
         <span>Главная</span>
-      </router-link>
-      <router-link to="/user-groups" class="nav-item">
+      </button>
+      <button class="nav-item" :class="{ active: $route.path === '/user-groups' }" @click="handleNavigation('/user-groups')">
         <i class="pi pi-users"></i>
         <span>Группы</span>
-      </router-link>
-      <router-link v-if="isAdmin" to="/teaching-assignments" class="nav-item">
-        <i class="pi pi-book"></i>
-        <span>Нагрузка</span>
-      </router-link>
-      <router-link v-if="isAdmin" to="/schedule-planning" class="nav-item">
-        <i class="pi pi-calendar-plus"></i>
-        <span>Формирование расписания</span>
-      </router-link>
-      <router-link v-if="isAdmin" to="/schedule-management" class="nav-item">
-        <i class="pi pi-calendar-edit"></i>
-        <span>Управление расписанием</span>
-      </router-link>
-      <router-link v-if="isAdmin" to="/subjects" class="nav-item">
-        <i class="pi pi-list"></i>
-        <span>Предметы</span>
-      </router-link>
-      <router-link v-if="isAdmin" to="/data-change" class="nav-item">
-        <i class="pi pi-cog"></i>
-        <span>Управление данными</span>
-      </router-link>
-      <router-link v-if="isAdmin" to="/register" class="nav-item">
-        <i class="pi pi-user-plus"></i>
-        <span>Регистрация</span>
-      </router-link>
+      </button>
+      <template v-if="isAdmin">
+        <button class="nav-item" :class="{ active: $route.path === '/teaching-assignments' }" @click="handleNavigation('/teaching-assignments')">
+          <i class="pi pi-calendar"></i>
+          <span>Нагрузка</span>
+        </button>
+        <button class="nav-item" :class="{ active: $route.path === '/schedule-planning' }" @click="handleNavigation('/schedule-planning')">
+          <i class="pi pi-calendar-plus"></i>
+          <span>Формирование расписания</span>
+        </button>
+        <button class="nav-item" :class="{ active: $route.path === '/schedule-management' }" @click="handleNavigation('/schedule-management')">
+          <i class="pi pi-calendar-edit"></i>
+          <span>Управление расписанием</span>
+        </button>
+        <button class="nav-item" :class="{ active: $route.path === '/subjects' }" @click="handleNavigation('/subjects')">
+          <i class="pi pi-list"></i>
+          <span>Предметы</span>
+        </button>
+        <button class="nav-item" :class="{ active: $route.path === '/data-change' }" @click="handleNavigation('/data-change')">
+          <i class="pi pi-cog"></i>
+          <span>Управление данными</span>
+        </button>
+      </template>
+      <button class="nav-item logout" @click="handleLogout">
+        <i class="pi pi-sign-out"></i>
+        <span>Выйти</span>
+      </button>
     </nav>
-  </div>
+  </aside>
 </template>
 
 <script setup>
 import { computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { authService } from '@service/auth.js';
+import { useToast } from 'primevue/usetoast';
+import { deleteCookie } from '@utils/cookie.js';
 
-const isAdmin = computed(() => {
-  const admin = authService.isAdmin();
-  console.log('Is user admin?', admin);
-  console.log('Current user:', authService.getCurrentUser());
-  return admin;
-});
+const router = useRouter();
+const toast = useToast();
+const isAdmin = computed(() => authService.isAdmin());
+
+const handleNavigation = async (path) => {
+  try {
+    console.log('[Sidebar] Starting navigation to:', path);
+    
+    if (router.currentRoute.value.path === path) {
+      console.log('[Sidebar] Already on the target page');
+      return;
+    }
+    
+    await router.replace(path);
+    console.log('[Sidebar] Navigation completed successfully');
+  } catch (error) {
+    console.error('[Sidebar] Navigation error:', {
+      path,
+      error: error.message,
+      stack: error.stack
+    });
+    toast.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Не удалось перейти на страницу',
+      life: 3000
+    });
+  }
+};
+
+const handleLogout = async () => {
+  try {
+    console.log('[Sidebar] Starting logout process');
+    deleteCookie('token');
+    await router.replace('/login');
+    console.log('[Sidebar] Logout completed successfully');
+  } catch (error) {
+    console.error('[Sidebar] Logout error:', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Не удалось выйти из системы',
+      life: 3000
+    });
+  }
+};
 
 onMounted(() => {
-  console.log('Sidebar mounted');
-  console.log('Current user:', authService.getCurrentUser());
-  console.log('Is admin:', authService.isAdmin());
+  console.log('[Sidebar] Component mounted');
+  console.log('[Sidebar] Is user admin?', isAdmin.value);
+  console.log('[Sidebar] Current user:', authService.getCurrentUser());
 });
 </script>
 
 <style scoped>
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: 250px;
-  height: 100vh;
   background: var(--surface-card);
   border-right: 1px solid var(--surface-border);
-  padding: 1rem;
   display: flex;
   flex-direction: column;
+  z-index: 100;
 }
 
-.logo {
+.sidebar-header {
   padding: 1rem;
-  margin-bottom: 2rem;
-  text-align: center;
+  border-bottom: 1px solid var(--surface-border);
 }
 
-.logo img {
-  max-width: 100%;
-  height: auto;
+.sidebar-header h2 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 1.5rem;
 }
 
-.nav {
+.sidebar-nav {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  padding: 1rem 0;
+  overflow-y: auto;
 }
 
 .nav-item {
@@ -92,21 +142,44 @@ onMounted(() => {
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   color: var(--text-color);
-  text-decoration: none;
-  border-radius: var(--border-radius);
+  background: none;
+  border: none;
+  cursor: pointer;
   transition: background-color 0.2s;
+  text-align: left;
+  width: 100%;
+}
+
+.nav-item i {
+  font-size: 1.25rem;
+  color: var(--text-color-secondary);
 }
 
 .nav-item:hover {
   background-color: var(--surface-hover);
 }
 
-.nav-item.router-link-active {
-  background-color: var(--primary-color);
-  color: var(--primary-color-text);
+.nav-item.active {
+  background-color: var(--primary-50);
+  color: var(--primary-color);
 }
 
-.nav-item i {
-  font-size: 1.25rem;
+.nav-item.active i {
+  color: var(--primary-color);
+}
+
+.nav-item.logout {
+  margin-top: auto;
+  color: var(--red-500);
+}
+
+.nav-item.logout i {
+  color: var(--red-500);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
 }
 </style> 

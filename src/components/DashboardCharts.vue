@@ -1,31 +1,41 @@
 <template>
   <div class="dashboard-charts">
     <Card class="chart-card">
-      <template #title>Посещаемость по группам</template>
+      <template #title>Распределение нагрузки по преподавателям</template>
       <template #content>
         <Bar
-          :data="attendanceData"
-          :options="chartOptions"
+          :data="workloadData"
+          :options="barOptions"
         />
       </template>
     </Card>
 
     <Card class="chart-card">
-      <template #title>Распределение предметов</template>
+      <template #title>Распределение предметов по группам</template>
       <template #content>
         <Pie
           :data="subjectsData"
-          :options="chartOptions"
+          :options="pieOptions"
         />
       </template>
     </Card>
 
     <Card class="chart-card">
-      <template #title>Нагрузка преподавателей</template>
+      <template #title>Статистика по группам</template>
       <template #content>
         <Line
-          :data="workloadData"
-          :options="chartOptions"
+          :data="groupsData"
+          :options="lineOptions"
+        />
+      </template>
+    </Card>
+
+    <Card class="chart-card">
+      <template #title>Распределение студентов по курсам</template>
+      <template #content>
+        <Doughnut
+          :data="studentsData"
+          :options="doughnutOptions"
         />
       </template>
     </Card>
@@ -34,7 +44,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Bar, Pie, Line } from 'vue-chartjs';
+import { Bar, Pie, Line, Doughnut } from 'vue-chartjs';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement } from 'chart.js';
 import Card from 'primevue/card';
 import { groupsService } from '@service/api-endpoints/groups.js';
@@ -54,15 +64,17 @@ ChartJS.register(
   LineElement
 );
 
-const attendanceData = ref({
+// Данные для графика нагрузки преподавателей
+const workloadData = ref({
   labels: [],
   datasets: [{
-    label: 'Процент посещаемости',
+    label: 'Количество часов',
     backgroundColor: '#42A5F5',
     data: []
   }]
 });
 
+// Данные для графика распределения предметов
 const subjectsData = ref({
   labels: [],
   datasets: [{
@@ -78,21 +90,90 @@ const subjectsData = ref({
   }]
 });
 
-const workloadData = ref({
+// Данные для графика статистики по группам
+const groupsData = ref({
   labels: [],
   datasets: [{
-    label: 'Количество часов',
+    label: 'Количество студентов',
     borderColor: '#42A5F5',
+    backgroundColor: 'rgba(66, 165, 245, 0.1)',
     data: []
   }]
 });
 
-const chartOptions = {
+// Данные для графика распределения студентов
+const studentsData = ref({
+  labels: [],
+  datasets: [{
+    backgroundColor: [
+      '#FF6384',
+      '#36A2EB',
+      '#FFCE56',
+      '#4BC0C0'
+    ],
+    data: []
+  }]
+});
+
+// Настройки для разных типов графиков
+const barOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
       position: 'top'
+    },
+    title: {
+      display: true,
+      text: 'Нагрузка преподавателей'
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: 'Количество часов'
+      }
+    }
+  }
+};
+
+const pieOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'right'
+    }
+  }
+};
+
+const lineOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top'
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: 'Количество студентов'
+      }
+    }
+  }
+};
+
+const doughnutOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'right'
     }
   }
 };
@@ -106,18 +187,44 @@ onMounted(async () => {
       teachingAssignmentsService.get()
     ]);
 
-    // Подготовка данных для графика посещаемости
-    attendanceData.value.labels = groups.map(g => g.groupCode);
-    attendanceData.value.datasets[0].data = groups.map(() => Math.floor(Math.random() * 100)); // Временные данные
+    // Подготовка данных для графика нагрузки преподавателей
+    const teacherWorkload = {};
+    assignments.forEach(assignment => {
+      const teacherName = `${assignment.teacher.surname} ${assignment.teacher.name}`;
+      teacherWorkload[teacherName] = (teacherWorkload[teacherName] || 0) + 1;
+    });
 
-    // Подготовка данных для графика предметов
-    subjectsData.value.labels = subjects.map(s => s.name);
-    subjectsData.value.datasets[0].data = subjects.map(() => Math.floor(Math.random() * 50)); // Временные данные
+    workloadData.value.labels = Object.keys(teacherWorkload);
+    workloadData.value.datasets[0].data = Object.values(teacherWorkload);
 
-    // Подготовка данных для графика нагрузки
-    const teachers = [...new Set(assignments.map(a => `${a.teacher.surname} ${a.teacher.name}`))];
-    workloadData.value.labels = teachers;
-    workloadData.value.datasets[0].data = teachers.map(() => Math.floor(Math.random() * 30)); // Временные данные
+    // Подготовка данных для графика распределения предметов
+    const subjectDistribution = {};
+    assignments.forEach(assignment => {
+      const subjectName = assignment.subject.name;
+      subjectDistribution[subjectName] = (subjectDistribution[subjectName] || 0) + 1;
+    });
+
+    subjectsData.value.labels = Object.keys(subjectDistribution);
+    subjectsData.value.datasets[0].data = Object.values(subjectDistribution);
+
+    // Подготовка данных для графика статистики по группам
+    const groupStats = groups.map(group => ({
+      name: group.groupCode,
+      students: group.students?.length || 0
+    })).sort((a, b) => b.students - a.students);
+
+    groupsData.value.labels = groupStats.map(g => g.name);
+    groupsData.value.datasets[0].data = groupStats.map(g => g.students);
+
+    // Подготовка данных для графика распределения студентов по курсам
+    const courseDistribution = {};
+    groups.forEach(group => {
+      const course = group.yearOfEntry;
+      courseDistribution[course] = (courseDistribution[course] || 0) + (group.students?.length || 0);
+    });
+
+    studentsData.value.labels = Object.keys(courseDistribution).map(year => `${year} курс`);
+    studentsData.value.datasets[0].data = Object.values(courseDistribution);
 
   } catch (error) {
     console.error('Error loading chart data:', error);
@@ -128,13 +235,16 @@ onMounted(async () => {
 <style scoped>
 .dashboard-charts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 20px;
   padding: 20px;
 }
 
 .chart-card {
-  height: 300px;
+  height: 400px;
+  background: var(--surface-card);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .chart-card :deep(.p-card-content) {
@@ -142,5 +252,25 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1rem;
+}
+
+.chart-card :deep(.p-card-title) {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  padding: 1rem;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+@media (max-width: 768px) {
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+
+  .chart-card {
+    height: 300px;
+  }
 }
 </style> 

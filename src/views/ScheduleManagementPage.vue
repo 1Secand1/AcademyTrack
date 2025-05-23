@@ -6,7 +6,7 @@
       <template #content>
         <div class="filters">
           <div class="filter-group">
-            <label>Группа:</label>
+            <label class="form-label">Группа:</label>
             <Dropdown 
               v-model="selectedGroup" 
               :options="groups" 
@@ -19,7 +19,7 @@
           </div>
           
           <div class="filter-group">
-            <label>Предмет:</label>
+            <label class="form-label">Предмет:</label>
             <Dropdown 
               v-model="selectedSubject" 
               :options="filteredSubjects" 
@@ -43,16 +43,18 @@
             label="Добавить занятие" 
             @click="showAddDialog = true"
             :disabled="!canAddLesson"
+            class="add-button"
           />
         </div>
       </template>
       <template #content>
+        <!-- Десктопная версия -->
         <DataTable 
+          v-if="!isMobile && schedule.length > 0"
           :value="schedule" 
           edit-mode="row" 
           dataKey="id"
           class="p-datatable-sm"
-          v-if="schedule.length > 0"
         >
           <Column field="date" header="Дата">
             <template #body="{ data }">
@@ -61,9 +63,10 @@
             <template #editor="{ data, field }">
               <Calendar 
                 v-model="data[field]" 
-                dateFormat="yy-mm-dd"
+                dateFormat="dd.mm.yy"
                 :minDate="new Date()"
                 showIcon
+                class="w-full"
               />
             </template>
           </Column>
@@ -78,6 +81,7 @@
                 option-label="label"
                 option-value="value"
                 placeholder="Выберите пару"
+                class="w-full"
               />
             </template>
           </Column>
@@ -108,6 +112,56 @@
             </template>
           </Column>
         </DataTable>
+
+        <!-- Мобильная версия -->
+        <div v-else-if="isMobile && schedule.length > 0" class="schedule-list">
+          <div v-for="(lesson, index) in schedule" :key="lesson.id" class="lesson-card">
+            <div class="lesson-card__header">
+              <div class="lesson-card__date">
+                <Calendar 
+                  v-model="lesson.date" 
+                  dateFormat="dd.mm.yy"
+                  :minDate="new Date()"
+                  showIcon
+                  class="w-full"
+                />
+              </div>
+              <div class="lesson-card__number">
+                <Dropdown
+                  v-model="lesson.lessonNumber"
+                  :options="lessonNumbers"
+                  option-label="label"
+                  option-value="value"
+                  placeholder="Выберите пару"
+                  class="w-full"
+                />
+              </div>
+            </div>
+            <div class="lesson-card__content">
+              <div class="lesson-card__subject">
+                <span class="label">Предмет:</span>
+                {{ lesson.subject.name }}
+              </div>
+              <div class="lesson-card__teacher">
+                <span class="label">Преподаватель:</span>
+                {{ lesson.teacher.surname }} {{ lesson.teacher.name }}
+              </div>
+            </div>
+            <div class="lesson-card__actions">
+              <Button 
+                icon="pi pi-calendar" 
+                class="p-button-rounded p-button-text"
+                @click="openMoveDialog(lesson, index)"
+              />
+              <Button 
+                icon="pi pi-trash" 
+                class="p-button-rounded p-button-text p-button-danger"
+                @click="confirmDelete(lesson)"
+              />
+            </div>
+          </div>
+        </div>
+
         <div v-else class="no-data">
           <p>Нет данных для отображения</p>
         </div>
@@ -120,20 +174,22 @@
       header="Добавление занятия"
       :modal="true"
       class="add-dialog"
+      :style="{ width: isMobile ? '90vw' : '450px' }"
     >
       <div class="p-fluid">
         <div class="p-field">
-          <label for="newDate">Дата</label>
+          <label class="form-label" for="newDate">Дата</label>
           <Calendar
             id="newDate"
             v-model="newLesson.date"
-            dateFormat="yy-mm-dd"
+            dateFormat="dd.mm.yy"
             :minDate="new Date()"
             showIcon
+            class="w-full"
           />
         </div>
         <div class="p-field">
-          <label for="newLessonNumber">Номер пары</label>
+          <label class="form-label" for="newLessonNumber">Номер пары</label>
           <Dropdown
             id="newLessonNumber"
             v-model="newLesson.lessonNumber"
@@ -141,10 +197,11 @@
             option-label="label"
             option-value="value"
             placeholder="Выберите пару"
+            class="w-full"
           />
         </div>
         <div class="p-field">
-          <label for="teacher">Преподаватель</label>
+          <label class="form-label" for="teacher">Преподаватель</label>
           <Dropdown
             id="teacher"
             v-model="newLesson.teacherId"
@@ -152,21 +209,25 @@
             option-label="fullName"
             option-value="id"
             placeholder="Выберите преподавателя"
+            class="w-full"
           />
         </div>
       </div>
       <template #footer>
-        <Button
-          label="Отмена"
-          icon="pi pi-times"
-          class="p-button-text"
-          @click="closeAddDialog"
-        />
-        <Button
-          label="Добавить"
-          icon="pi pi-check"
-          @click="addLesson"
-        />
+        <div class="dialog-footer">
+          <Button
+            label="Отмена"
+            icon="pi pi-times"
+            class="p-button-text w-full"
+            @click="closeAddDialog"
+          />
+          <Button
+            label="Добавить"
+            icon="pi pi-check"
+            class="w-full"
+            @click="addLesson"
+          />
+        </div>
       </template>
     </Dialog>
 
@@ -176,20 +237,22 @@
       header="Перемещение занятия"
       :modal="true"
       class="move-dialog"
+      :style="{ width: isMobile ? '90vw' : '450px' }"
     >
       <div class="p-fluid">
         <div class="p-field">
-          <label for="moveDate">Новая дата</label>
+          <label class="form-label" for="moveDate">Новая дата</label>
           <Calendar
             id="moveDate"
             v-model="moveData.newDate"
-            dateFormat="yy-mm-dd"
+            dateFormat="dd.mm.yy"
             :minDate="new Date()"
             showIcon
+            class="w-full"
           />
         </div>
         <div class="p-field">
-          <label for="moveLessonNumber">Номер пары</label>
+          <label class="form-label" for="moveLessonNumber">Номер пары</label>
           <Dropdown
             id="moveLessonNumber"
             v-model="moveData.newLessonNumber"
@@ -197,21 +260,25 @@
             option-label="label"
             option-value="value"
             placeholder="Выберите пару"
+            class="w-full"
           />
         </div>
       </div>
       <template #footer>
-        <Button
-          label="Отмена"
-          icon="pi pi-times"
-          class="p-button-text"
-          @click="closeMoveDialog"
-        />
-        <Button
-          label="Переместить"
-          icon="pi pi-check"
-          @click="moveLesson"
-        />
+        <div class="dialog-footer">
+          <Button
+            label="Отмена"
+            icon="pi pi-times"
+            class="p-button-text w-full"
+            @click="closeMoveDialog"
+          />
+          <Button
+            label="Переместить"
+            icon="pi pi-check"
+            class="w-full"
+            @click="moveLesson"
+          />
+        </div>
       </template>
     </Dialog>
 
@@ -293,6 +360,16 @@ const filteredTeachers = computed(() => {
 
 const canAddLesson = computed(() => {
   return selectedGroup.value && selectedSubject.value;
+});
+
+// Добавляем определение мобильного устройства
+const isMobile = ref(window.innerWidth <= 768);
+
+// Добавляем слушатель изменения размера окна
+onMounted(() => {
+  window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth <= 768;
+  });
 });
 
 onMounted(async () => {
@@ -549,31 +626,32 @@ async function moveLesson() {
 
 <style scoped>
 .schedule-management {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 2rem;
 }
 
 .filters-card {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
 }
 
 .filters {
-  display: flex;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
 .filter-group {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.filter-group label {
-  display: block;
-  margin-bottom: 8px;
+.form-label {
+  font-weight: 500;
+  color: var(--text-color);
 }
 
-.schedule-card {
-  margin-bottom: 20px;
+.w-full {
+  width: 100%;
 }
 
 .card-header {
@@ -582,28 +660,105 @@ async function moveLesson() {
   align-items: center;
 }
 
-.actions {
+.schedule-list {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.add-dialog,
-.move-dialog {
-  min-width: 450px;
+.lesson-card {
+  background: var(--surface-card);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.p-field {
+.lesson-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
-.p-field label {
-  display: block;
-  margin-bottom: 0.5rem;
+.lesson-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.lesson-card__subject,
+.lesson-card__teacher {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+}
+
+.lesson-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.dialog-footer {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .no-data {
   text-align: center;
-  padding: 20px;
+  padding: 2rem;
   color: var(--text-color-secondary);
+}
+
+@media (max-width: 768px) {
+  .schedule-management {
+    padding: 1rem;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .add-button {
+    width: 100%;
+  }
+
+  .lesson-card {
+    padding: 0.75rem;
+  }
+
+  .dialog-footer {
+    flex-direction: column;
+  }
+
+  /* Стили для календаря на мобильных устройствах */
+  :deep(.p-calendar) {
+    width: 100%;
+  }
+
+  :deep(.p-calendar input) {
+    width: 100%;
+    padding: 0.5rem;
+  }
+
+  :deep(.p-dropdown) {
+    width: 100%;
+  }
+
+  :deep(.p-dropdown-panel) {
+    width: 100% !important;
+  }
 }
 </style> 

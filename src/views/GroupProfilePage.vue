@@ -374,33 +374,33 @@ watch([currentCategory, groupDetails], ([newCategory, newDetails]) => {
 
 @media (max-width: 768px) {
   .profile-container {
-    padding: 15px;
+    padding: 10px;
   }
 
   .header-content {
-    padding: 16px;
+    padding: 12px;
   }
 
   .titlePage {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .group-code {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .profile-stats {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
 
   .stat-item {
-    padding: 8px 0;
+    padding: 6px 0;
   }
 
   :deep(.p-selectbutton .p-button) {
-    padding: 12px 16px;
-    font-size: 14px;
+    padding: 10px 14px;
+    font-size: 13px;
   }
 }
 

@@ -10,31 +10,19 @@
 
       <div class="assignments-section">
         <h2>Текущие назначения</h2>
-        <DataTable
-          :value="assignments"
-          :paginator="true"
-          :rows="10"
-          :rowsPerPageOptions="[5, 10, 20]"
-          class="p-datatable-sm"
-        >
-          <Column field="teacher.fullName" header="Преподаватель" />
-          <Column field="group.groupCode" header="Группа" />
-          <Column field="subject.name" header="Предмет" />
-          <Column field="semester" header="Семестр">
-            <template #body="{ data }">
-              {{ data.semester }} семестр
-            </template>
-          </Column>
-          <Column header="Действия">
-            <template #body="{ data }">
-              <Button
-                icon="pi pi-trash"
-                class="p-button-danger p-button-sm"
-                @click="deleteAssignment(data.teachingAssignmentId)"
-              />
-            </template>
-          </Column>
-        </DataTable>
+        <div class="assignments-list">
+          <div v-for="assignment in assignments" :key="assignment.teachingAssignmentId" class="assignment-card">
+            <div class="assignment-card__teacher">{{ assignment.teacher.fullName }}</div>
+            <div class="assignment-card__group">{{ assignment.group.groupCode }}</div>
+            <div class="assignment-card__subject">{{ assignment.subject.name }}</div>
+            <div class="assignment-card__semester">{{ assignment.semester }} семестр</div>
+            <Button
+              icon="pi pi-trash"
+              class="p-button-danger p-button-sm"
+              @click="deleteAssignment(assignment.teachingAssignmentId)"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -45,8 +33,6 @@ import { ref, onMounted } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { teachingAssignmentsService } from '@service/api-endpoints/teaching-assignments.js';
 import TeachingAssignmentsForm from '@components/TeachingAssignments/TeachingAssignmentsForm.vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import Button from 'primevue/button';
 
 const toast = useToast();
@@ -126,5 +112,47 @@ h1 {
 h2 {
   margin-bottom: 1.5rem;
   color: var(--text-color);
+}
+
+.assignments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.assignment-card {
+  background: var(--surface-card);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assignment-card__teacher {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.assignment-card__group,
+.assignment-card__subject,
+.assignment-card__semester {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+}
+
+@media (max-width: 768px) {
+  .teaching-assignments-page {
+    padding: 1rem;
+  }
+  .content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .form-section,
+  .assignments-section {
+    padding: 1rem;
+  }
 }
 </style> 

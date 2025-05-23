@@ -2,114 +2,221 @@
   <div class="dashboard">
     <h1>Дашборд</h1>
     
-    <div class="grid">
-      <div class="col-12 md:col-6 lg:col-3">
-        <Card>
-          <template #title>Группы</template>
-          <template #content>
-            <div class="stat-value">{{ groupsCount }}</div>
-            <div class="stat-label">Всего групп</div>
-          </template>
-        </Card>
-      </div>
-      
-      <div class="col-12 md:col-6 lg:col-3">
-        <Card>
-          <template #title>Студенты</template>
-          <template #content>
-            <div class="stat-value">{{ studentsCount }}</div>
-            <div class="stat-label">Всего студентов</div>
-          </template>
-        </Card>
-      </div>
-      
-      <div class="col-12 md:col-6 lg:col-3">
-        <Card>
-          <template #title>Преподаватели</template>
-          <template #content>
-            <div class="stat-value">{{ teachersCount }}</div>
-            <div class="stat-label">Всего преподавателей</div>
-          </template>
-        </Card>
-      </div>
-      
-      <div class="col-12 md:col-6 lg:col-3">
-        <Card>
-          <template #title>Нагрузка</template>
-          <template #content>
-            <div class="stat-value">{{ assignmentsCount }}</div>
-            <div class="stat-label">Всего назначений</div>
-          </template>
-        </Card>
-      </div>
+    <div v-if="loading" class="loading-container">
+      <ProgressSpinner />
     </div>
     
-    <div class="grid mt-4">
-      <div class="col-12">
-        <Card>
-          <template #title>Быстрые действия</template>
-          <template #content>
-            <div class="quick-actions">
-              <Button 
-                label="Управление группами" 
-                icon="pi pi-users" 
-                @click="router.push({ name: 'userGroups' })"
-              />
-              <Button 
-                v-if="isAdmin"
-                label="Назначение нагрузки" 
-                icon="pi pi-calendar" 
-                @click="router.push({ name: 'teachingAssignments' })"
-              />
-              <Button 
-                v-if="isAdmin"
-                label="Настройки" 
-                icon="pi pi-cog" 
-                @click="router.push({ name: 'dataChange' })"
-              />
-            </div>
-          </template>
-        </Card>
+    <template v-else>
+      <div class="grid">
+        <div class="col-12 md:col-6 lg:col-3">
+          <Card>
+            <template #title>Группы</template>
+            <template #content>
+              <div class="stat-value">{{ groupsCount }}</div>
+              <div class="stat-label">Всего групп</div>
+            </template>
+          </Card>
+        </div>
+        
+        <div class="col-12 md:col-6 lg:col-3">
+          <Card>
+            <template #title>Студенты</template>
+            <template #content>
+              <div class="stat-value">{{ studentsCount }}</div>
+              <div class="stat-label">Всего студентов</div>
+            </template>
+          </Card>
+        </div>
+        
+        <div class="col-12 md:col-6 lg:col-3">
+          <Card>
+            <template #title>Преподаватели</template>
+            <template #content>
+              <div class="stat-value">{{ teachersCount }}</div>
+              <div class="stat-label">Всего преподавателей</div>
+            </template>
+          </Card>
+        </div>
+        
+        <div class="col-12 md:col-6 lg:col-3">
+          <Card>
+            <template #title>Нагрузка</template>
+            <template #content>
+              <div class="stat-value">{{ assignmentsCount }}</div>
+              <div class="stat-label">Всего назначений</div>
+            </template>
+          </Card>
+        </div>
       </div>
-    </div>
+      
+      <div class="grid mt-4">
+        <div class="col-12">
+          <Card>
+            <template #title>Быстрые действия</template>
+            <template #content>
+              <div class="quick-actions">
+                <Button 
+                  label="Управление группами" 
+                  icon="pi pi-users" 
+                  @click="handleNavigation('userGroups')"
+                />
+                <Button 
+                  v-if="isAdmin"
+                  label="Назначение нагрузки" 
+                  icon="pi pi-calendar" 
+                  @click="handleNavigation('teachingAssignments')"
+                />
+                <Button 
+                  v-if="isAdmin"
+                  label="Настройки" 
+                  icon="pi pi-cog" 
+                  @click="handleNavigation('dataChange')"
+                />
+              </div>
+            </template>
+          </Card>
+        </div>
+      </div>
 
-    <div class="grid mt-4">
-      <div class="col-12">
-        <DashboardCharts />
+      <div class="grid mt-4">
+        <div class="col-12">
+          <DashboardCharts />
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from '@service/auth.js';
+import { groupsService } from '@service/api-endpoints/groups.js';
+import { teachingAssignmentsService } from '@service/api-endpoints/teaching-assignments.js';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
+import ProgressSpinner from 'primevue/progressspinner';
 import DashboardCharts from '@components/DashboardCharts.vue';
+import { useToast } from 'primevue/usetoast';
 
 const router = useRouter();
+const toast = useToast();
 const isAdmin = computed(() => authService.isAdmin());
 
+const loading = ref(true);
 const groupsCount = ref(0);
 const studentsCount = ref(0);
 const teachersCount = ref(0);
 const assignmentsCount = ref(0);
 
-onMounted(async () => {
-  // Здесь будет загрузка статистики с сервера
-  // Пока используем заглушки
-  groupsCount.value = 10;
-  studentsCount.value = 150;
-  teachersCount.value = 20;
-  assignmentsCount.value = 45;
+let loadingTimeout;
+
+const handleNavigation = async (routeName) => {
+  try {
+    console.log('[HomePage] Starting navigation to:', routeName);
+    loading.value = true;
+    await router.push({ name: routeName });
+    console.log('[HomePage] Navigation completed successfully');
+  } catch (error) {
+    console.error('[HomePage] Navigation error:', {
+      route: routeName,
+      error: error.message,
+      stack: error.stack
+    });
+    toast.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Не удалось перейти на страницу',
+      life: 3000
+    });
+  } finally {
+    loading.value = false;
+    console.log('[HomePage] Navigation process finished, loading:', loading.value);
+  }
+};
+
+const loadDashboardData = async () => {
+  try {
+    console.log('[HomePage] Starting dashboard data loading');
+    loading.value = true;
+    const [groupsData, assignmentsData] = await Promise.all([
+      groupsService.getAll(),
+      teachingAssignmentsService.get()
+    ]);
+    
+    console.log('[HomePage] Data loaded:', {
+      groupsCount: groupsData.length,
+      assignmentsCount: assignmentsData.length
+    });
+    
+    groupsCount.value = groupsData.length;
+    assignmentsCount.value = assignmentsData.length;
+    
+    // Подсчет студентов и преподавателей
+    const uniqueStudents = new Set();
+    const uniqueTeachers = new Set();
+    
+    groupsData.forEach(group => {
+      if (group.students) {
+        group.students.forEach(student => uniqueStudents.add(student.id));
+      }
+    });
+    
+    assignmentsData.forEach(assignment => {
+      if (assignment.teacher) {
+        uniqueTeachers.add(assignment.teacher.id);
+      }
+    });
+    
+    studentsCount.value = uniqueStudents.size;
+    teachersCount.value = uniqueTeachers.size;
+
+    console.log('[HomePage] Statistics calculated:', {
+      studentsCount: studentsCount.value,
+      teachersCount: teachersCount.value
+    });
+  } catch (error) {
+    console.error('[HomePage] Error loading dashboard data:', {
+      error: error.message,
+      stack: error.stack
+    });
+    toast.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Не удалось загрузить данные',
+      life: 3000
+    });
+  } finally {
+    loading.value = false;
+    console.log('[HomePage] Dashboard data loading finished, loading:', loading.value);
+  }
+};
+
+onMounted(() => {
+  console.log('[HomePage] Component mounted');
+  loadDashboardData();
+});
+
+onBeforeUnmount(() => {
+  console.log('[HomePage] Component unmounting');
+  if (loadingTimeout) {
+    clearTimeout(loadingTimeout);
+  }
 });
 </script>
 
 <style scoped>
 .dashboard {
   padding: 1rem;
+  min-height: 100vh;
+  position: relative;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
 }
 
 .stat-value {
@@ -131,5 +238,20 @@ onMounted(async () => {
 
 .quick-actions .p-button {
   min-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 0.5rem;
+  }
+  .stat-value {
+    font-size: 1.5rem;
+  }
+  .quick-actions {
+    flex-direction: column;
+  }
+  .quick-actions .p-button {
+    min-width: 100%;
+  }
 }
 </style> 

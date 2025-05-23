@@ -384,7 +384,7 @@ watch(() => props.groupDetails.teachers, (newVal) => {
 @media (max-width: 768px) {
   .teachers-header {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
 
   .teachers-actions {
@@ -406,7 +406,7 @@ watch(() => props.groupDetails.teachers, (newVal) => {
   }
 
   .teacher-card {
-    padding: 16px;
+    padding: 12px;
   }
 }
 </style> 

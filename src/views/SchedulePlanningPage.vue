@@ -10,19 +10,46 @@
       <template #title>Выбор группы и предмета</template>
       <template #content>
         <div class="form-block">
-          <Dropdown v-model="selectedGroup" :options="groups" option-label="groupCode" option-value="groupId" placeholder="Выберите группу" class="mb-2 w-full" />
+          <label class="form-label">Группа</label>
+          <Dropdown 
+            v-model="selectedGroup" 
+            :options="groups" 
+            option-label="groupCode" 
+            option-value="groupId" 
+            placeholder="Выберите группу" 
+            class="w-full" 
+          />
         </div>
         <div class="form-block">
-          <Dropdown v-model="selectedSubject" :options="filteredSubjects" option-label="name" option-value="subjectId" placeholder="Выберите предмет" class="mb-2 w-full" />
+          <label class="form-label">Предмет</label>
+          <Dropdown 
+            v-model="selectedSubject" 
+            :options="filteredSubjects" 
+            option-label="name" 
+            option-value="subjectId" 
+            placeholder="Выберите предмет" 
+            class="w-full" 
+          />
         </div>
         <div v-if="filteredAssignments.length > 1" class="form-block">
-          <Dropdown v-model="selectedAssignment" :options="filteredAssignments" option-label="teacher.surname" option-value="teachingAssignmentId" placeholder="Выберите преподавателя" class="mb-2 w-full" />
+          <label class="form-label">Преподаватель</label>
+          <Dropdown 
+            v-model="selectedAssignment" 
+            :options="filteredAssignments" 
+            option-label="teacher.surname" 
+            option-value="teachingAssignmentId" 
+            placeholder="Выберите преподавателя" 
+            class="w-full" 
+          />
         </div>
-        <div v-else-if="filteredAssignments.length === 1">
-          <div class="mb-2">Преподаватель: {{ filteredAssignments[0].teacher.surname }} {{ filteredAssignments[0].teacher.name }}</div>
+        <div v-else-if="filteredAssignments.length === 1" class="form-block">
+          <label class="form-label">Преподаватель</label>
+          <div class="selected-teacher">
+            {{ filteredAssignments[0].teacher.surname }} {{ filteredAssignments[0].teacher.name }}
+          </div>
         </div>
         <div class="step-actions">
-          <Button label="Далее" :disabled="!canSelectAssignment" @click="nextStep" />
+          <Button label="Далее" :disabled="!canSelectAssignment" @click="nextStep" class="w-full" />
         </div>
       </template>
     </Card>
@@ -31,27 +58,54 @@
       <template #title>Параметры генерации</template>
       <template #content>
         <div class="form-block">
-          <label>Дни недели:</label>
+          <label class="form-label">Дни недели:</label>
           <div class="weekdays">
-            <Checkbox v-for="(day, idx) in weekdays" :key="day.value" v-model="selectedWeekdays" :input-id="String(day.value)" :value="day.value" />
-            <label v-for="(day, idx) in weekdays" :key="'lbl'+day.value" :for="String(day.value)" style="margin-right: 10px;">{{ day.label }}</label>
+            <div v-for="(day, idx) in weekdays" :key="day.value" class="weekday-item">
+              <Checkbox 
+                v-model="selectedWeekdays" 
+                :input-id="String(day.value)" 
+                :value="day.value" 
+                class="weekday-checkbox"
+              />
+              <label :for="String(day.value)" class="weekday-label">{{ day.label }}</label>
+            </div>
           </div>
         </div>
         <div class="form-block">
-          <label>С какой даты:</label>
-          <Calendar v-model="dateFrom" placeholder="С" />
+          <label class="form-label">С какой даты:</label>
+          <Calendar 
+            v-model="dateFrom" 
+            placeholder="С" 
+            class="w-full"
+            :showIcon="true"
+            dateFormat="dd.mm.yy"
+          />
         </div>
         <div class="form-block">
-          <label>По какую дату:</label>
-          <Calendar v-model="dateTo" placeholder="По" />
+          <label class="form-label">По какую дату:</label>
+          <Calendar 
+            v-model="dateTo" 
+            placeholder="По" 
+            class="w-full"
+            :showIcon="true"
+            dateFormat="dd.mm.yy"
+          />
         </div>
         <div class="form-block">
-          <label>Пары:</label>
-          <Dropdown v-model="selectedLessonNumbers" :options="lessonNumbers" option-label="label" option-value="value" placeholder="Выберите пары" multiple />
+          <label class="form-label">Пары:</label>
+          <Dropdown 
+            v-model="selectedLessonNumbers" 
+            :options="lessonNumbers" 
+            option-label="label" 
+            option-value="value" 
+            placeholder="Выберите пары" 
+            multiple 
+            class="w-full"
+          />
         </div>
         <div class="step-actions">
-          <Button label="Назад" class="p-button-text" @click="prevStep" />
-          <Button label="Далее" :disabled="!canGenerate" @click="nextStep" />
+          <Button label="Назад" class="p-button-text w-full" @click="prevStep" />
+          <Button label="Далее" :disabled="!canGenerate" @click="nextStep" class="w-full" />
         </div>
       </template>
     </Card>
@@ -79,7 +133,8 @@
     <Card v-if="currentStep === 3" class="step-card">
       <template #title>Итоговое расписание</template>
       <template #content>
-        <DataTable :value="lessons" edit-mode="row" dataKey="date" class="mb-2">
+        <!-- Десктопная версия -->
+        <DataTable v-if="!isMobile" :value="lessons" edit-mode="row" dataKey="date" class="mb-2">
           <Column field="date" header="Дата">
             <template #editor="{ data, field }">
               <Calendar 
@@ -108,6 +163,45 @@
             </template>
           </Column>
         </DataTable>
+
+        <!-- Мобильная версия -->
+        <div v-else class="lessons-list">
+          <div v-for="(lesson, index) in lessons" :key="index" class="lesson-card">
+            <div class="lesson-card__header">
+              <div class="lesson-card__date">
+                <Calendar 
+                  v-model="lesson.date" 
+                  dateFormat="yy-mm-dd"
+                  :minDate="new Date()"
+                  showIcon
+                  class="lesson-card__calendar"
+                />
+              </div>
+              <div class="lesson-card__number">
+                <Dropdown
+                  v-model="lesson.lessonNumber"
+                  :options="lessonNumbers"
+                  option-label="label"
+                  option-value="value"
+                  class="lesson-card__dropdown"
+                />
+              </div>
+            </div>
+            <div class="lesson-card__actions">
+              <Button 
+                icon="pi pi-trash" 
+                class="p-button-rounded p-button-text p-button-danger"
+                @click="confirmDeleteLesson(lesson, index)"
+              />
+              <Button 
+                icon="pi pi-calendar" 
+                class="p-button-rounded p-button-text"
+                @click="openMoveDialog(lesson, index)"
+              />
+            </div>
+          </div>
+        </div>
+
         <div class="step-actions">
           <Button label="Назад" class="p-button-text" @click="prevStep" />
           <Button label="Сохранить расписание" @click="saveSchedule" :disabled="!lessons.length" />
@@ -122,6 +216,7 @@
       header="Перемещение занятия"
       :modal="true"
       class="move-dialog"
+      :style="{ width: isMobile ? '90vw' : '450px' }"
     >
       <div class="p-fluid">
         <div class="p-field">
@@ -132,6 +227,7 @@
             dateFormat="yy-mm-dd"
             :minDate="new Date()"
             showIcon
+            class="w-full"
           />
         </div>
         <div class="p-field">
@@ -143,6 +239,7 @@
             option-label="label"
             option-value="value"
             placeholder="Выберите пару"
+            class="w-full"
           />
         </div>
       </div>
@@ -192,7 +289,7 @@ const steps = [
   { label: 'Исключения' },
   { label: 'Расписание' },
 ];
-const currentStep = ref(3);
+const currentStep = ref(0);
 
 const groups = ref([]);
 const subjects = ref([]);
@@ -270,15 +367,42 @@ const moveData = ref({
   newLessonNumber: null
 });
 
+// Добавляем определение мобильного устройства
+const isMobile = ref(window.innerWidth <= 768);
+
+// Добавляем слушатель изменения размера окна
+onMounted(() => {
+  window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth <= 768;
+  });
+});
+
 onMounted(async () => {
-  const [groupsData, subjectsData, assignmentsData] = await Promise.all([
-    groupsService.getAll(),
-    subjectService.get(),
-    teachingAssignmentsService.get()
-  ]);
-  groups.value = groupsData;
-  subjects.value = subjectsData;
-  teachingAssignments.value = assignmentsData;
+  try {
+    const [groupsData, subjectsData, assignmentsData] = await Promise.all([
+      groupsService.getAll(),
+      subjectService.get(),
+      teachingAssignmentsService.get()
+    ]);
+    
+    console.log('Loaded data:', {
+      groups: groupsData,
+      subjects: subjectsData,
+      assignments: assignmentsData
+    });
+    
+    groups.value = groupsData;
+    subjects.value = subjectsData;
+    teachingAssignments.value = assignmentsData;
+  } catch (error) {
+    console.error('Error loading data:', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Не удалось загрузить данные',
+      life: 3000
+    });
+  }
 });
 
 function nextStep() {
@@ -471,72 +595,133 @@ async function loadGroupDetails(groupId) {
 
 <style scoped>
 .schedule-planning {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 30px;
+  padding: 2rem;
 }
+
 .stepper {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
+
 .step {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  background: #f1f5f9;
-  color: #64748b;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background: var(--surface-card);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 150px;
 }
+
 .step.active {
-  background: #627bff;
-  color: #fff;
-  font-weight: bold;
+  background: var(--primary-color);
+  color: white;
 }
+
 .step-number {
-  background: #fff;
-  color: #627bff;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  margin-right: 5px;
+  border-radius: 50%;
+  background: var(--surface-card);
+  color: var(--text-color);
 }
+
+.step.active .step-number {
+  background: white;
+  color: var(--primary-color);
+}
+
 .step-card {
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
 }
+
 .form-block {
-  margin-bottom: 20px;
-}
-.weekdays {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.excluded-list span {
-  margin-right: 10px;
-}
-.step-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-.actions {
-  display: flex;
-  gap: 8px;
-}
-.move-dialog {
-  min-width: 450px;
-}
-.p-field {
   margin-bottom: 1rem;
 }
-.p-field label {
-  display: block;
-  margin-bottom: 0.5rem;
+
+.weekdays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.excluded-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.lessons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.lesson-card {
+  background: var(--surface-card);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.lesson-card__date,
+.lesson-card__number {
+  width: 100%;
+}
+
+.lesson-card__calendar,
+.lesson-card__dropdown {
+  width: 100%;
+}
+
+.lesson-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.move-dialog {
+  max-width: 90vw;
+}
+
+.w-full {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .schedule-planning {
+    padding: 1rem;
+  }
+  
+  .stepper {
+    flex-direction: column;
+  }
+  
+  .step {
+    width: 100%;
+  }
 }
 </style> 
