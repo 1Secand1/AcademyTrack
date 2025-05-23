@@ -8,6 +8,7 @@ import GroupProfilePage from '@views/GroupProfilePage.vue';
 import SchedulePlanningPage from '@views/SchedulePlanningPage.vue';
 import SubjectsPage from '@views/SubjectsPage.vue';
 import ScheduleManagementPage from '@views/ScheduleManagementPage.vue';
+import MenuPage from '@views/MenuPage.vue';
 
 export const routes = [
 	{
@@ -69,5 +70,11 @@ export const routes = [
 		name: 'scheduleManagement',
 		component: ScheduleManagementPage,
 		meta: { requiresAuth: true, requiresAdmin: true }
+	},
+	{
+		path: '/menu',
+		name: 'menu',
+		component: MenuPage,
+		meta: { requiresAuth: true }
 	}
 ];

@@ -12,70 +12,26 @@
       <i class="pi pi-calendar-plus"></i>
       <span>Расписание</span>
     </button>
-    <button class="nav-item" @click="handleLogout">
-      <i class="pi pi-sign-out"></i>
-      <span>Выход</span>
+    <button class="nav-item menu-button" @click="handleNavigation('/menu')">
+      <i class="pi pi-bars"></i>
+      <span>Меню</span>
     </button>
   </nav>
-
-  <Dialog v-model:visible="showMenu" :modal="true" :style="{ width: '90vw' }" :closable="true">
-    <template #header>
-      <h3>Меню</h3>
-    </template>
-    <div class="menu-content">
-      <button class="menu-item" @click="handleNavigation('/')">
-        <i class="pi pi-home"></i>
-        <span>Главная</span>
-      </button>
-      <button class="menu-item" @click="handleNavigation('/user-groups')">
-        <i class="pi pi-users"></i>
-        <span>Группы</span>
-      </button>
-      <button v-if="isAdmin" class="menu-item" @click="handleNavigation('/teaching-assignments')">
-        <i class="pi pi-calendar"></i>
-        <span>Нагрузка</span>
-      </button>
-      <button v-if="isAdmin" class="menu-item" @click="handleNavigation('/schedule-planning')">
-        <i class="pi pi-calendar-plus"></i>
-        <span>Формирование расписания</span>
-      </button>
-      <button v-if="isAdmin" class="menu-item" @click="handleNavigation('/schedule-management')">
-        <i class="pi pi-calendar-edit"></i>
-        <span>Управление расписанием</span>
-      </button>
-      <button v-if="isAdmin" class="menu-item" @click="handleNavigation('/subjects')">
-        <i class="pi pi-list"></i>
-        <span>Предметы</span>
-      </button>
-      <button v-if="isAdmin" class="menu-item" @click="handleNavigation('/data-change')">
-        <i class="pi pi-cog"></i>
-        <span>Управление данными</span>
-      </button>
-      <button class="menu-item logout" @click="handleLogout">
-        <i class="pi pi-sign-out"></i>
-        <span>Выйти</span>
-      </button>
-    </div>
-  </Dialog>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from '@service/auth.js';
-import Dialog from 'primevue/dialog';
 import { useToast } from 'primevue/usetoast';
-import { deleteCookie } from '@utils/cookie.js';
 
 const router = useRouter();
 const toast = useToast();
-const showMenu = ref(false);
 const isAdmin = computed(() => authService.isAdmin());
 
 const handleNavigation = async (path) => {
   try {
     console.log('[BottomNav] Starting navigation to:', path);
-    showMenu.value = false;
     
     if (router.currentRoute.value.path === path) {
       console.log('[BottomNav] Already on the target page');
@@ -94,24 +50,6 @@ const handleNavigation = async (path) => {
       severity: 'error',
       summary: 'Ошибка',
       detail: 'Не удалось перейти на страницу',
-      life: 3000
-    });
-  }
-};
-
-const handleLogout = async () => {
-  try {
-    console.log('[BottomNav] Starting logout process');
-    showMenu.value = false;
-    deleteCookie('token');
-    await router.replace('/login');
-    console.log('[BottomNav] Logout completed successfully');
-  } catch (error) {
-    console.error('[BottomNav] Logout error:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось выйти из системы',
       life: 3000
     });
   }
@@ -142,7 +80,7 @@ const handleLogout = async () => {
   background: none;
   border: none;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .nav-item i {
@@ -157,40 +95,8 @@ const handleLogout = async () => {
   color: var(--primary-color);
 }
 
-.nav-item:last-child {
-  color: var(--red-500);
-}
-
-.menu-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: none;
-  border: none;
-  color: var(--text-color);
-  cursor: pointer;
-  transition: background-color 0.2s;
-  border-radius: var(--border-radius);
-}
-
-.menu-item:hover {
-  background-color: var(--surface-hover);
-}
-
-.menu-item i {
-  font-size: 1.25rem;
-}
-
-.menu-item.logout {
-  color: var(--red-500);
-  margin-top: 1rem;
+.nav-item.menu-button {
+  color: var(--primary-color);
 }
 
 @media (max-width: 768px) {
