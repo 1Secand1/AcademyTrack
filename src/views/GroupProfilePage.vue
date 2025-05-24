@@ -3,23 +3,31 @@
     <div class="profile-header">
       <div class="header-content">
         <div class="header-main">
-          <h2 class="titlePage">Профиль группы</h2>
-          <div class="group-info" v-if="groupDetails">
+          <h2 class="titlePage">
+            Профиль группы
+          </h2>
+          <div
+            v-if="groupDetails"
+            class="group-info"
+          >
             <div class="group-code">
-              <i class="pi pi-users"></i>
+              <i class="pi pi-users" />
               {{ groupDetails.groupCode }}
             </div>
             <div class="group-details">
               <div class="course">
-                <i class="pi pi-calendar"></i>
+                <i class="pi pi-calendar" />
                 {{ groupDetails.yearOfEntry }} г. поступления
               </div>
             </div>
           </div>
         </div>
-        <div class="profile-stats" v-if="groupDetails">
+        <div
+          v-if="groupDetails"
+          class="profile-stats"
+        >
           <div class="stat-item">
-            <i class="pi pi-users"></i>
+            <i class="pi pi-users" />
             <div class="stat-content">
               <span class="stat-value">{{ groupDetails.students?.length || 0 }}</span>
               <span class="stat-label">студентов</span>
@@ -39,18 +47,30 @@
         />
       </div>
       <div class="category-content">
-        <transition name="fade" mode="out-in">
+        <transition
+          name="fade"
+          mode="out-in"
+        >
           <component
             :is="currentCategoryComponent"
             v-if="currentCategoryComponent && groupDetails"
             :group-details="groupDetails"
           />
         </transition>
-        <div v-if="!groupDetails && !isLoading" class="no-data">
-          <i class="pi pi-exclamation-circle" style="font-size: 2rem"></i>
+        <div
+          v-if="!groupDetails && !isLoading"
+          class="no-data"
+        >
+          <i
+            class="pi pi-exclamation-circle"
+            style="font-size: 2rem"
+          />
           <p>Данные о группе не найдены</p>
         </div>
-        <div class="loading-overlay" v-if="isLoading">
+        <div
+          v-if="isLoading"
+          class="loading-overlay"
+        >
           <ProgressSpinner />
         </div>
       </div>
@@ -59,117 +79,89 @@
 </template>
 
 <script setup>
-import SelectButton from 'primevue/selectbutton';
-import ProgressSpinner from 'primevue/progressspinner';
-import GroupProfileSchedule from '@components/GroupProfile/GroupProfileSchedule.vue';
-import GroupProfileStudents from '@components/GroupProfile/GroupProfileStudents.vue';
-import GroupProfileTeachers from '@components/GroupProfile/GroupProfileTeachers.vue';
-import GroupProfileAttendance from '@components/GroupProfile/GroupProfileAttendance.vue';
-import { computed, markRaw, ref, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { groupsService } from '@service/api-endpoints/groups.js';
-import { useToast } from 'primevue/usetoast';
+  import SelectButton from 'primevue/selectbutton';
+  import ProgressSpinner from 'primevue/progressspinner';
+  import GroupProfileSchedule from '@components/GroupProfile/GroupProfileSchedule.vue';
+  import GroupProfileStudents from '@components/GroupProfile/GroupProfileStudents.vue';
+  import GroupProfileTeachers from '@components/GroupProfile/GroupProfileTeachers.vue';
+  import GroupProfileAttendance from '@components/GroupProfile/GroupProfileAttendance.vue';
+  import { computed, markRaw, ref, onMounted, watch } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { groupsService } from '@service/api-endpoints/groups.js';
+  import { useToast } from 'primevue/usetoast';
 
-const route = useRoute();
-const groupId = ref(route.params.groupId);
-const groupDetails = ref({
-  id: null,
-  groupCode: '',
-  yearOfEntry: '',
-  students: [],
-  teachers: [],
-  schedule: []
-});
-const isLoading = ref(false);
-const toast = useToast();
+  const route = useRoute();
+  const groupId = ref(route.params.groupId);
+  const groupDetails = ref({
+    id: null,
+    groupCode: '',
+    yearOfEntry: '',
+    students: [],
+    teachers: [],
+    schedule: [],
+  });
+  const isLoading = ref(false);
+  const toast = useToast();
 
-console.log('GroupProfilePage: groupId from route', groupId.value);
+  const mapCategoryComponent = {
+    'Студенты': markRaw(GroupProfileStudents),
+    'Расписание': markRaw(GroupProfileSchedule),
+    'Учителя': markRaw(GroupProfileTeachers),
+    'Посещаемость': markRaw(GroupProfileAttendance),
+  };
 
-const mapCategoryComponent = {
-  'Студенты': markRaw(GroupProfileStudents),
-  'Расписание': markRaw(GroupProfileSchedule),
-  'Учителя': markRaw(GroupProfileTeachers),
-  'Посещаемость': markRaw(GroupProfileAttendance),
-};
+  const currentCategory = ref(route.query?.category ?? 'Студенты');
+  const currentCategoryComponent = computed(() => {
+    if (!currentCategory.value || !mapCategoryComponent[currentCategory.value]) {
+      return markRaw(GroupProfileStudents);
+    }
+    return mapCategoryComponent[currentCategory.value];
+  });
+  const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость']);
 
-const currentCategory = ref(route.query?.category ?? 'Студенты');
-const currentCategoryComponent = computed(() => {
-  if (!currentCategory.value || !mapCategoryComponent[currentCategory.value]) {
-    return markRaw(GroupProfileStudents);
-  }
-  return mapCategoryComponent[currentCategory.value];
-});
-const buttonsOptions = ref(['Студенты', 'Расписание', 'Учителя', 'Посещаемость']);
-
-onMounted(async () => {
-  if (groupId.value) {
-    isLoading.value = true;
+  const loadGroupDetails = async () => {
     try {
-      console.log('Fetching group details for ID:', groupId.value);
-      
-      // Используем новый метод для получения детальной информации о группе
-      const groupDetailsData = await groupsService.getDetails(groupId.value);
-      
-      console.log('Group details received:', groupDetailsData);
-      
-      if (!groupDetailsData) {
-        console.error('No data received from the server');
-        toast.add({
-          severity: 'error',
-          summary: 'Ошибка',
-          detail: 'Не удалось получить данные о группе',
-          life: 3000
-        });
-        return;
-      }
-
-      // Обрабатываем данные в соответствии с новым форматом
-      const processedResult = {
-        id: groupDetailsData.id || null,
-        groupCode: groupDetailsData.code || '',
-        yearOfEntry: groupDetailsData.yearOfEntry || '',
-        students: Array.isArray(groupDetailsData.students) ? groupDetailsData.students.map(student => ({
-          id: student.id,
-          fullName: student.fullName || '',
-          attendance: groupDetailsData.attendanceStats || {},
-          percentage: groupDetailsData.attendanceStats?.average || 0
-        })) : [],
-        teachers: Array.isArray(groupDetailsData.teachers) ? groupDetailsData.teachers.map(teacher => ({
-          id: teacher.id,
-          fullName: teacher.fullName || '',
-          subjects: teacher.subjects || []
-        })) : [],
-        schedule: Array.isArray(groupDetailsData.teachingAssignments) ? groupDetailsData.teachingAssignments : []
-      };
-      
-      groupDetails.value = processedResult;
-      console.log('Processed group details:', groupDetails.value);
+      isLoading.value = true;
+      const response = await groupsService.getDetails(groupId.value);
+      groupDetails.value = processGroupDetails(response.data);
     } catch (error) {
-      console.error('Ошибка при загрузке данных о группе:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response,
-        status: error.response?.status,
-        data: error.response?.data
-      });
       toast.add({
         severity: 'error',
-        summary: 'Ошибка',
-        detail: 'Не удалось загрузить данные о группе',
-        life: 3000
+        summary: 'Error',
+        detail: 'Failed to load group details',
+        life: 3000,
       });
     } finally {
       isLoading.value = false;
     }
-  }
-});
+  };
 
-// Добавляем watch для отслеживания изменений
-watch([currentCategory, groupDetails], ([newCategory, newDetails]) => {
-  console.log('Category changed:', newCategory);
-  console.log('Group details changed:', newDetails);
-  console.log('Component should be visible:', currentCategoryComponent.value && newDetails && newDetails.id);
-}, { immediate: true });
+  const processGroupDetails = (data) => {
+    if (!data) return null;
+    return {
+      ...data,
+      students: data.students || [],
+      teachers: data.teachers || [],
+      subjects: data.subjects || [],
+      schedule: data.schedule || [],
+    };
+  };
+
+  watch(currentCategory, (newCategory) => {
+    currentCategoryComponent.value = getCategoryComponent(newCategory);
+  });
+
+  watch(groupDetails, (newDetails) => {
+    if (currentCategoryComponent.value && newDetails && newDetails.id) {
+      isComponentVisible.value = true;
+    }
+  });
+
+  onMounted(async () => {
+    if (groupId.value) {
+      await loadGroupDetails();
+    }
+  });
 </script>
 
 <style scoped>

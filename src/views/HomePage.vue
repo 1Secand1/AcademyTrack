@@ -113,16 +113,9 @@ let loadingTimeout;
 
 const handleNavigation = async (routeName) => {
   try {
-    console.log('[HomePage] Starting navigation to:', routeName);
-    loading.value = true;
     await router.push({ name: routeName });
-    console.log('[HomePage] Navigation completed successfully');
   } catch (error) {
-    console.error('[HomePage] Navigation error:', {
-      route: routeName,
-      error: error.message,
-      stack: error.stack
-    });
+    console.error('Navigation error:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -131,23 +124,16 @@ const handleNavigation = async (routeName) => {
     });
   } finally {
     loading.value = false;
-    console.log('[HomePage] Navigation process finished, loading:', loading.value);
   }
 };
 
 const loadDashboardData = async () => {
   try {
-    console.log('[HomePage] Starting dashboard data loading');
     loading.value = true;
     const [groupsData, assignmentsData] = await Promise.all([
       groupsService.getAll(),
       teachingAssignmentsService.get()
     ]);
-    
-    console.log('[HomePage] Data loaded:', {
-      groupsCount: groupsData.length,
-      assignmentsCount: assignmentsData.length
-    });
     
     groupsCount.value = groupsData.length;
     assignmentsCount.value = assignmentsData.length;
@@ -170,16 +156,8 @@ const loadDashboardData = async () => {
     
     studentsCount.value = uniqueStudents.size;
     teachersCount.value = uniqueTeachers.size;
-
-    console.log('[HomePage] Statistics calculated:', {
-      studentsCount: studentsCount.value,
-      teachersCount: teachersCount.value
-    });
   } catch (error) {
-    console.error('[HomePage] Error loading dashboard data:', {
-      error: error.message,
-      stack: error.stack
-    });
+    console.error('Error loading dashboard data:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -188,17 +166,14 @@ const loadDashboardData = async () => {
     });
   } finally {
     loading.value = false;
-    console.log('[HomePage] Dashboard data loading finished, loading:', loading.value);
   }
 };
 
 onMounted(() => {
-  console.log('[HomePage] Component mounted');
   loadDashboardData();
 });
 
 onBeforeUnmount(() => {
-  console.log('[HomePage] Component unmounting');
   if (loadingTimeout) {
     clearTimeout(loadingTimeout);
   }

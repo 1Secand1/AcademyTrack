@@ -5,7 +5,7 @@
         <component
           :is="currentActiveForm"
           v-model="selectedRow"
-          v-model:dataChangeType="dataChangeTypeNamesValue"
+          v-model:data-change-type="dataChangeTypeNamesValue"
           :groups="groupedComponentCatalog[userRoleNames.groups.name].data"
           :disabled="dataChangeTypeNames.update.name === dataChangeTypeNamesValue && Object.keys(selectedRow).length === 0"
           @form-submission="sendRequest"
@@ -13,8 +13,8 @@
 
         <DataChangeOptionSwitch
           v-model:category="categoryNameValue"
-          v-model:dataChangeType="dataChangeTypeNamesValue"
-          v-model:additionMethod="namesOfDataAdditionMethodsValue"
+          v-model:data-change-type="dataChangeTypeNamesValue"
+          v-model:addition-method="namesOfDataAdditionMethodsValue"
         />
       </section>
 
@@ -40,26 +40,48 @@
         </DataTable>
 
         <!-- Мобильная версия -->
-        <div v-else class="data-list">
-          <div v-if="currentDateTable.length === 0" class="no-data">
+        <div
+          v-else
+          class="data-list"
+        >
+          <div
+            v-if="currentDateTable.length === 0"
+            class="no-data"
+          >
             <p>Нет данных для отображения</p>
           </div>
-          <div v-else v-for="item in currentDateTable" :key="item.id" 
-               class="data-card" 
-               :class="{ 'is-selected': selectedRow.id === item.id }"
-               @click="onRowSelect({ data: item })">
+          <div
+            v-for="item in currentDateTable"
+            v-else
+            :key="item.id"
+            class="data-card"
+            :class="{ 'is-selected': selectedRow.id === item.id }"
+            @click="onRowSelect({ data: item })"
+          >
             <div class="data-card__content">
               <div class="data-card__header">
                 <h3 class="data-card__title">
                   {{ getCardTitle(item) }}
                 </h3>
-                <div class="data-card__status" :class="{ 'is-selected': selectedRow.id === item.id }">
-                  <i class="pi pi-check" v-if="selectedRow.id === item.id"></i>
+                <div
+                  class="data-card__status"
+                  :class="{ 'is-selected': selectedRow.id === item.id }"
+                >
+                  <i
+                    v-if="selectedRow.id === item.id"
+                    class="pi pi-check"
+                  />
                 </div>
               </div>
               <div class="data-card__fields">
-                <template v-for="row in currentActiveTable" :key="row.valueKey">
-                  <div class="data-card__field" v-if="item[row.valueKey]">
+                <template
+                  v-for="row in currentActiveTable"
+                  :key="row.valueKey"
+                >
+                  <div
+                    v-if="item[row.valueKey]"
+                    class="data-card__field"
+                  >
                     <span class="label">{{ row.text }}</span>
                     <span class="value">{{ item[row.valueKey] }}</span>
                   </div>
@@ -100,11 +122,11 @@
     [userRoleNames.teachers.name]: [
       { text:'Фамилия',valueKey:'surname' },
       { text:'Имя',valueKey:'name' },
-      { text:'Отчество',valueKey:'patronymic' }
+      { text:'Отчество',valueKey:'patronymic' },
     ],
     [userRoleNames.groups.name]: [
       { text:'Код группы',valueKey:'groupCode' },
-      { text:'Год поступления',valueKey:'yearOfEntry' }
+      { text:'Год поступления',valueKey:'yearOfEntry' },
     ],
   };
 
@@ -117,26 +139,15 @@
     [userRoleNames.teachers.name]: {
       [dataChangeTypeNames.update.name]: async ({ teacherId, ...body }) => {
         try {
-          console.log('Updating teacher:', { teacherId, ...body });
           const response = await teachersService.update(teacherId, body);
-          console.log('Teacher updated successfully:', response);
           return response;
         } catch (error) {
-          console.error('Error updating teacher:', error);
-          console.error('Error details:', {
-            message: error.message,
-            response: error.response,
-            status: error.response?.status,
-            data: error.response?.data
-          });
           throw error;
         }
       },
       [dataChangeTypeNames.create.name]: async (body) => {
         try {
-          console.log('Creating teacher:', body);
           const response = await teachersService.create(body);
-          console.log('Teacher created successfully:', response);
           return response;
         } catch (error) {
           console.error('Error creating teacher:', error);
@@ -144,24 +155,21 @@
             message: error.message,
             response: error.response,
             status: error.response?.status,
-            data: error.response?.data
+            data: error.response?.data,
           });
           throw error;
         }
       },
       [dataChangeTypeNames.get.name]: async () => {
         try {
-          console.log('Fetching teachers');
           const response = await teachersService.get();
-          console.log('Teachers fetched successfully:', response);
           return response;
         } catch (error) {
-          console.error('Error fetching teachers:', error);
           console.error('Error details:', {
             message: error.message,
             response: error.response,
             status: error.response?.status,
-            data: error.response?.data
+            data: error.response?.data,
           });
           throw error;
         }
@@ -170,51 +178,42 @@
     [userRoleNames.groups.name]: {
       [dataChangeTypeNames.update.name]: async ({ groupId, groupCode, yearOfEntry }) => {
         try {
-          console.log('Updating group:', { groupId, groupCode, yearOfEntry });
           const response = await groupsService.update(groupId, { groupCode, yearOfEntry });
-          console.log('Group updated successfully:', response);
           return response;
         } catch (error) {
-          console.error('Error updating group:', error);
           console.error('Error details:', {
             message: error.message,
             response: error.response,
             status: error.response?.status,
-            data: error.response?.data
+            data: error.response?.data,
           });
           throw error;
         }
       },
       [dataChangeTypeNames.create.name]: async (body) => {
         try {
-          console.log('Creating group with data:', body);
           const response = await groupsService.create(body);
-          console.log('Group created successfully:', response);
           return response;
         } catch (error) {
-          console.error('Error creating group:', error);
           console.error('Error details:', {
             message: error.message,
             response: error.response,
             status: error.response?.status,
-            data: error.response?.data
+            data: error.response?.data,
           });
           throw error;
         }
       },
       [dataChangeTypeNames.get.name]: async () => {
         try {
-          console.log('Fetching groups');
           const response = await groupsService.getAll();
-          console.log('Groups fetched successfully:', response);
           return response;
         } catch (error) {
-          console.error('Error fetching groups:', error);
           console.error('Error details:', {
             message: error.message,
             response: error.response,
             status: error.response?.status,
-            data: error.response?.data
+            data: error.response?.data,
           });
           throw error;
         }
@@ -262,7 +261,6 @@
 
   // Добавляем слушатель изменения размера окна
   onMounted(() => {
-    console.log('Component mounted, calling updateComponents');
     updateComponents();
     window.addEventListener('resize', () => {
       isMobile.value = window.innerWidth <= 768;
@@ -270,14 +268,13 @@
   });
 
   watch([categoryNameValue, namesOfDataAdditionMethodsValue], () => {
-    console.log('Category or method changed, calling updateComponents');
     updateComponents();
   });
 
   function onRowSelect(event) {
     const selectedData = event.data;
     dataChangeTypeNamesValue.value = dataChangeTypeNames.update.name;
-    
+
     // Преобразуем данные в формат, ожидаемый формой
     if (categoryNameValue.value === userRoleNames.students.name) {
       selectedRow.value = {
@@ -286,7 +283,7 @@
         groupCode: selectedData.groupCode,
         surname: selectedData.surname,
         name: selectedData.name,
-        patronymic: selectedData.patronymic
+        patronymic: selectedData.patronymic,
       };
     } else if (categoryNameValue.value === userRoleNames.teachers.name) {
       selectedRow.value = {
@@ -294,14 +291,14 @@
         teacherId: selectedData.id,
         surname: selectedData.surname,
         name: selectedData.name,
-        patronymic: selectedData.patronymic
+        patronymic: selectedData.patronymic,
       };
     } else if (categoryNameValue.value === userRoleNames.groups.name) {
       selectedRow.value = {
         id: selectedData.id,
         groupId: selectedData.id,
         groupCode: selectedData.groupCode,
-        yearOfEntry: selectedData.yearOfEntry
+        yearOfEntry: selectedData.yearOfEntry,
       };
     }
   }
@@ -319,17 +316,14 @@
       groupsDataCache.timestamp = now;
       return data;
     } catch (error) {
-      console.error('Error fetching groups data:', error);
       throw error;
     }
   }
 
   async function updateComponents() {
-    console.log('updateComponents called with category:', categoryNameValue.value);
     const component = groupedComponentCatalog[categoryNameValue.value];
 
     if (!component) {
-      console.error('No component found for category:', categoryNameValue.value);
       return;
     }
     selectedRow.value = {};
@@ -343,12 +337,10 @@
     }
 
     try {
-      console.log('Fetching data for current category:', categoryNameValue.value);
       component.data = await serverRequests[categoryNameValue.value].get();
-      
+
       // Загружаем данные групп только если мы в разделе студентов
       if (categoryNameValue.value === userRoleNames.students.name) {
-        console.log('Fetching groups data for students form');
         const groupsData = await getGroupsData();
         groupedComponentCatalog[userRoleNames.groups.name].data = groupsData;
       }
@@ -356,18 +348,17 @@
       currentDateTable.value = component.data;
       currentActiveTable.value = component.table;
     } catch (error) {
-      console.error('Error updating components:', error);
       console.error('Error details:', {
         message: error.message,
         response: error.response,
         status: error.response?.status,
-        data: error.response?.data
+        data: error.response?.data,
       });
       toast.add({
         severity: 'error',
         summary: 'Ошибка',
         detail: 'Не удалось загрузить данные',
-        life: 3000
+        life: 3000,
       });
     }
   }
@@ -382,12 +373,6 @@
   // Обновляем функцию sendRequest для обновления кэша после изменений
   async function sendRequest(data) {
     try {
-      console.log('Sending request with data:', {
-        category: categoryNameValue.value,
-        type: dataChangeTypeNamesValue.value,
-        data
-      });
-      
       // Проверяем наличие необходимых данных
       if (dataChangeTypeNamesValue.value === dataChangeTypeNames.update.name) {
         if (!data.id) {
@@ -409,41 +394,41 @@
           throw new Error('Код группы обязателен для заполнения');
         }
       }
-      
+
       await serverRequests[categoryNameValue.value][dataChangeTypeNamesValue.value](data);
-      
+
       // Обновляем кэш групп если мы работаем с группами или студентами
-      if (categoryNameValue.value === userRoleNames.groups.name || 
-          categoryNameValue.value === userRoleNames.students.name) {
+      if (categoryNameValue.value === userRoleNames.groups.name ||
+        categoryNameValue.value === userRoleNames.students.name) {
         await refreshGroupsCache();
       }
-      
+
       await updateComponents();
-      
+
       // Очищаем выбранную строку после успешного обновления
       if (dataChangeTypeNamesValue.value === dataChangeTypeNames.update.name) {
         selectedRow.value = {};
       }
-      
+
       toast.add({
         severity: 'success',
         summary: 'Успех',
         detail: 'Операция выполнена успешно',
-        life: 3000
+        life: 3000,
       });
     } catch (error) {
-      console.error('Error sending request:', error);
+      console.error('Error sending request:', eror);
       console.error('Error details:', {
         message: error.message,
         response: error.response,
         status: error.response?.status,
-        data: error.response?.data
+        data: error.response?.data,
       });
       toast.add({
         severity: 'error',
         summary: 'Ошибка',
         detail: error.response?.data?.message || error.message || 'Не удалось выполнить операцию',
-        life: 3000
+        life: 3000,
       });
     }
   }
@@ -787,21 +772,6 @@
     padding: 0.375rem;
     background: var(--surface-ground);
     border-radius: 6px;
-  }
-
-  .label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text-color-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .value {
-    font-size: 0.95rem;
-    color: var(--text-color);
-    font-weight: 500;
-    word-break: break-word;
   }
 
   /* Стили для форм на мобильных устройствах */

@@ -55,21 +55,12 @@ const isAdmin = computed(() => authService.isAdmin());
 
 const handleNavigation = async (path) => {
   try {
-    console.log('[Sidebar] Starting navigation to:', path);
-    
     if (router.currentRoute.value.path === path) {
-      console.log('[Sidebar] Already on the target page');
       return;
     }
     
     await router.replace(path);
-    console.log('[Sidebar] Navigation completed successfully');
   } catch (error) {
-    console.error('[Sidebar] Navigation error:', {
-      path,
-      error: error.message,
-      stack: error.stack
-    });
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -81,12 +72,9 @@ const handleNavigation = async (path) => {
 
 const handleLogout = async () => {
   try {
-    console.log('[Sidebar] Starting logout process');
     deleteCookie('token');
     await router.replace('/login');
-    console.log('[Sidebar] Logout completed successfully');
   } catch (error) {
-    console.error('[Sidebar] Logout error:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -97,9 +85,7 @@ const handleLogout = async () => {
 };
 
 onMounted(() => {
-  console.log('[Sidebar] Component mounted');
-  console.log('[Sidebar] Is user admin?', isAdmin.value);
-  console.log('[Sidebar] Current user:', authService.getCurrentUser());
+  // Removed all console.log statements
 });
 </script>
 

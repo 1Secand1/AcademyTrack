@@ -1,59 +1,71 @@
 <template>
   <nav class="bottom-nav">
-    <button class="nav-item" :class="{ active: $route.path === '/' }" @click="handleNavigation('/')">
-      <i class="pi pi-home"></i>
+    <button
+      class="nav-item"
+      :class="{ active: $route.path === '/' }"
+      @click="handleNavigation('/')"
+    >
+      <i class="pi pi-home" />
       <span>Главная</span>
     </button>
-    <button class="nav-item" :class="{ active: $route.path === '/user-groups' }" @click="handleNavigation('/user-groups')">
-      <i class="pi pi-users"></i>
+    <button
+      class="nav-item"
+      :class="{ active: $route.path === '/user-groups' }"
+      @click="handleNavigation('/user-groups')"
+    >
+      <i class="pi pi-users" />
       <span>Группы</span>
     </button>
-    <button v-if="isAdmin" class="nav-item" :class="{ active: $route.path === '/schedule-planning' }" @click="handleNavigation('/schedule-planning')">
-      <i class="pi pi-calendar-plus"></i>
+    <button
+      v-if="isAdmin"
+      class="nav-item"
+      :class="{ active: $route.path === '/schedule-planning' }"
+      @click="handleNavigation('/schedule-planning')"
+    >
+      <i class="pi pi-calendar-plus" />
       <span>Расписание</span>
     </button>
-    <button class="nav-item menu-button" @click="handleNavigation('/menu')">
-      <i class="pi pi-bars"></i>
+    <button
+      class="nav-item menu-button"
+      @click="handleNavigation('/menu')"
+    >
+      <i class="pi pi-bars" />
       <span>Меню</span>
     </button>
   </nav>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { authService } from '@service/auth.js';
-import { useToast } from 'primevue/usetoast';
+  import { computed } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { authService } from '@service/auth.js';
+  import { useToast } from 'primevue/usetoast';
 
-const router = useRouter();
-const toast = useToast();
-const isAdmin = computed(() => authService.isAdmin());
+  const router = useRouter();
+  const toast = useToast();
+  const isAdmin = computed(() => authService.isAdmin());
 
-const handleNavigation = async (path) => {
-  try {
-    console.log('[BottomNav] Starting navigation to:', path);
-    
-    if (router.currentRoute.value.path === path) {
-      console.log('[BottomNav] Already on the target page');
-      return;
+  const handleNavigation = async (path) => {
+    try {
+      if (router.currentRoute.value.path === path) {
+        return;
+      }
+
+      await router.replace(path);
+    } catch (error) {
+      console.error('[BottomNav] Navigation error:', {
+        path,
+        error: error.message,
+        stack: error.stack,
+      });
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось перейти на страницу',
+        life: 3000,
+      });
     }
-    
-    await router.replace(path);
-    console.log('[BottomNav] Navigation completed successfully');
-  } catch (error) {
-    console.error('[BottomNav] Navigation error:', {
-      path,
-      error: error.message,
-      stack: error.stack
-    });
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось перейти на страницу',
-      life: 3000
-    });
-  }
-};
+  };
 </script>
 
 <style scoped>
@@ -104,4 +116,4 @@ const handleNavigation = async (path) => {
     padding-bottom: env(safe-area-inset-bottom, 0.5rem);
   }
 }
-</style> 
+</style>

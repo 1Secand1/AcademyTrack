@@ -183,7 +183,9 @@ onMounted(async () => {
 async function loadSubjects() {
   isLoading.value = true;
   try {
-    subjects.value = await subjectsService.getAll();
+    const response = await subjectsService.getAll();
+    const data = await response.json();
+    subjects.value = Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('Error loading subjects:', error);
     toast.add({

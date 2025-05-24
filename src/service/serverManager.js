@@ -12,23 +12,10 @@ export class ServerManager {
 
 	async create(body) {
 		try {
-			console.log('ServerManager: Creating with data:', {
-				endpoint: this.endpointName,
-				body
-			});
 			const response = await apiClient.post(this.endpointName, { json: body });
 			const data = await response.json();
-			console.log('ServerManager: Create successful:', data);
 			return data;
 		} catch (error) {
-			console.error('ServerManager: Error creating:', {
-				endpoint: this.endpointName,
-				request: body,
-				error: error.message,
-				status: error.response?.status,
-				statusText: error.response?.statusText,
-				response: error.response
-			});
 			throw error;
 		}
 	}
@@ -42,13 +29,6 @@ export class ServerManager {
 			}).json();
 			return Array.isArray(response) ? response : [response];
 		} catch (error) {
-			console.error('Ошибка при получении:', {
-				endpoint: this.endpointName,
-				request: { id, params },
-				error: error.message,
-				status: error.response?.status,
-				statusText: error.response?.statusText
-			});
 			throw error;
 		}
 	}
@@ -57,13 +37,6 @@ export class ServerManager {
 		try {
 			return await apiClient.patch(`${this.endpointName}/${id}`, { json: body }).json();
 		} catch (error) {
-			console.error('Ошибка при обновлении:', {
-				endpoint: this.endpointName,
-				request: { id, body },
-				error: error.message,
-				status: error.response?.status,
-				statusText: error.response?.statusText
-			});
 			throw error;
 		}
 	}
@@ -74,13 +47,6 @@ export class ServerManager {
 		try {
 			return await apiClient.delete(`${this.endpointName}/${id}`).json();
 		} catch (error) {
-			console.error('Ошибка при удалении:', {
-				endpoint: this.endpointName,
-				request: { id },
-				error: error.message,
-				status: error.response?.status,
-				statusText: error.response?.statusText
-			});
 			throw error;
 		}
 	}

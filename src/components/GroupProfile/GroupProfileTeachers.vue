@@ -24,8 +24,8 @@
         <Button
           icon="pi pi-download"
           label="Экспорт"
-          @click="exportData"
           class="export-button"
+          @click="exportData"
         />
       </div>
     </div>
@@ -37,7 +37,10 @@
         class="teacher-card"
       >
         <div class="teacher-card__avatar">
-          <i class="pi pi-user" style="font-size: 1.5rem"></i>
+          <i
+            class="pi pi-user"
+            style="font-size: 1.5rem"
+          />
         </div>
         <div class="teacher-card__content">
           <div class="teacher-card__header">
@@ -45,13 +48,19 @@
               {{ teacher.fullName }}
             </div>
             <div class="teacher-card__role">
-              <i class="pi pi-briefcase" style="font-size: 0.9rem"></i>
+              <i
+                class="pi pi-briefcase"
+                style="font-size: 0.9rem"
+              />
               {{ teacher.role }}
             </div>
           </div>
           <div class="teacher-card__subjects">
             <div class="subjects-header">
-              <i class="pi pi-book" style="font-size: 0.9rem"></i>
+              <i
+                class="pi pi-book"
+                style="font-size: 0.9rem"
+              />
               <span>Предметы:</span>
             </div>
             <div class="subjects-list">
@@ -66,24 +75,30 @@
           </div>
           <div class="teacher-card__actions">
             <Button
+              v-tooltip.top="'Связаться'"
               icon="pi pi-envelope"
               class="p-button-rounded p-button-text"
               @click="contactTeacher(teacher)"
-              v-tooltip.top="'Связаться'"
             />
             <Button
+              v-tooltip.top="'Расписание'"
               icon="pi pi-calendar"
               class="p-button-rounded p-button-text"
               @click="viewTeacherSchedule(teacher)"
-              v-tooltip.top="'Расписание'"
             />
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="filteredTeachers.length === 0" class="no-results">
-      <i class="pi pi-search" style="font-size: 2rem"></i>
+    <div
+      v-if="filteredTeachers.length === 0"
+      class="no-results"
+    >
+      <i
+        class="pi pi-search"
+        style="font-size: 2rem"
+      />
       <p>Преподаватели не найдены</p>
     </div>
 
@@ -92,144 +107,125 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import Dropdown from 'primevue/dropdown';
-import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
-import { exportService } from '@service/exportService';
-import { useRouter } from 'vue-router';
+  import { ref, computed, watch } from 'vue';
+  import InputText from 'primevue/inputtext';
+  import Button from 'primevue/button';
+  import Dropdown from 'primevue/dropdown';
+  import Toast from 'primevue/toast';
+  import { useToast } from 'primevue/usetoast';
+  import { exportService } from '@service/exportService';
+  import { useRouter } from 'vue-router';
 
-const props = defineProps({
-  groupDetails: { type: Object, required: true }
-});
-
-const emit = defineEmits(['update:stats']);
-
-const toast = useToast();
-const router = useRouter();
-const searchQuery = ref('');
-const selectedFilter = ref('all');
-
-// Добавляем логирование для проверки данных
-console.log('Group details in Teachers component:', props.groupDetails);
-console.log('Teachers data:', props.groupDetails.teachers);
-console.log('Group subjects:', props.groupDetails.subjects);
-
-const filterOptions = [
-  { label: 'Все преподаватели', value: 'all' },
-  { label: 'Основные преподаватели', value: 'main' },
-  { label: 'Ассистенты', value: 'assistant' }
-];
-
-const teachers = computed(() => {
-  console.log('Computing teachers list');
-  return props.groupDetails.teachers || [];
-});
-
-const filteredTeachers = computed(() => {
-  console.log('Filtering teachers');
-  let result = teachers.value;
-  
-  // Фильтрация по поиску
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    result = result.filter(teacher => 
-      teacher.fullName.toLowerCase().includes(query)
-    );
-  }
-  
-  // Фильтрация по роли
-  if (selectedFilter.value !== 'all') {
-    result = result.filter(teacher => 
-      teacher.role.toLowerCase() === selectedFilter.value
-    );
-  }
-  
-  console.log('Filtered teachers:', result);
-  return result;
-});
-
-// Получаем предметы преподавателя для текущей группы
-const getGroupSubjects = (teacher) => {
-  if (!teacher.subjects || !props.groupDetails.subjects) {
-    console.log('No subjects data for teacher:', teacher);
-    return [];
-  }
-  
-  console.log('Teacher subjects:', teacher.subjects);
-  console.log('Group subjects:', props.groupDetails.subjects);
-  
-  // Фильтруем предметы преподавателя, оставляя только те, которые есть в текущей группе
-  const groupSubjects = teacher.subjects.filter(teacherSubject => 
-    props.groupDetails.subjects.some(groupSubject => 
-      groupSubject.id === teacherSubject.id
-    )
-  );
-  
-  console.log('Filtered subjects for teacher:', groupSubjects);
-  return groupSubjects;
-};
-
-const contactTeacher = (teacher) => {
-  // Реализация функции связи с преподавателем
-  toast.add({
-    severity: 'info',
-    summary: 'Связь с преподавателем',
-    detail: `Функция связи с ${teacher.fullName} будет реализована позже`,
-    life: 3000
+  const props = defineProps({
+    groupDetails: { type: Object, required: true },
   });
-};
 
-const viewTeacherSchedule = (teacher) => {
-  router.push({
-    name: 'teacherSchedule',
-    params: { teacherId: teacher.id }
+  const emit = defineEmits(['update:stats']);
+
+  const toast = useToast();
+  const router = useRouter();
+  const searchQuery = ref('');
+  const selectedFilter = ref('all');
+
+  const filterOptions = [
+    { label: 'Все преподаватели', value: 'all' },
+    { label: 'Основные преподаватели', value: 'main' },
+    { label: 'Ассистенты', value: 'assistant' },
+  ];
+
+  const teachers = computed(() => {
+    return props.groupDetails.teachers || [];
   });
-};
 
-async function exportData() {
-  try {
-    if (!filteredTeachers.value.length) {
-      toast.add({
-        severity: 'warn',
-        summary: 'Предупреждение',
-        detail: 'Нет данных для экспорта',
-        life: 3000
-      });
-      return;
+  const filteredTeachers = computed(() => {
+    let result = teachers.value;
+
+    if (searchQuery.value) {
+      const query = searchQuery.value.toLowerCase();
+      result = result.filter(teacher =>
+        teacher.fullName.toLowerCase().includes(query),
+      );
     }
-    const data = filteredTeachers.value.map(teacher => ({
-      'ФИО': teacher.fullName,
-      'Предметы': getGroupSubjects(teacher).map(s => s.name).join(', '),
-      'Роль': teacher.role
-    }));
-    const filename = exportService.generateFilename('teachers', props.groupDetails.id);
-    await exportService.exportToExcel(data, filename, {
-      sheetName: 'Преподаватели',
-      headers: ['ФИО', 'Предметы', 'Роль']
-    });
-    toast.add({
-      severity: 'success',
-      summary: 'Успешно',
-      detail: 'Данные экспортированы',
-      life: 3000
-    });
-  } catch (error) {
-    console.error('Ошибка при экспорте:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: error.message || 'Не удалось экспортировать данные',
-      life: 3000
-    });
-  }
-}
 
-watch(() => props.groupDetails.teachers, (newVal) => {
-  emit('update:stats', { teachersCount: newVal?.length || 0 });
-}, { immediate: true });
+    if (selectedFilter.value !== 'all') {
+      result = result.filter(teacher =>
+        teacher.role.toLowerCase() === selectedFilter.value,
+      );
+    }
+
+    return result;
+  });
+
+  const getGroupSubjects = (teacher) => {
+    if (!teacher.subjects || !props.groupDetails.subjects) {
+      return [];
+    }
+
+    const groupSubjects = teacher.subjects.filter(teacherSubject =>
+      props.groupDetails.subjects.some(groupSubject =>
+        groupSubject.id === teacherSubject.id,
+      ),
+    );
+
+    return groupSubjects;
+  };
+
+  const contactTeacher = (teacher) => {
+    toast.add({
+      severity: 'info',
+      summary: 'Связь с преподавателем',
+      detail: `Функция связи с ${teacher.fullName} будет реализована позже`,
+      life: 3000,
+    });
+  };
+
+  const viewTeacherSchedule = (teacher) => {
+    router.push({
+      name: 'teacherSchedule',
+      params: { teacherId: teacher.id },
+    });
+  };
+
+  async function exportData() {
+    try {
+      if (!filteredTeachers.value.length) {
+        toast.add({
+          severity: 'warn',
+          summary: 'Предупреждение',
+          detail: 'Нет данных для экспорта',
+          life: 3000,
+        });
+        return;
+      }
+      const data = filteredTeachers.value.map(teacher => ({
+        'ФИО': teacher.fullName,
+        'Предметы': getGroupSubjects(teacher).map(s => s.name).join(', '),
+        'Роль': teacher.role,
+      }));
+      const filename = exportService.generateFilename('teachers', props.groupDetails.id);
+      await exportService.exportToExcel(data, filename, {
+        sheetName: 'Преподаватели',
+        headers: ['ФИО', 'Предметы', 'Роль'],
+      });
+      toast.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: 'Данные экспортированы',
+        life: 3000,
+      });
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: error.message || 'Не удалось экспортировать данные',
+        life: 3000,
+      });
+    }
+  }
+
+  watch(() => props.groupDetails.teachers, (newVal) => {
+    emit('update:stats', { teachersCount: newVal?.length || 0 });
+  }, { immediate: true });
 </script>
 
 <style scoped>
@@ -409,4 +405,4 @@ watch(() => props.groupDetails.teachers, (newVal) => {
     padding: 12px;
   }
 }
-</style> 
+</style>

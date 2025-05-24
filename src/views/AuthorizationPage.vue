@@ -6,16 +6,32 @@
         <form @submit.prevent="handleSubmit">
           <div class="form-group">
             <label for="login">Логин</label>
-            <InputText id="login" v-model="login" class="w-full" />
+            <InputText
+              id="login"
+              v-model="login"
+              class="w-full"
+            />
           </div>
           <div class="form-group">
             <label for="password">Пароль</label>
-            <InputText id="password" v-model="password" type="password" class="w-full" />
+            <InputText
+              id="password"
+              v-model="password"
+              type="password"
+              class="w-full"
+            />
           </div>
-          <div v-if="error" class="error-message">
+          <div
+            v-if="error"
+            class="error-message"
+          >
             {{ error }}
           </div>
-          <Button type="submit" label="Войти" class="w-full" />
+          <Button
+            type="submit"
+            label="Войти"
+            class="w-full"
+          />
         </form>
       </div>
     </div>
@@ -23,46 +39,41 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { authService } from '@service/auth.js';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
+  import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { authService } from '@service/auth.js';
+  import InputText from 'primevue/inputtext';
+  import Button from 'primevue/button';
 
-const router = useRouter();
-const login = ref('');
-const password = ref('');
-const error = ref('');
+  const router = useRouter();
+  const login = ref('');
+  const password = ref('');
+  const error = ref('');
 
-const handleSubmit = async () => {
-  try {
-    error.value = '';
-    console.log('[Auth] Starting login process');
-    const { user } = await authService.login({
-      login: login.value,
-      password: password.value
-    });
-    console.log('[Auth] Login successful, user:', user);
+  const handleSubmit = async () => {
+    try {
+      error.value = '';
+      const { user } = await authService.login({
+        login: login.value,
+        password: password.value,
+      });
 
-    // Принудительно обновляем состояние аутентификации
-    await authService.checkAuth();
+      // Принудительно обновляем состояние аутентификации
+      await authService.checkAuth();
 
-    // Перенаправление в зависимости от роли
-    if (user.roles.includes('admin')) {
-      console.log('[Auth] Redirecting admin to data-change');
-      await router.replace('/data-change');
-    } else if (user.roles.includes('teacher')) {
-      console.log('[Auth] Redirecting teacher to user-groups');
-      await router.replace('/user-groups');
-    } else {
-      console.log('[Auth] Redirecting to home');
-      await router.replace('/');
+      // Перенаправление в зависимости от роли
+      if (user.roles.includes('admin')) {
+        await router.replace('/data-change');
+      } else if (user.roles.includes('teacher')) {
+        await router.replace('/user-groups');
+      } else {
+        await router.replace('/');
+      }
+    } catch (err) {
+      console.error('[Auth] Login error:', err);
+      error.value = err.response?.data?.message || 'Ошибка авторизации';
     }
-  } catch (err) {
-    console.error('[Auth] Login error:', err);
-    error.value = err.response?.data?.message || 'Ошибка авторизации';
-  }
-};
+  };
 </script>
 
 <style scoped>

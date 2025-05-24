@@ -84,7 +84,6 @@ function select(group) {
 
 onMounted(async () => {
   const response = await groupsService.get();
-  console.log('Groups response:', response);
   groups.value = response;
 });
 </script>

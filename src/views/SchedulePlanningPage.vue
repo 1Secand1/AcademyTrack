@@ -385,17 +385,10 @@ onMounted(async () => {
       teachingAssignmentsService.get()
     ]);
     
-    console.log('Loaded data:', {
-      groups: groupsData,
-      subjects: subjectsData,
-      assignments: assignmentsData
-    });
-    
     groups.value = groupsData;
     subjects.value = subjectsData;
     teachingAssignments.value = assignmentsData;
   } catch (error) {
-    console.error('Error loading data:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -582,7 +575,6 @@ async function loadGroupDetails(groupId) {
     const group = await groupsService.getById(groupId);
     // ... rest of the function
   } catch (error) {
-    console.error('Error loading group details:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',

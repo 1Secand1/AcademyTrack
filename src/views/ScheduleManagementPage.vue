@@ -380,15 +380,10 @@ onMounted(async () => {
       teachingAssignmentsService.get()
     ]);
     
-    console.log('Loaded groups:', groupsData);
-    console.log('Loaded subjects:', subjectsResponse);
-    console.log('Loaded assignments:', assignmentsData);
-    
     groups.value = Array.isArray(groupsData) ? groupsData : [];
     subjects.value = Array.isArray(subjectsResponse) ? subjectsResponse : [];
     teachingAssignments.value = Array.isArray(assignmentsData) ? assignmentsData : [];
   } catch (error) {
-    console.error('Error loading initial data:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -415,15 +410,12 @@ function getLessonNumberLabel(number) {
 async function loadGroupSchedule() {
   if (!selectedGroup.value) return;
   try {
-    console.log('Loading schedule for group:', selectedGroup.value);
     const scheduleData = await scheduleService.getGroupSchedule(selectedGroup.value);
-    console.log('Loaded schedule:', scheduleData);
     schedule.value = scheduleData.schedule.map(lesson => ({
       ...lesson,
       date: new Date(lesson.date)
     }));
   } catch (error) {
-    console.error('Error loading group schedule:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -436,7 +428,6 @@ async function loadGroupSchedule() {
 async function loadSubjectSchedule() {
   if (!selectedGroup.value || !selectedSubject.value) return;
   try {
-    console.log('Filtering schedule for group:', selectedGroup.value, 'and subject:', selectedSubject.value);
     const scheduleData = await scheduleService.getGroupSchedule(selectedGroup.value);
     schedule.value = scheduleData.schedule
       .filter(lesson => lesson.subject.subjectId === selectedSubject.value)
@@ -445,7 +436,6 @@ async function loadSubjectSchedule() {
         date: new Date(lesson.date)
       }));
   } catch (error) {
-    console.error('Error filtering schedule:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -495,7 +485,6 @@ async function deleteLesson(lesson) {
       life: 3000
     });
   } catch (error) {
-    console.error('Error deleting lesson:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -554,7 +543,6 @@ async function addLesson() {
     
     closeAddDialog();
   } catch (error) {
-    console.error('Error adding lesson:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
@@ -613,7 +601,6 @@ async function moveLesson() {
 
     closeMoveDialog();
   } catch (error) {
-    console.error('Error moving lesson:', error);
     toast.add({
       severity: 'error',
       summary: 'Ошибка',

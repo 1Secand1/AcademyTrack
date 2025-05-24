@@ -19,28 +19,24 @@ export const authService = {
     try {
       const response = await apiClient.post('auth/login', { json: credentials }).json();
       const { access_token, user } = response;
-      
+
       setCookie(TOKEN_KEY, access_token);
       setCookie(USER_KEY, JSON.stringify(user));
-      
-      console.log('[Auth] Login successful:', { user });
+
       return { token: access_token, user };
     } catch (error) {
-      console.error('[Auth] Login error:', error);
+      console.error('Login error:', error);
       throw error;
     }
   },
 
   async logout() {
     try {
-      console.log('[Auth] Starting logout process');
       await apiClient.post('auth/logout');
       deleteCookie(TOKEN_KEY);
       deleteCookie(USER_KEY);
-      console.log('[Auth] Logout successful');
     } catch (error) {
       console.error('[Auth] Logout error:', error);
-      // Even if the server request fails, we still want to clear local auth state
       deleteCookie(TOKEN_KEY);
       deleteCookie(USER_KEY);
       throw error;
@@ -48,29 +44,26 @@ export const authService = {
   },
 
   getCurrentUser() {
-    const userData = getCookie(USER_KEY);
-    const user = userData ? JSON.parse(userData) : null;
-    console.log('[Auth] Getting current user:', user);
-    return user;
+    try {
+      const userStr = getCookie(USER_KEY);
+      return userStr ? JSON.parse(userStr) : null;
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      return null;
+    }
   },
 
   isAuthenticated() {
-    const hasToken = !!getCookie(TOKEN_KEY);
-    console.log('[Auth] Checking authentication:', hasToken);
-    return hasToken;
+    return !!getCookie(TOKEN_KEY);
   },
 
   hasRole(role) {
     const user = this.getCurrentUser();
-    console.log('Checking role:', role);
-    console.log('User roles:', user?.roles);
     return user?.roles?.includes(role) || false;
   },
 
   isAdmin() {
-    const isAdmin = this.hasRole('admin');
-    console.log('Is admin check:', isAdmin);
-    return isAdmin;
+    return this.hasRole('admin');
   },
 
   isTeacher() {
@@ -81,9 +74,9 @@ export const authService = {
     try {
       const token = getCookie(TOKEN_KEY);
       if (!token) return false;
-      
+
       const response = await apiClient.get('auth/check').json();
-      
+
       if (response) {
         setCookie(USER_KEY, JSON.stringify(response));
         return true;
@@ -97,5 +90,5 @@ export const authService = {
       }
       return false;
     }
-  }
-}; 
+  },
+};

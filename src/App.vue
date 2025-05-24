@@ -37,7 +37,6 @@ const isMobile = ref(window.innerWidth <= 768);
 
 const isAuthenticated = computed(() => {
   const auth = authService.isAuthenticated();
-  console.log('[App] Authentication state:', auth);
   authState.value = auth;
   return auth;
 });
@@ -48,9 +47,7 @@ const handleResize = () => {
 
 // Добавляем обработчик для события pageshow
 const handlePageShow = (event) => {
-  console.log('[App] Page show event:', event);
   if (event.persisted) {
-    console.log('[App] Page was restored from cache');
     // Only reload if we're on a page that needs fresh data
     if (route.meta.requiresAuth) {
       router.replace(route.fullPath);
@@ -60,28 +57,21 @@ const handlePageShow = (event) => {
 
 // Watch for route changes to handle authentication state
 watch(() => route.path, async (newPath) => {
-  console.log('[App] Route changed:', newPath);
   if (newPath === '/login') {
-    console.log('[App] On login page, ensuring sidebar is hidden');
     authState.value = false;
   } else {
-    console.log('[App] Checking authentication for route:', newPath);
     const isAuth = await authService.checkAuth();
-    console.log('[App] Auth check result:', isAuth);
     authState.value = isAuth;
   }
 }, { immediate: true });
 
 onMounted(async () => {
   try {
-    console.log('[App] Component mounted');
     // Проверка авторизации при загрузке приложения
     const isAuth = await authService.checkAuth();
-    console.log('[App] Initial auth check result:', isAuth);
     authState.value = isAuth;
     
     if (!isAuth && route.path !== '/login') {
-      console.log('[App] User not authenticated, redirecting to login');
       router.push('/login');
       return;
     }
@@ -89,7 +79,6 @@ onMounted(async () => {
     window.addEventListener('resize', handleResize);
     window.addEventListener('pageshow', handlePageShow);
   } catch (error) {
-    console.error('[App] Auth check error:', error);
     authState.value = false;
     toast.add({
       severity: 'error',
@@ -104,14 +93,12 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  console.log('[App] Component unmounting');
   window.removeEventListener('resize', handleResize);
   window.removeEventListener('pageshow', handlePageShow);
 });
 
 // Следим за изменениями маршрута
 watch(() => route.fullPath, (newPath, oldPath) => {
-  console.log('[App] Route changed:', { from: oldPath, to: newPath });
 }, { immediate: true });
 </script>
 
