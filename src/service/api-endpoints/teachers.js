@@ -32,7 +32,7 @@ class TeachersService extends ServerManager {
 
     async update(teacherId, teacherData) {
         try {
-            const response = await super.put(teacherId, teacherData);
+            const response = await super.update(teacherId, teacherData);
             return response;
         } catch (error) {
             console.error('Ошибка при обновлении преподавателя:', error);

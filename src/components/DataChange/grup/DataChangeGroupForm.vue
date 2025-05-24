@@ -14,7 +14,10 @@
       placeholder="Код группы"
       :class="{ 'p-invalid': !isGroupCodeValid }"
     />
-    <small v-if="!isGroupCodeValid" class="p-error">Код группы обязателен</small>
+    <small
+      v-if="!isGroupCodeValid"
+      class="p-error"
+    >Код группы обязателен</small>
 
     <InputNumber
       v-model="groupData.yearOfEntry"
@@ -25,7 +28,10 @@
       :min="2000"
       :max="2100"
     />
-    <small v-if="!isYearValid" class="p-error">Год должен быть между 2000 и 2100</small>
+    <small
+      v-if="!isYearValid"
+      class="p-error"
+    >Год должен быть между 2000 и 2100</small>
 
     <Button
       :label="buttonName"
@@ -58,7 +64,7 @@
     type:Object,
     default:() => ({
       groupCode: '',
-      yearOfEntry: null
+      yearOfEntry: null,
     }),
   });
 
@@ -67,8 +73,8 @@
   });
 
   const isYearValid = computed(() => {
-    return !groupData.value.yearOfEntry || 
-           (groupData.value.yearOfEntry >= 2000 && groupData.value.yearOfEntry <= 2100);
+    return !groupData.value.yearOfEntry ||
+      (groupData.value.yearOfEntry >= 2000 && groupData.value.yearOfEntry <= 2100);
   });
 
   const isFormValid = computed(() => {
@@ -83,14 +89,15 @@
         severity: 'error',
         summary: 'Ошибка',
         detail: 'Пожалуйста, заполните все обязательные поля корректно',
-        life: 3000
+        life: 3000,
       });
       return;
     }
 
     const dataToSubmit = {
+      groupId: groupData.value.groupId,
       groupCode: groupData.value.groupCode.trim(),
-      yearOfEntry: groupData.value.yearOfEntry
+      yearOfEntry: groupData.value.yearOfEntry,
     };
 
     emit('formSubmission', dataToSubmit);

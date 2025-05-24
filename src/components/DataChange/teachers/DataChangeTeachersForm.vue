@@ -14,7 +14,10 @@
       placeholder="Фамилия"
       :class="{ 'p-invalid': !isSurnameValid }"
     />
-    <small v-if="!isSurnameValid" class="p-error">Фамилия обязательна</small>
+    <small
+      v-if="!isSurnameValid"
+      class="p-error"
+    >Фамилия обязательна</small>
 
     <InputText
       v-model="teachersData.name"
@@ -23,7 +26,10 @@
       placeholder="Имя"
       :class="{ 'p-invalid': !isNameValid }"
     />
-    <small v-if="!isNameValid" class="p-error">Имя обязательно</small>
+    <small
+      v-if="!isNameValid"
+      class="p-error"
+    >Имя обязательно</small>
 
     <InputText
       v-model="teachersData.patronymic"
@@ -87,15 +93,16 @@
         severity: 'error',
         summary: 'Ошибка',
         detail: 'Пожалуйста, заполните все обязательные поля',
-        life: 3000
+        life: 3000,
       });
       return;
     }
 
     const dataToSubmit = {
+      teacherId: teachersData.value.teacherId,
       surname: teachersData.value.surname.trim(),
       name: teachersData.value.name.trim(),
-      patronymic: teachersData.value.patronymic.trim()
+      patronymic: teachersData.value.patronymic.trim(),
     };
 
     emit('formSubmission', dataToSubmit);

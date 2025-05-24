@@ -55,7 +55,6 @@
             v-else
             :key="item.id"
             class="data-card"
-            :class="{ 'is-selected': selectedRow.id === item.id }"
             @click="onRowSelect({ data: item })"
           >
             <div class="data-card__content">
@@ -65,10 +64,8 @@
                 </h3>
                 <div
                   class="data-card__status"
-                  :class="{ 'is-selected': selectedRow.id === item.id }"
                 >
                   <i
-                    v-if="selectedRow.id === item.id"
                     class="pi pi-check"
                   />
                 </div>
@@ -132,12 +129,14 @@
 
   const serverRequests = {
     [userRoleNames.students.name]: {
-      [dataChangeTypeNames.update.name]: ({ studentId,groupCode,...body }) => studentsService.update(studentId,body),
+      [dataChangeTypeNames.update.name]: ({ studentId, groupCode,...body }) => studentsService.update(studentId,body),
       [dataChangeTypeNames.create.name]: (body) => studentsService.create(body),
       [dataChangeTypeNames.get.name]: () => studentsService.get(),
     },
+
     [userRoleNames.teachers.name]: {
       [dataChangeTypeNames.update.name]: async ({ teacherId, ...body }) => {
+
         try {
           const response = await teachersService.update(teacherId, body);
           return response;
@@ -275,28 +274,31 @@
     const selectedData = event.data;
     dataChangeTypeNamesValue.value = dataChangeTypeNames.update.name;
 
-    // Преобразуем данные в формат, ожидаемый формой
     if (categoryNameValue.value === userRoleNames.students.name) {
       selectedRow.value = {
-        id: selectedData.id,
-        studentId: selectedData.id,
+        studentId: selectedData.studentId,
         groupCode: selectedData.groupCode,
         surname: selectedData.surname,
         name: selectedData.name,
         patronymic: selectedData.patronymic,
       };
-    } else if (categoryNameValue.value === userRoleNames.teachers.name) {
+
+      return;
+    }
+    if (categoryNameValue.value === userRoleNames.teachers.name) {
       selectedRow.value = {
-        id: selectedData.id,
-        teacherId: selectedData.id,
+        teacherId: selectedData.teacherId,
         surname: selectedData.surname,
         name: selectedData.name,
         patronymic: selectedData.patronymic,
       };
-    } else if (categoryNameValue.value === userRoleNames.groups.name) {
+
+      return;
+    }
+    if (categoryNameValue.value === userRoleNames.groups.name) {
+      console.log(selectedData.groupId);
       selectedRow.value = {
-        id: selectedData.id,
-        groupId: selectedData.id,
+        groupId: selectedData.groupId,
         groupCode: selectedData.groupCode,
         yearOfEntry: selectedData.yearOfEntry,
       };
@@ -374,11 +376,7 @@
   async function sendRequest(data) {
     try {
       // Проверяем наличие необходимых данных
-      if (dataChangeTypeNamesValue.value === dataChangeTypeNames.update.name) {
-        if (!data.id) {
-          throw new Error('ID не указан для обновления');
-        }
-      }
+      console.log(data);
 
       // Добавляем дополнительные проверки в зависимости от категории
       if (categoryNameValue.value === userRoleNames.students.name) {
@@ -417,7 +415,6 @@
         life: 3000,
       });
     } catch (error) {
-      console.error('Error sending request:', eror);
       console.error('Error details:', {
         message: error.message,
         response: error.response,
