@@ -18,10 +18,10 @@ export const subjectsService = {
   },
 
   update(id, subject) {
-    return apiClient.put(`subject/${id}`, subject);
+    return apiClient.patch(`subject/${id}`, subject);
   },
 
   delete(id) {
     return apiClient.delete(`subject/${id}`);
-  }
-}; 
+  },
+};

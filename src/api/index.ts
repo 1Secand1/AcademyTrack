@@ -9,8 +9,8 @@ export const api = {
     const response = await apiClient.post(url, { json: data }).json();
     return response;
   },
-  put: async (url: string, data: any) => {
-    const response = await apiClient.put(url, { json: data }).json();
+  patch: async (url: string, data: any) => {
+    const response = await apiClient.patch(url, { json: data }).json();
     return response;
   },
   delete: async (url: string) => {

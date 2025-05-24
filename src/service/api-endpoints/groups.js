@@ -35,10 +35,10 @@ export const groupsService = {
     },
 
     async update(id, groupData) {
-        return await apiClient.put(`groups/${id}`, { json: groupData }).json();
+        return await apiClient.patch(`groups/${id}`, { json: groupData }).json();
     },
 
     async delete(id) {
         return await apiClient.delete(`groups/${id}`).json();
-    }
+    },
 };

@@ -8,21 +8,21 @@ export const apiClient = ky.create({
   timeout: 30000,
   retry: {
     limit: 3,
-    methods: ['get', 'post', 'put', 'head', 'delete', 'options', 'patch'],
-    statusCodes: [408, 413, 429, 500, 502, 503, 504, 521, 522, 524]
+    methods: ['get', 'post', 'head', 'delete', 'options', 'patch'],
+    statusCodes: [408, 413, 429, 500, 502, 503, 504, 521, 522, 524],
   },
   hooks: {
     beforeRequest: [
       request => {
         // Добавляем заголовок для предотвращения кэширования
         request.headers.set('Cache-Control', 'no-cache');
-        
+
         // Добавляем JWT токен в заголовки
         const token = getCookie('token');
         if (token) {
           request.headers.set('Authorization', `Bearer ${token}`);
         }
-      }
+      },
     ],
     afterResponse: [
       async (request, options, response) => {
@@ -35,7 +35,7 @@ export const apiClient = ky.create({
           error.response = response;
           throw error;
         }
-      }
-    ]
-  }
+      },
+    ],
+  },
 });
