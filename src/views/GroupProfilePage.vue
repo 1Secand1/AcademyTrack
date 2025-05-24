@@ -280,28 +280,34 @@ watch([currentCategory, groupDetails], ([newCategory, newDetails]) => {
 
 .profile-content {
   background: var(--surface-card);
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 24px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
 }
 
 .tabs-container {
   margin-bottom: 24px;
-  border-bottom: 1px solid var(--surface-border);
-  padding-bottom: 1px;
 }
 
 .category-selector {
+  width: 100%;
+}
+
+.category-selector :deep(.p-selectbutton) {
   display: flex;
-  background: transparent;
-  border: none;
-  padding: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-selector :deep(.p-button) {
+  flex: 1;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 .category-content {
-  min-height: 400px;
   position: relative;
+  min-height: 200px;
 }
 
 .loading-overlay {
@@ -314,67 +320,92 @@ watch([currentCategory, groupDetails], ([newCategory, newDetails]) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1;
 }
 
-/* Стили для табов */
-:deep(.p-selectbutton) {
+.no-data {
   display: flex;
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-:deep(.p-selectbutton .p-button) {
-  flex: 1;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 16px 24px;
-  font-size: 15px;
-  font-weight: 500;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 48px 0;
   color: var(--text-color-secondary);
-  transition: all 0.2s ease;
-  position: relative;
-  margin: 0;
 }
 
-:deep(.p-selectbutton .p-button:not(.p-highlight):hover) {
-  background: var(--surface-hover);
-  color: var(--text-color);
+.no-data i {
+  color: var(--text-color-secondary);
 }
 
-:deep(.p-selectbutton .p-button.p-highlight) {
-  background: transparent;
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-:deep(.p-selectbutton .p-button.p-highlight::after) {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--primary-color);
-  border-radius: 2px 2px 0 0;
-}
-
-/* Анимации */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
+/* Адаптивные стили */
 @media (max-width: 768px) {
   .profile-container {
-    padding: 10px;
+    padding: 12px;
+  }
+
+  .header-content {
+    padding: 16px;
+  }
+
+  .titlePage {
+    font-size: 20px;
+  }
+
+  .group-code {
+    font-size: 18px;
+  }
+
+  .profile-stats {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .stat-item {
+    width: 100%;
+  }
+
+  .profile-content {
+    padding: 16px;
+  }
+
+  .category-selector :deep(.p-selectbutton) {
+    flex-direction: column;
+  }
+
+  .category-selector :deep(.p-button) {
+    width: 100%;
+  }
+
+  /* Стили для таблиц на мобильных устройствах */
+  :deep(.p-datatable) {
+    font-size: 14px;
+  }
+
+  :deep(.p-datatable .p-datatable-thead > tr > th) {
+    padding: 0.5rem;
+  }
+
+  :deep(.p-datatable .p-datatable-tbody > tr > td) {
+    padding: 0.5rem;
+  }
+
+  /* Стили для карточек на мобильных устройствах */
+  :deep(.student-card),
+  :deep(.teacher-card),
+  :deep(.schedule-card) {
+    width: 100%;
+  }
+
+  /* Стили для графиков на мобильных устройствах */
+  :deep(.chart-container) {
+    height: 250px !important;
+  }
+}
+
+/* Дополнительные стили для очень маленьких экранов */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 8px;
   }
 
   .header-content {
@@ -389,34 +420,16 @@ watch([currentCategory, groupDetails], ([newCategory, newDetails]) => {
     font-size: 16px;
   }
 
-  .profile-stats {
-    flex-direction: column;
-    gap: 12px;
+  .stat-value {
+    font-size: 18px;
   }
 
-  .stat-item {
-    padding: 6px 0;
+  .stat-label {
+    font-size: 12px;
   }
 
-  :deep(.p-selectbutton .p-button) {
-    padding: 10px 14px;
-    font-size: 13px;
+  .profile-content {
+    padding: 12px;
   }
-}
-
-.no-data {
-  text-align: center;
-  padding: 40px;
-  color: var(--text-color-secondary);
-}
-
-.no-data i {
-  margin-bottom: 16px;
-  color: var(--primary-color);
-}
-
-.no-data p {
-  font-size: 1.1rem;
-  margin: 0;
 }
 </style>
