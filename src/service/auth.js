@@ -23,31 +23,41 @@ export const authService = {
       setCookie(TOKEN_KEY, access_token);
       setCookie(USER_KEY, JSON.stringify(user));
       
+      console.log('[Auth] Login successful:', { user });
       return { token: access_token, user };
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('[Auth] Login error:', error);
       throw error;
     }
   },
 
   async logout() {
     try {
+      console.log('[Auth] Starting logout process');
       await apiClient.post('auth/logout');
       deleteCookie(TOKEN_KEY);
       deleteCookie(USER_KEY);
+      console.log('[Auth] Logout successful');
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('[Auth] Logout error:', error);
+      // Even if the server request fails, we still want to clear local auth state
+      deleteCookie(TOKEN_KEY);
+      deleteCookie(USER_KEY);
       throw error;
     }
   },
 
   getCurrentUser() {
     const userData = getCookie(USER_KEY);
-    return userData ? JSON.parse(userData) : null;
+    const user = userData ? JSON.parse(userData) : null;
+    console.log('[Auth] Getting current user:', user);
+    return user;
   },
 
   isAuthenticated() {
-    return !!getCookie(TOKEN_KEY);
+    const hasToken = !!getCookie(TOKEN_KEY);
+    console.log('[Auth] Checking authentication:', hasToken);
+    return hasToken;
   },
 
   hasRole(role) {

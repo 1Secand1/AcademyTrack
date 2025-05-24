@@ -3,8 +3,8 @@
     <Toast />
     <ConfirmDialog />
     <div class="app-container">
-      <Sidebar v-if="isAuthenticated && !isMobile" />
-      <main class="main-content" :class="{ 'mobile': isMobile, 'with-sidebar': isAuthenticated && !isMobile }">
+      <Sidebar v-if="authState && !isMobile" />
+      <main class="main-content" :class="{ 'mobile': isMobile, 'with-sidebar': authState && !isMobile }">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
             <component :is="Component" :key="$route.name" />
@@ -12,7 +12,7 @@
         </router-view>
       </main>
     </div>
-    <BottomNavigation v-if="isAuthenticated && isMobile" />
+    <BottomNavigation v-if="authState && isMobile" />
   </div>
 </template>
 
@@ -32,8 +32,15 @@ const route = useRoute();
 const toast = useToast();
 const confirm = useConfirm();
 
-const isAuthenticated = computed(() => authService.isAuthenticated());
+const authState = ref(false);
 const isMobile = ref(window.innerWidth <= 768);
+
+const isAuthenticated = computed(() => {
+  const auth = authService.isAuthenticated();
+  console.log('[App] Authentication state:', auth);
+  authState.value = auth;
+  return auth;
+});
 
 const handleResize = () => {
   isMobile.value = window.innerWidth <= 768;
@@ -51,14 +58,29 @@ const handlePageShow = (event) => {
   }
 };
 
+// Watch for route changes to handle authentication state
+watch(() => route.path, async (newPath) => {
+  console.log('[App] Route changed:', newPath);
+  if (newPath === '/login') {
+    console.log('[App] On login page, ensuring sidebar is hidden');
+    authState.value = false;
+  } else {
+    console.log('[App] Checking authentication for route:', newPath);
+    const isAuth = await authService.checkAuth();
+    console.log('[App] Auth check result:', isAuth);
+    authState.value = isAuth;
+  }
+}, { immediate: true });
+
 onMounted(async () => {
   try {
     console.log('[App] Component mounted');
     // Проверка авторизации при загрузке приложения
     const isAuth = await authService.checkAuth();
-    console.log('[App] Auth check result:', isAuth);
+    console.log('[App] Initial auth check result:', isAuth);
+    authState.value = isAuth;
     
-    if (!isAuth) {
+    if (!isAuth && route.path !== '/login') {
       console.log('[App] User not authenticated, redirecting to login');
       router.push('/login');
       return;
@@ -68,13 +90,16 @@ onMounted(async () => {
     window.addEventListener('pageshow', handlePageShow);
   } catch (error) {
     console.error('[App] Auth check error:', error);
+    authState.value = false;
     toast.add({
       severity: 'error',
       summary: 'Ошибка',
       detail: 'Не удалось проверить авторизацию',
       life: 3000
     });
-    router.push('/login');
+    if (route.path !== '/login') {
+      router.push('/login');
+    }
   }
 });
 

@@ -37,20 +37,29 @@ const error = ref('');
 const handleSubmit = async () => {
   try {
     error.value = '';
+    console.log('[Auth] Starting login process');
     const { user } = await authService.login({
       login: login.value,
       password: password.value
     });
+    console.log('[Auth] Login successful, user:', user);
+
+    // Принудительно обновляем состояние аутентификации
+    await authService.checkAuth();
 
     // Перенаправление в зависимости от роли
     if (user.roles.includes('admin')) {
-      router.push('/data-change');
+      console.log('[Auth] Redirecting admin to data-change');
+      await router.replace('/data-change');
     } else if (user.roles.includes('teacher')) {
-      router.push('/user-groups');
+      console.log('[Auth] Redirecting teacher to user-groups');
+      await router.replace('/user-groups');
     } else {
-      router.push('/');
+      console.log('[Auth] Redirecting to home');
+      await router.replace('/');
     }
   } catch (err) {
+    console.error('[Auth] Login error:', err);
     error.value = err.response?.data?.message || 'Ошибка авторизации';
   }
 };
