@@ -1,31 +1,31 @@
 <template>
   <div class="schedule-management">
     <h2>Управление расписанием</h2>
-    
+
     <Card class="filters-card">
       <template #content>
         <div class="filters">
           <div class="filter-group">
             <label class="form-label">Группа:</label>
-            <Dropdown 
-              v-model="selectedGroup" 
-              :options="groups" 
-              option-label="groupCode" 
-              option-value="groupId" 
-              placeholder="Выберите группу" 
+            <Dropdown
+              v-model="selectedGroup"
+              :options="groups"
+              option-label="groupCode"
+              option-value="groupId"
+              placeholder="Выберите группу"
               class="w-full"
               @change="loadGroupSchedule"
             />
           </div>
-          
+
           <div class="filter-group">
             <label class="form-label">Предмет:</label>
-            <Dropdown 
-              v-model="selectedSubject" 
-              :options="filteredSubjects" 
-              option-label="name" 
-              option-value="subjectId" 
-              placeholder="Выберите предмет" 
+            <Dropdown
+              v-model="selectedSubject"
+              :options="filteredSubjects"
+              option-label="name"
+              option-value="subjectId"
+              placeholder="Выберите предмет"
               class="w-full"
               @change="loadSubjectSchedule"
             />
@@ -38,39 +38,45 @@
       <template #title>
         <div class="card-header">
           <span>Расписание</span>
-          <Button 
-            icon="pi pi-plus" 
-            label="Добавить занятие" 
-            @click="showAddDialog = true"
+          <Button
+            icon="pi pi-plus"
+            label="Добавить занятие"
             :disabled="!canAddLesson"
             class="add-button"
+            @click="showAddDialog = true"
           />
         </div>
       </template>
       <template #content>
         <!-- Десктопная версия -->
-        <DataTable 
+        <DataTable
           v-if="!isMobile && schedule.length > 0"
-          :value="schedule" 
-          edit-mode="row" 
-          dataKey="id"
+          :value="schedule"
+          edit-mode="row"
+          data-key="id"
           class="p-datatable-sm"
         >
-          <Column field="date" header="Дата">
+          <Column
+            field="date"
+            header="Дата"
+          >
             <template #body="{ data }">
               {{ formatDate(data.date) }}
             </template>
             <template #editor="{ data, field }">
-              <Calendar 
-                v-model="data[field]" 
-                dateFormat="dd.mm.yy"
-                :minDate="new Date()"
-                showIcon
+              <Calendar
+                v-model="data[field]"
+                date-format="dd.mm.yy"
+                :min-date="new Date()"
+                show-icon
                 class="w-full"
               />
             </template>
           </Column>
-          <Column field="lessonNumber" header="Пара">
+          <Column
+            field="lessonNumber"
+            header="Пара"
+          >
             <template #body="{ data }">
               {{ getLessonNumberLabel(data.lessonNumber) }}
             </template>
@@ -85,26 +91,35 @@
               />
             </template>
           </Column>
-          <Column field="subject" header="Предмет">
+          <Column
+            field="subject"
+            header="Предмет"
+          >
             <template #body="{ data }">
               {{ data.subject.name }}
             </template>
           </Column>
-          <Column field="teacher" header="Преподаватель">
+          <Column
+            field="teacher"
+            header="Преподаватель"
+          >
             <template #body="{ data }">
               {{ data.teacher.surname }} {{ data.teacher.name }}
             </template>
           </Column>
-          <Column field="actions" header="Действия">
+          <Column
+            field="actions"
+            header="Действия"
+          >
             <template #body="{ data, index }">
               <div class="actions">
-                <Button 
-                  icon="pi pi-calendar" 
+                <Button
+                  icon="pi pi-calendar"
                   class="p-button-rounded p-button-text"
                   @click="openMoveDialog(data, index)"
                 />
-                <Button 
-                  icon="pi pi-trash" 
+                <Button
+                  icon="pi pi-trash"
                   class="p-button-rounded p-button-text p-button-danger"
                   @click="confirmDelete(data)"
                 />
@@ -114,15 +129,22 @@
         </DataTable>
 
         <!-- Мобильная версия -->
-        <div v-else-if="isMobile && schedule.length > 0" class="schedule-list">
-          <div v-for="(lesson, index) in schedule" :key="lesson.id" class="lesson-card">
+        <div
+          v-else-if="isMobile && schedule.length > 0"
+          class="schedule-list"
+        >
+          <div
+            v-for="(lesson, index) in schedule"
+            :key="lesson.id"
+            class="lesson-card"
+          >
             <div class="lesson-card__header">
               <div class="lesson-card__date">
-                <Calendar 
-                  v-model="lesson.date" 
-                  dateFormat="dd.mm.yy"
-                  :minDate="new Date()"
-                  showIcon
+                <Calendar
+                  v-model="lesson.date"
+                  date-format="dd.mm.yy"
+                  :min-date="new Date()"
+                  show-icon
                   class="w-full"
                 />
               </div>
@@ -148,13 +170,13 @@
               </div>
             </div>
             <div class="lesson-card__actions">
-              <Button 
-                icon="pi pi-calendar" 
+              <Button
+                icon="pi pi-calendar"
                 class="p-button-rounded p-button-text"
                 @click="openMoveDialog(lesson, index)"
               />
-              <Button 
-                icon="pi pi-trash" 
+              <Button
+                icon="pi pi-trash"
                 class="p-button-rounded p-button-text p-button-danger"
                 @click="confirmDelete(lesson)"
               />
@@ -162,7 +184,10 @@
           </div>
         </div>
 
-        <div v-else class="no-data">
+        <div
+          v-else
+          class="no-data"
+        >
           <p>Нет данных для отображения</p>
         </div>
       </template>
@@ -178,18 +203,24 @@
     >
       <div class="p-fluid">
         <div class="p-field">
-          <label class="form-label" for="newDate">Дата</label>
+          <label
+            class="form-label"
+            for="newDate"
+          >Дата</label>
           <Calendar
             id="newDate"
             v-model="newLesson.date"
-            dateFormat="dd.mm.yy"
-            :minDate="new Date()"
-            showIcon
+            date-format="dd.mm.yy"
+            :min-date="new Date()"
+            show-icon
             class="w-full"
           />
         </div>
         <div class="p-field">
-          <label class="form-label" for="newLessonNumber">Номер пары</label>
+          <label
+            class="form-label"
+            for="newLessonNumber"
+          >Номер пары</label>
           <Dropdown
             id="newLessonNumber"
             v-model="newLesson.lessonNumber"
@@ -201,7 +232,10 @@
           />
         </div>
         <div class="p-field">
-          <label class="form-label" for="teacher">Преподаватель</label>
+          <label
+            class="form-label"
+            for="teacher"
+          >Преподаватель</label>
           <Dropdown
             id="teacher"
             v-model="newLesson.teacherId"
@@ -241,18 +275,24 @@
     >
       <div class="p-fluid">
         <div class="p-field">
-          <label class="form-label" for="moveDate">Новая дата</label>
+          <label
+            class="form-label"
+            for="moveDate"
+          >Новая дата</label>
           <Calendar
             id="moveDate"
             v-model="moveData.newDate"
-            dateFormat="dd.mm.yy"
-            :minDate="new Date()"
-            showIcon
+            date-format="dd.mm.yy"
+            :min-date="new Date()"
+            show-icon
             class="w-full"
           />
         </div>
         <div class="p-field">
-          <label class="form-label" for="moveLessonNumber">Номер пары</label>
+          <label
+            class="form-label"
+            for="moveLessonNumber"
+          >Номер пары</label>
           <Dropdown
             id="moveLessonNumber"
             v-model="moveData.newLessonNumber"
@@ -288,327 +328,328 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useToast } from 'primevue/usetoast';
-import { useConfirm } from 'primevue/useconfirm';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import Calendar from 'primevue/calendar';
-import Card from 'primevue/card';
-import Dropdown from 'primevue/dropdown';
-import Dialog from 'primevue/dialog';
-import Toast from 'primevue/toast';
-import ConfirmDialog from 'primevue/confirmdialog';
-import { groupsService } from '@service/api-endpoints/groups.js';
-import { subjectsService } from '@service/api-endpoints/subjects.js';
-import { scheduleService } from '@service/api-endpoints/schedule.js';
-import { teachingAssignmentsService } from '@service/api-endpoints/teaching-assignments.js';
+  import { ref, computed, onMounted } from 'vue';
+  import { useToast } from 'primevue/usetoast';
+  import { useConfirm } from 'primevue/useconfirm';
+  import DataTable from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import Button from 'primevue/button';
+  import Calendar from 'primevue/calendar';
+  import Card from 'primevue/card';
+  import Dropdown from 'primevue/dropdown';
+  import Dialog from 'primevue/dialog';
+  import Toast from 'primevue/toast';
+  import ConfirmDialog from 'primevue/confirmdialog';
+  import { groupsService } from '@service/api-endpoints/groups.js';
+  import { subjectsService } from '@service/api-endpoints/subjects.js';
+  import { scheduleService } from '@service/api-endpoints/schedule.js';
+  import { teachingAssignmentsService } from '@service/api-endpoints/teaching-assignments.js';
 
-const toast = useToast();
-const confirm = useConfirm();
+  const toast = useToast();
+  const confirm = useConfirm();
 
-const groups = ref([]);
-const subjects = ref([]);
-const teachingAssignments = ref([]);
-const schedule = ref([]);
-const selectedGroup = ref(null);
-const selectedSubject = ref(null);
-const isMoveDialogVisible = ref(false);
-const showAddDialog = ref(false);
+  const groups = ref([]);
+  const subjects = ref([]);
+  const teachingAssignments = ref([]);
+  const schedule = ref([]);
+  const selectedGroup = ref(null);
+  const selectedSubject = ref(null);
+  const isMoveDialogVisible = ref(false);
+  const showAddDialog = ref(false);
 
-const moveData = ref({
-  index: null,
-  lesson: null,
-  newDate: null,
-  newLessonNumber: null
-});
-
-const newLesson = ref({
-  date: null,
-  lessonNumber: null,
-  teacherId: null
-});
-
-const lessonNumbers = [
-  { label: '1 пара', value: 1 },
-  { label: '2 пара', value: 2 },
-  { label: '3 пара', value: 3 },
-  { label: '4 пара', value: 4 },
-  { label: '5 пара', value: 5 },
-  { label: '6 пара', value: 6 }
-];
-
-const filteredSubjects = computed(() => {
-  if (!selectedGroup.value || !Array.isArray(subjects.value) || !Array.isArray(teachingAssignments.value)) return [];
-  
-  const assignmentsForGroup = teachingAssignments.value.filter(a => a.group.groupId === selectedGroup.value);
-  const subjectIds = [...new Set(assignmentsForGroup.map(a => a.subject.subjectId))];
-  return subjects.value.filter(s => subjectIds.includes(s.subjectId));
-});
-
-const filteredTeachers = computed(() => {
-  if (!selectedGroup.value || !selectedSubject.value || !Array.isArray(teachingAssignments.value)) return [];
-  
-  return teachingAssignments.value
-    .filter(a => a.group.groupId === selectedGroup.value && a.subject.subjectId === selectedSubject.value)
-    .map(a => ({
-      id: a.teacher.teacherId,
-      fullName: `${a.teacher.surname} ${a.teacher.name}`
-    }));
-});
-
-const canAddLesson = computed(() => {
-  return selectedGroup.value && selectedSubject.value;
-});
-
-// Добавляем определение мобильного устройства
-const isMobile = ref(window.innerWidth <= 768);
-
-// Добавляем слушатель изменения размера окна
-onMounted(() => {
-  window.addEventListener('resize', () => {
-    isMobile.value = window.innerWidth <= 768;
-  });
-});
-
-onMounted(async () => {
-  try {
-    const [groupsData, subjectsResponse, assignmentsData] = await Promise.all([
-      groupsService.getAll(),
-      subjectsService.getAll().then(response => response.json()),
-      teachingAssignmentsService.get()
-    ]);
-    
-    groups.value = Array.isArray(groupsData) ? groupsData : [];
-    subjects.value = Array.isArray(subjectsResponse) ? subjectsResponse : [];
-    teachingAssignments.value = Array.isArray(assignmentsData) ? assignmentsData : [];
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось загрузить данные',
-      life: 3000
-    });
-  }
-});
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ru-RU', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
-}
-
-function getLessonNumberLabel(number) {
-  const lesson = lessonNumbers.find(l => l.value === number);
-  return lesson ? lesson.label : `Пара ${number}`;
-}
-
-async function loadGroupSchedule() {
-  if (!selectedGroup.value) return;
-  try {
-    const scheduleData = await scheduleService.getGroupSchedule(selectedGroup.value);
-    schedule.value = scheduleData.schedule.map(lesson => ({
-      ...lesson,
-      date: new Date(lesson.date)
-    }));
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось загрузить расписание группы',
-      life: 3000
-    });
-  }
-}
-
-async function loadSubjectSchedule() {
-  if (!selectedGroup.value || !selectedSubject.value) return;
-  try {
-    const scheduleData = await scheduleService.getGroupSchedule(selectedGroup.value);
-    schedule.value = scheduleData.schedule
-      .filter(lesson => lesson.subject.subjectId === selectedSubject.value)
-      .map(lesson => ({
-        ...lesson,
-        date: new Date(lesson.date)
-      }));
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось отфильтровать расписание',
-      life: 3000
-    });
-  }
-}
-
-function openMoveDialog(lesson, index) {
-  moveData.value = {
-    index,
-    lesson,
-    newDate: new Date(lesson.date),
-    newLessonNumber: lesson.lessonNumber
-  };
-  isMoveDialogVisible.value = true;
-}
-
-function closeMoveDialog() {
-  isMoveDialogVisible.value = false;
-  moveData.value = {
+  const moveData = ref({
     index: null,
     lesson: null,
     newDate: null,
-    newLessonNumber: null
-  };
-}
-
-function confirmDelete(lesson) {
-  confirm.require({
-    message: 'Вы уверены, что хотите удалить это занятие?',
-    header: 'Подтверждение удаления',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => deleteLesson(lesson)
+    newLessonNumber: null,
   });
-}
 
-async function deleteLesson(lesson) {
-  try {
-    await scheduleService.delete(lesson.id);
-    schedule.value = schedule.value.filter(l => l.id !== lesson.id);
-    toast.add({
-      severity: 'success',
-      summary: 'Успех',
-      detail: 'Занятие успешно удалено',
-      life: 3000
-    });
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось удалить занятие',
-      life: 3000
-    });
-  }
-}
-
-function closeAddDialog() {
-  showAddDialog.value = false;
-  newLesson.value = {
+  const newLesson = ref({
     date: null,
     lessonNumber: null,
-    teacherId: null
-  };
-}
+    teacherId: null,
+  });
 
-async function addLesson() {
-  if (!newLesson.value.date || !newLesson.value.lessonNumber || !newLesson.value.teacherId) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Заполните все поля',
-      life: 3000
+  const lessonNumbers = [
+    { label: '1 пара', value: 1 },
+    { label: '2 пара', value: 2 },
+    { label: '3 пара', value: 3 },
+    { label: '4 пара', value: 4 },
+    { label: '5 пара', value: 5 },
+    { label: '6 пара', value: 6 },
+  ];
+
+  const filteredSubjects = computed(() => {
+    if (!selectedGroup.value || !Array.isArray(subjects.value) || !Array.isArray(teachingAssignments.value)) return [];
+
+    const assignmentsForGroup = teachingAssignments.value.filter(a => a.group.groupId === selectedGroup.value);
+    const subjectIds = [...new Set(assignmentsForGroup.map(a => a.subject.subjectId))];
+    return subjects.value.filter(s => subjectIds.includes(s.subjectId));
+  });
+
+  const filteredTeachers = computed(() => {
+    if (!selectedGroup.value || !selectedSubject.value || !Array.isArray(teachingAssignments.value)) return [];
+
+    return teachingAssignments.value
+      .filter(a => a.group.groupId === selectedGroup.value && a.subject.subjectId === selectedSubject.value)
+      .map(a => ({
+        id: a.teacher.teacherId,
+        fullName: `${a.teacher.surname} ${a.teacher.name}`,
+      }));
+  });
+
+  const canAddLesson = computed(() => {
+    return selectedGroup.value && selectedSubject.value;
+  });
+
+  // Добавляем определение мобильного устройства
+  const isMobile = ref(window.innerWidth <= 768);
+
+  // Добавляем слушатель изменения размера окна
+  onMounted(() => {
+    window.addEventListener('resize', () => {
+      isMobile.value = window.innerWidth <= 768;
     });
-    return;
-  }
+  });
 
-  try {
-    const assignment = teachingAssignments.value.find(a => 
-      a.group.groupId === selectedGroup.value && 
-      a.subject.subjectId === selectedSubject.value &&
-      a.teacher.teacherId === newLesson.value.teacherId
-    );
+  onMounted(async () => {
+    try {
+      const [groupsData, subjectsResponse, assignmentsData] = await Promise.all([
+        groupsService.getAll(),
+        subjectsService.getAll().then(response => response.json()),
+        teachingAssignmentsService.get(),
+      ]);
 
-    if (!assignment) {
-      throw new Error('Teaching assignment not found');
-    }
-
-    const lessonData = {
-      date: new Date(newLesson.value.date).toISOString().slice(0, 10),
-      lessonNumber: newLesson.value.lessonNumber,
-      teacherGroupSubjectId: assignment.id
-    };
-
-    const newLessonData = await scheduleService.create(lessonData);
-    schedule.value.push(newLessonData);
-    
-    toast.add({
-      severity: 'success',
-      summary: 'Успех',
-      detail: 'Занятие успешно добавлено',
-      life: 3000
-    });
-    
-    closeAddDialog();
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось добавить занятие',
-      life: 3000
-    });
-  }
-}
-
-async function moveLesson() {
-  if (!moveData.value.newDate || !moveData.value.newLessonNumber) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Заполните все поля',
-      life: 3000
-    });
-    return;
-  }
-
-  try {
-    const newDate = new Date(moveData.value.newDate).toISOString().slice(0, 10);
-    
-    // Проверяем, не пересекается ли новое время с существующими занятиями
-    const hasConflict = schedule.value.some(lesson => 
-      lesson.id !== moveData.value.lesson.id &&
-      lesson.date === newDate &&
-      lesson.lessonNumber === moveData.value.newLessonNumber
-    );
-
-    if (hasConflict) {
+      groups.value = Array.isArray(groupsData) ? groupsData : [];
+      subjects.value = Array.isArray(subjectsResponse) ? subjectsResponse : [];
+      teachingAssignments.value = Array.isArray(assignmentsData) ? assignmentsData : [];
+    } catch (error) {
       toast.add({
         severity: 'error',
         summary: 'Ошибка',
-        detail: 'В это время уже есть занятие',
-        life: 3000
+        detail: 'Не удалось загрузить данные',
+        life: 3000,
+      });
+    }
+  });
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+  }
+
+  function getLessonNumberLabel(number) {
+    const lesson = lessonNumbers.find(l => l.value === number);
+    return lesson ? lesson.label : `Пара ${number}`;
+  }
+
+  async function loadGroupSchedule() {
+    if (!selectedGroup.value) return;
+    try {
+      const scheduleData = await scheduleService.getGroupSchedule(selectedGroup.value);
+      schedule.value = scheduleData.schedule.map(lesson => ({
+        ...lesson,
+        date: new Date(lesson.date),
+      }));
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось загрузить расписание группы',
+        life: 3000,
+      });
+    }
+  }
+
+  async function loadSubjectSchedule() {
+    if (!selectedGroup.value || !selectedSubject.value) return;
+    try {
+      const scheduleData = await scheduleService.getGroupSchedule(selectedGroup.value);
+      schedule.value = scheduleData.schedule
+        .filter(lesson => lesson.subject.subjectId === selectedSubject.value)
+        .map(lesson => ({
+          ...lesson,
+          date: new Date(lesson.date),
+        }));
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось отфильтровать расписание',
+        life: 3000,
+      });
+    }
+  }
+
+  function openMoveDialog(lesson, index) {
+    moveData.value = {
+      index,
+      lesson,
+      newDate: new Date(lesson.date),
+      newLessonNumber: lesson.lessonNumber,
+    };
+    isMoveDialogVisible.value = true;
+  }
+
+  function closeMoveDialog() {
+    isMoveDialogVisible.value = false;
+    moveData.value = {
+      index: null,
+      lesson: null,
+      newDate: null,
+      newLessonNumber: null,
+    };
+  }
+
+  function confirmDelete(lesson) {
+    confirm.require({
+      message: 'Вы уверены, что хотите удалить это занятие?',
+      header: 'Подтверждение удаления',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteLesson(lesson),
+    });
+  }
+
+  async function deleteLesson(lesson) {
+    console.log(lesson);
+    try {
+      await scheduleService.delete(lesson.subjectId);
+      schedule.value = schedule.value.filter(l => l.id !== lesson.id);
+      toast.add({
+        severity: 'success',
+        summary: 'Успех',
+        detail: 'Занятие успешно удалено',
+        life: 3000,
+      });
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось удалить занятие',
+        life: 3000,
+      });
+    }
+  }
+
+  function closeAddDialog() {
+    showAddDialog.value = false;
+    newLesson.value = {
+      date: null,
+      lessonNumber: null,
+      teacherId: null,
+    };
+  }
+
+  async function addLesson() {
+    if (!newLesson.value.date || !newLesson.value.lessonNumber || !newLesson.value.teacherId) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Заполните все поля',
+        life: 3000,
       });
       return;
     }
 
-    const updatedLesson = await scheduleService.update(moveData.value.lesson.id, {
-      date: newDate,
-      lessonNumber: moveData.value.newLessonNumber
-    });
+    try {
+      const assignment = teachingAssignments.value.find(a =>
+        a.group.groupId === selectedGroup.value &&
+        a.subject.subjectId === selectedSubject.value &&
+        a.teacher.teacherId === newLesson.value.teacherId,
+      );
 
-    schedule.value = schedule.value.map(lesson => 
-      lesson.id === updatedLesson.id ? updatedLesson : lesson
-    );
+      if (!assignment) {
+        throw new Error('Teaching assignment not found');
+      }
 
-    toast.add({
-      severity: 'success',
-      summary: 'Успех',
-      detail: 'Занятие успешно перемещено',
-      life: 3000
-    });
+      const lessonData = {
+        date: new Date(newLesson.value.date).toISOString().slice(0, 10),
+        lessonNumber: newLesson.value.lessonNumber,
+        teacherGroupSubjectId: assignment.id,
+      };
 
-    closeMoveDialog();
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось переместить занятие',
-      life: 3000
-    });
+      const newLessonData = await scheduleService.create(lessonData);
+      schedule.value.push(newLessonData);
+
+      toast.add({
+        severity: 'success',
+        summary: 'Успех',
+        detail: 'Занятие успешно добавлено',
+        life: 3000,
+      });
+
+      closeAddDialog();
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось добавить занятие',
+        life: 3000,
+      });
+    }
   }
-}
+
+  async function moveLesson() {
+    if (!moveData.value.newDate || !moveData.value.newLessonNumber) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Заполните все поля',
+        life: 3000,
+      });
+      return;
+    }
+
+    try {
+      const newDate = new Date(moveData.value.newDate).toISOString().slice(0, 10);
+
+      // Проверяем, не пересекается ли новое время с существующими занятиями
+      const hasConflict = schedule.value.some(lesson =>
+        lesson.id !== moveData.value.lesson.id &&
+        lesson.date === newDate &&
+        lesson.lessonNumber === moveData.value.newLessonNumber,
+      );
+
+      if (hasConflict) {
+        toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'В это время уже есть занятие',
+          life: 3000,
+        });
+        return;
+      }
+
+      const updatedLesson = await scheduleService.update(moveData.value.lesson.id, {
+        date: newDate,
+        lessonNumber: moveData.value.newLessonNumber,
+      });
+
+      schedule.value = schedule.value.map(lesson =>
+        lesson.id === updatedLesson.id ? updatedLesson : lesson,
+      );
+
+      toast.add({
+        severity: 'success',
+        summary: 'Успех',
+        detail: 'Занятие успешно перемещено',
+        life: 3000,
+      });
+
+      closeMoveDialog();
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось переместить занятие',
+        life: 3000,
+      });
+    }
+  }
 </script>
 
 <style scoped>
@@ -748,4 +789,4 @@ async function moveLesson() {
     width: 100% !important;
   }
 }
-</style> 
+</style>

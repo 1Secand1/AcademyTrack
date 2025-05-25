@@ -14,11 +14,11 @@ export const subjectsService = {
   },
 
   create(subject) {
-    return apiClient.post('subject', subject);
+    return apiClient.post('subject', { json: subject });
   },
 
   update(id, subject) {
-    return apiClient.patch(`subject/${id}`, subject);
+    return apiClient.patch(`subject/${id}`, { json: subject });
   },
 
   delete(id) {

@@ -1,13 +1,15 @@
 <template>
   <div class="subjects-container">
     <div class="page-header">
-      <h2 class="title">Управление предметами</h2>
-      <Button 
-        icon="pi pi-plus" 
-        label="Добавить предмет" 
-        @click="showSubjectDialog = true"
+      <h2 class="title">
+        Управление предметами
+      </h2>
+      <Button
         v-if="isAdmin"
+        icon="pi pi-plus"
+        label="Добавить предмет"
         class="add-button"
+        @click="showSubjectDialog = true"
       />
     </div>
 
@@ -18,15 +20,22 @@
       :value="subjects"
       :loading="isLoading"
       selection-mode="single"
-      @row-select="onRowSelect"
       striped-rows
+      @row-select="onRowSelect"
     >
-      <Column field="name" header="Название предмета" sortable />
-      <Column field="teachers" header="Преподаватели">
+      <Column
+        field="name"
+        header="Название предмета"
+        sortable
+      />
+      <Column
+        field="teachers"
+        header="Преподаватели"
+      >
         <template #body="{ data }">
           <div class="teachers-list">
-            <Chip 
-              v-for="teacher in data.teachers" 
+            <Chip
+              v-for="teacher in data.teachers"
               :key="teacher.id"
               :label="teacher.fullName"
               class="teacher-chip"
@@ -34,16 +43,19 @@
           </div>
         </template>
       </Column>
-      <Column v-if="isAdmin" header="Действия">
+      <Column
+        v-if="isAdmin"
+        header="Действия"
+      >
         <template #body="{ data }">
           <div class="actions">
-            <Button 
-              icon="pi pi-pencil" 
+            <Button
+              icon="pi pi-pencil"
               class="p-button-rounded p-button-text"
               @click="editSubject(data)"
             />
-            <Button 
-              icon="pi pi-trash" 
+            <Button
+              icon="pi pi-trash"
               class="p-button-rounded p-button-text p-button-danger"
               @click="confirmDelete(data)"
             />
@@ -53,24 +65,43 @@
     </DataTable>
 
     <!-- Мобильная версия -->
-    <div v-else class="subjects-list">
-      <div v-if="isLoading" class="loading">
+    <div
+      v-else
+      class="subjects-list"
+    >
+      <div
+        v-if="isLoading"
+        class="loading"
+      >
         <ProgressSpinner />
       </div>
-      <div v-else-if="subjects.length === 0" class="no-data">
+      <div
+        v-else-if="subjects.length === 0"
+        class="no-data"
+      >
         <p>Нет данных для отображения</p>
       </div>
-      <div v-else v-for="subject in subjects" :key="subject.id" class="subject-card">
+      <div
+        v-for="subject in subjects"
+        v-else
+        :key="subject.id"
+        class="subject-card"
+      >
         <div class="subject-card__header">
-          <h3 class="subject-card__title">{{ subject.name }}</h3>
-          <div v-if="isAdmin" class="subject-card__actions">
-            <Button 
-              icon="pi pi-pencil" 
+          <h3 class="subject-card__title">
+            {{ subject.name }}
+          </h3>
+          <div
+            v-if="isAdmin"
+            class="subject-card__actions"
+          >
+            <Button
+              icon="pi pi-pencil"
               class="p-button-rounded p-button-text"
               @click="editSubject(subject)"
             />
-            <Button 
-              icon="pi pi-trash" 
+            <Button
+              icon="pi pi-trash"
               class="p-button-rounded p-button-text p-button-danger"
               @click="confirmDelete(subject)"
             />
@@ -80,8 +111,8 @@
           <div class="subject-card__teachers">
             <span class="label">Преподаватели:</span>
             <div class="teachers-list">
-              <Chip 
-                v-for="teacher in subject.teachers" 
+              <Chip
+                v-for="teacher in subject.teachers"
                 :key="teacher.id"
                 :label="teacher.fullName"
                 class="teacher-chip"
@@ -102,14 +133,20 @@
     >
       <div class="p-fluid">
         <div class="p-field">
-          <label class="form-label" for="subjectName">Название предмета</label>
+          <label
+            class="form-label"
+            for="subjectName"
+          >Название предмета</label>
           <InputText
             id="subjectName"
             v-model="subjectForm.name"
             :class="{ 'p-invalid': subjectFormErrors.name }"
             class="w-full"
           />
-          <small class="p-error" v-if="subjectFormErrors.name">
+          <small
+            v-if="subjectFormErrors.name"
+            class="p-error"
+          >
             {{ subjectFormErrors.name }}
           </small>
         </div>
@@ -131,171 +168,169 @@
         </div>
       </template>
     </Dialog>
-
-    <!-- Диалог подтверждения удаления -->
-    <ConfirmDialog />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useConfirm } from 'primevue/useconfirm';
-import { useToast } from 'primevue/usetoast';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import InputText from 'primevue/inputtext';
-import ConfirmDialog from 'primevue/confirmdialog';
-import Chip from 'primevue/chip';
-import ProgressSpinner from 'primevue/progressspinner';
-import { authService } from '@service/auth.js';
-import { subjectsService } from '@service/api-endpoints/subjects.js';
+  import { ref, onMounted } from 'vue';
+  import { useConfirm } from 'primevue/useconfirm';
+  import { useToast } from 'primevue/usetoast';
+  import DataTable from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import Button from 'primevue/button';
+  import Dialog from 'primevue/dialog';
+  import InputText from 'primevue/inputtext';
+  import Chip from 'primevue/chip';
+  import ProgressSpinner from 'primevue/progressspinner';
+  import { authService } from '@service/auth.js';
+  import { subjectsService } from '@service/api-endpoints/subjects.js';
 
-const confirm = useConfirm();
-const toast = useToast();
-const isAdmin = ref(authService.isAdmin());
-const isLoading = ref(false);
-const subjects = ref([]);
-const selectedSubject = ref(null);
-const showSubjectDialog = ref(false);
-const subjectForm = ref({
-  name: ''
-});
-const subjectFormErrors = ref({
-  name: ''
-});
-
-// Добавляем определение мобильного устройства
-const isMobile = ref(window.innerWidth <= 768);
-
-// Добавляем слушатель изменения размера окна
-onMounted(() => {
-  window.addEventListener('resize', () => {
-    isMobile.value = window.innerWidth <= 768;
+  const confirm = useConfirm();
+  const toast = useToast();
+  const isAdmin = ref(authService.isAdmin());
+  const isLoading = ref(false);
+  const subjects = ref([]);
+  const selectedSubject = ref(null);
+  const showSubjectDialog = ref(false);
+  const subjectForm = ref({
+    name: '',
   });
-});
-
-onMounted(async () => {
-  await loadSubjects();
-});
-
-async function loadSubjects() {
-  isLoading.value = true;
-  try {
-    const response = await subjectsService.getAll();
-    const data = await response.json();
-    subjects.value = Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error('Error loading subjects:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось загрузить список предметов',
-      life: 3000
-    });
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-function onRowSelect(event) {
-  selectedSubject.value = event.data;
-}
-
-function editSubject(subject) {
-  selectedSubject.value = subject;
-  subjectForm.value = {
-    name: subject.name
-  };
-  showSubjectDialog.value = true;
-}
-
-function confirmDelete(subject) {
-  confirm.require({
-    message: 'Вы уверены, что хотите удалить этот предмет?',
-    header: 'Подтверждение удаления',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => deleteSubject(subject)
+  const subjectFormErrors = ref({
+    name: '',
   });
-}
 
-async function deleteSubject(subject) {
-  try {
-    await subjectsService.delete(subject.id);
-    toast.add({
-      severity: 'success',
-      summary: 'Успех',
-      detail: 'Предмет успешно удален',
-      life: 3000
+  // Добавляем определение мобильного устройства
+  const isMobile = ref(window.innerWidth <= 768);
+
+  // Добавляем слушатель изменения размера окна
+  onMounted(() => {
+    window.addEventListener('resize', () => {
+      isMobile.value = window.innerWidth <= 768;
     });
+  });
+
+  onMounted(async () => {
     await loadSubjects();
-  } catch (error) {
-    console.error('Error deleting subject:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось удалить предмет',
-      life: 3000
+  });
+
+  async function loadSubjects() {
+    isLoading.value = true;
+    try {
+      const response = await subjectsService.getAll();
+      const data = await response.json();
+      subjects.value = Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error('Error loading subjects:', error);
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось загрузить список предметов',
+        life: 3000,
+      });
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  function onRowSelect(event) {
+    selectedSubject.value = event.data;
+  }
+
+  function editSubject(subject) {
+    selectedSubject.value = subject;
+    subjectForm.value = {
+      name: subject.name,
+    };
+    showSubjectDialog.value = true;
+  }
+
+  function confirmDelete(subject) {
+    confirm.require({
+      message: 'Вы уверены, что хотите удалить этот предмет?',
+      header: 'Подтверждение удаления',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => deleteSubject(subject),
+      acceptLabel:'Да',
+      rejectLabel:'Нет',
     });
   }
-}
 
-function closeDialog() {
-  showSubjectDialog.value = false;
-  selectedSubject.value = null;
-  subjectForm.value = {
-    name: ''
-  };
-  subjectFormErrors.value = {
-    name: ''
-  };
-}
-
-async function saveSubject() {
-  // Валидация
-  subjectFormErrors.value = {
-    name: !subjectForm.value.name ? 'Название предмета обязательно' : ''
-  };
-
-  if (subjectFormErrors.value.name) {
-    return;
-  }
-
-  try {
-    const subjectData = {
-      name: String(subjectForm.value.name).trim()
-    };
-
-    if (selectedSubject.value) {
-      await subjectsService.update(selectedSubject.value.id, subjectData);
+  async function deleteSubject(subject) {
+    try {
+      await subjectsService.delete(subject.subjectId);
       toast.add({
         severity: 'success',
         summary: 'Успех',
-        detail: 'Предмет успешно обновлен',
-        life: 3000
+        detail: 'Предмет успешно удален',
+        life: 3000,
       });
-    } else {
-      await subjectsService.create(subjectData);
+      await loadSubjects();
+    } catch (error) {
+      console.error('Error deleting subject:', error);
       toast.add({
-        severity: 'success',
-        summary: 'Успех',
-        detail: 'Предмет успешно добавлен',
-        life: 3000
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось удалить предмет',
+        life: 3000,
       });
     }
-    closeDialog();
-    await loadSubjects();
-  } catch (error) {
-    console.error('Error saving subject:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось сохранить предмет',
-      life: 3000
-    });
   }
-}
+
+  function closeDialog() {
+    showSubjectDialog.value = false;
+    selectedSubject.value = null;
+    subjectForm.value = {
+      name: '',
+    };
+    subjectFormErrors.value = {
+      name: '',
+    };
+  }
+
+  async function saveSubject() {
+    // Валидация
+    subjectFormErrors.value = {
+      name: !subjectForm.value.name ? 'Название предмета обязательно' : '',
+    };
+
+    if (subjectFormErrors.value.name) {
+      return;
+    }
+
+    try {
+      const subjectData = {
+        name: String(subjectForm.value.name).trim(),
+      };
+
+      if (selectedSubject.value) {
+        await subjectsService.update(selectedSubject.value.subjectId, subjectData);
+        toast.add({
+          severity: 'success',
+          summary: 'Успех',
+          detail: 'Предмет успешно обновлен',
+          life: 3000,
+        });
+      } else {
+        await subjectsService.create(subjectData);
+        toast.add({
+          severity: 'success',
+          summary: 'Успех',
+          detail: 'Предмет успешно добавлен',
+          life: 3000,
+        });
+      }
+      closeDialog();
+      await loadSubjects();
+    } catch (error) {
+      console.error('Error saving subject:', error);
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось сохранить предмет',
+        life: 3000,
+      });
+    }
+  }
 </script>
 
 <style scoped>
@@ -432,4 +467,4 @@ async function saveSubject() {
     padding: 0.5rem;
   }
 }
-</style> 
+</style>
