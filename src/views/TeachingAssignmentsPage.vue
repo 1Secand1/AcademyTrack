@@ -1,21 +1,30 @@
 <template>
   <div class="teaching-assignments-page">
     <h1>Назначение преподавателей</h1>
-    
+
     <div class="content">
       <div class="form-section">
         <h2>Новое назначение</h2>
-        <TeachingAssignmentsForm @assignmentCreated="fetchAssignments" />
+        <TeachingAssignmentsForm @assignment-created="fetchAssignments" />
       </div>
 
       <div class="assignments-section">
         <h2>Текущие назначения</h2>
         <div class="assignments-list">
-          <div v-for="assignment in assignments" :key="assignment.teachingAssignmentId" class="assignment-card">
-            <div class="assignment-card__teacher">{{ assignment.teacher.fullName }}</div>
-            <div class="assignment-card__group">{{ assignment.group.groupCode }}</div>
-            <div class="assignment-card__subject">{{ assignment.subject.name }}</div>
-            <div class="assignment-card__semester">{{ assignment.semester }} семестр</div>
+          <div
+            v-for="assignment in assignments"
+            :key="assignment.teachingAssignmentId"
+            class="assignment-card"
+          >
+            <div class="assignment-card__teacher">
+              {{ assignment.teacher.fullName }}
+            </div>
+            <div class="assignment-card__group">
+              {{ assignment.group.groupCode }}
+            </div>
+            <div class="assignment-card__subject">
+              {{ assignment.subject.name }}
+            </div>
             <Button
               icon="pi pi-trash"
               class="p-button-danger p-button-sm"
@@ -29,60 +38,61 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useToast } from 'primevue/usetoast';
-import { teachingAssignmentsService } from '@service/api-endpoints/teaching-assignments.js';
-import TeachingAssignmentsForm from '@components/TeachingAssignments/TeachingAssignmentsForm.vue';
-import Button from 'primevue/button';
+  import { ref, onMounted } from 'vue';
+  import { useToast } from 'primevue/usetoast';
+  import { teachingAssignmentsService } from '@service/api-endpoints/teaching-assignments.js';
+  import TeachingAssignmentsForm from '@components/TeachingAssignments/TeachingAssignmentsForm.vue';
+  import Button from 'primevue/button';
 
-const toast = useToast();
-const assignments = ref([]);
+  const toast = useToast();
+  const assignments = ref([]);
 
-const fetchAssignments = async () => {
-  try {
-    const response = await teachingAssignmentsService.get();
-    assignments.value = response.map(assignment => ({
-      ...assignment,
-      teacher: {
-        ...assignment.teacher,
-        fullName: `${assignment.teacher.surname} ${assignment.teacher.name} ${assignment.teacher.patronymic || ''}`
-      }
-    }));
-  } catch (error) {
-    console.error('Error fetching assignments:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось загрузить список назначений',
-      life: 3000
-    });
-  }
-};
+  const fetchAssignments = async () => {
+    try {
+      const response = await teachingAssignmentsService.get();
+      assignments.value = response.map(assignment => ({
+        ...assignment,
+        teacher: {
+          ...assignment.teacher,
+          fullName: `${assignment.teacher.surname} ${assignment.teacher.name} ${assignment.teacher.patronymic || ''}`,
+        },
+      }));
+    } catch (error) {
+      console.error('Error fetching assignments:', error);
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось загрузить список назначений',
+        life: 3000,
+      });
+    }
+  };
 
-const deleteAssignment = async (assignmentId) => {
-  try {
-    await teachingAssignmentsService.delete(assignmentId);
-    toast.add({
-      severity: 'success',
-      summary: 'Успешно',
-      detail: 'Назначение удалено',
-      life: 3000
-    });
-    await fetchAssignments();
-  } catch (error) {
-    console.error('Error deleting assignment:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось удалить назначение',
-      life: 3000
-    });
-  }
-};
+  const deleteAssignment = async (assignmentId) => {
+    console.log(assignmentId,'!!!');
+    try {
+      await teachingAssignmentsService.delete(assignmentId);
+      toast.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: 'Назначение удалено',
+        life: 3000,
+      });
+      await fetchAssignments();
+    } catch (error) {
+      console.error('Error deleting assignment:', error);
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось удалить назначение',
+        life: 3000,
+      });
+    }
+  };
 
-onMounted(() => {
-  fetchAssignments();
-});
+  onMounted(() => {
+    fetchAssignments();
+  });
 </script>
 
 <style scoped>
@@ -155,4 +165,4 @@ h2 {
     padding: 1rem;
   }
 }
-</style> 
+</style>

@@ -11,18 +11,45 @@
             placeholder="Поиск по коду группы"
           />
         </IconField>
-        <Button v-if="isMobile" icon="pi pi-filter" @click="toggleFilters" />
+        <Button
+          v-if="isMobile"
+          icon="pi pi-filter"
+          @click="toggleFilters"
+        />
       </div>
-      <div v-if="isMobile && showFilters" class="filters">
-        <Dropdown v-model="selectedFilter" :options="filterOptions" placeholder="Фильтр" />
+      <div
+        v-if="isMobile && showFilters"
+        class="filters"
+      >
+        <Dropdown
+          v-model="selectedFilter"
+          :options="filterOptions"
+          placeholder="Фильтр"
+        />
       </div>
     </div>
-    <div v-if="isMobile" class="group-list">
-      <div v-for="group in filteredGroups" :key="group.groupId" class="group-item" @click="onRowSelect({ data: group })">
-        <div class="group-item__code">{{ group.groupCode }}</div>
-        <div class="group-item__name">{{ group.name }}</div>
-        <div class="group-item__course">{{ group.course }}</div>
-        <div class="group-item__specialty">{{ group.specialty }}</div>
+    <div
+      v-if="isMobile"
+      class="group-list"
+    >
+      <div
+        v-for="group in filteredGroups"
+        :key="group.groupId"
+        class="group-item"
+        @click="onRowSelect({ data: group })"
+      >
+        <div class="group-item__code">
+          {{ group.groupCode }}
+        </div>
+        <div class="group-item__name">
+          {{ group.name }}
+        </div>
+        <div class="group-item__course">
+          {{ group.course }}
+        </div>
+        <div class="group-item__specialty">
+          {{ group.specialty }}
+        </div>
       </div>
     </div>
     <DataTable
@@ -37,22 +64,12 @@
     >
       <Column
         field="groupCode"
-        header="Код группы"
-        sortable
-      />
-      <Column
-        field="name"
         header="Название группы"
         sortable
       />
       <Column
         field="course"
-        header="Курс"
-        sortable
-      />
-      <Column
-        field="specialty"
-        header="Специальность"
+        header="Год обучения"
         sortable
       />
     </DataTable>
@@ -60,64 +77,64 @@
 </template>
 
 <script setup>
-import router from '@router/index.js';
-import { groupsService } from '@service/api-endpoints/groups.js';
-import Column from 'primevue/column';
-import DataTable from 'primevue/datatable';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import Dropdown from 'primevue/dropdown';
-import { computed, onMounted, ref } from 'vue';
+  import router from '@router/index.js';
+  import { groupsService } from '@service/api-endpoints/groups.js';
+  import Column from 'primevue/column';
+  import DataTable from 'primevue/datatable';
+  import IconField from 'primevue/iconfield';
+  import InputIcon from 'primevue/inputicon';
+  import InputText from 'primevue/inputtext';
+  import Button from 'primevue/button';
+  import Dropdown from 'primevue/dropdown';
+  import { computed, onMounted, ref } from 'vue';
 
-const groups = ref([]);
-const search = ref('');
-const selectedGroup = ref({});
-const isMobile = ref(window.innerWidth <= 768);
-const showFilters = ref(false);
-const selectedFilter = ref(null);
-const filterOptions = [
-  { label: 'Все группы', value: 'all' },
-  { label: 'Курс 1', value: '1' },
-  { label: 'Курс 2', value: '2' },
-  { label: 'Курс 3', value: '3' }
-];
+  const groups = ref([]);
+  const search = ref('');
+  const selectedGroup = ref({});
+  const isMobile = ref(window.innerWidth <= 768);
+  const showFilters = ref(false);
+  const selectedFilter = ref(null);
+  const filterOptions = [
+    { label: 'Все группы', value: 'all' },
+    { label: 'Курс 1', value: '1' },
+    { label: 'Курс 2', value: '2' },
+    { label: 'Курс 3', value: '3' },
+  ];
 
-const filteredGroups = computed(() => {
-  let result = groups.value;
-  if (search.value) {
-    result = result.filter(group =>
-      group.groupCode.toLowerCase().includes(search.value.toLowerCase()) ||
-      group.name.toLowerCase().includes(search.value.toLowerCase())
-    );
+  const filteredGroups = computed(() => {
+    let result = groups.value;
+    if (search.value) {
+      result = result.filter(group =>
+        group.groupCode.toLowerCase().includes(search.value.toLowerCase()) ||
+        group.name.toLowerCase().includes(search.value.toLowerCase()),
+      );
+    }
+    if (selectedFilter.value && selectedFilter.value !== 'all') {
+      result = result.filter(group => group.course === selectedFilter.value);
+    }
+    return result;
+  });
+
+  function onRowSelect(event) {
+    if (event.data) {
+      router.push({
+        name: 'groupProfile',
+        params: { groupId: event.data.groupId },
+      });
+    }
   }
-  if (selectedFilter.value && selectedFilter.value !== 'all') {
-    result = result.filter(group => group.course === selectedFilter.value);
-  }
-  return result;
-});
 
-function onRowSelect(event) {
-  if (event.data) {
-    router.push({
-      name: 'groupProfile',
-      params: { groupId: event.data.groupId }
-    });
+  function toggleFilters() {
+    showFilters.value = !showFilters.value;
   }
-}
 
-function toggleFilters() {
-  showFilters.value = !showFilters.value;
-}
-
-onMounted(async () => {
-  try {
-    groups.value = await groupsService.getAll();
-  } catch (error) {
-    console.error('Ошибка при загрузке групп:', error);
-  }
-});
+  onMounted(async () => {
+    try {
+      groups.value = await groupsService.getAll();
+    } catch (error) {
+      console.error('Ошибка при загрузке групп:', error);
+    }
+  });
 </script>
 
 <style>

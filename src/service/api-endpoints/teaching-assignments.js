@@ -34,7 +34,7 @@ export class TeachingAssignmentsService extends ServerManager {
 
     async delete(assignmentId) {
         try {
-            const response = await super.delete(assignmentId);
+            const response = await super.remove(assignmentId);
             return response;
         } catch (error) {
             throw error;

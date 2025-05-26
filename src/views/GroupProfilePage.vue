@@ -123,7 +123,8 @@
     try {
       isLoading.value = true;
       const response = await groupsService.getDetails(groupId.value);
-      groupDetails.value = processGroupDetails(response.data);
+      console.log(response);
+      groupDetails.value = processGroupDetails(response);
     } catch (error) {
       toast.add({
         severity: 'error',
@@ -147,16 +148,6 @@
     };
   };
 
-  watch(currentCategory, (newCategory) => {
-    currentCategoryComponent.value = getCategoryComponent(newCategory);
-  });
-
-  watch(groupDetails, (newDetails) => {
-    if (currentCategoryComponent.value && newDetails && newDetails.id) {
-      isComponentVisible.value = true;
-    }
-  });
-
   onMounted(async () => {
     if (groupId.value) {
       await loadGroupDetails();
@@ -166,7 +157,6 @@
 
 <style scoped>
 .profile-container {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
