@@ -4,38 +4,77 @@
       <h2>AcademyTrack</h2>
     </div>
     <nav class="sidebar-nav">
-      <button class="nav-item" :class="{ active: $route.path === '/' }" @click="handleNavigation('/')">
-        <i class="pi pi-home"></i>
+      <button
+        class="nav-item"
+        :class="{ active: $route.path === '/' }"
+        @click="handleNavigation('/')"
+      >
+        <i class="pi pi-home" />
         <span>Главная</span>
       </button>
-      <button class="nav-item" :class="{ active: $route.path === '/user-groups' }" @click="handleNavigation('/user-groups')">
-        <i class="pi pi-users"></i>
+      <button
+        class="nav-item"
+        :class="{ active: $route.path === '/teaching-assignments' }"
+        @click="handleNavigation('/group-attendance')"
+      >
+        <i class="pi pi-list" />
+        <span>Ваши группы</span>
+      </button>
+      <button
+        class="nav-item"
+        :class="{ active: $route.path === '/user-groups' }"
+        @click="handleNavigation('/user-groups')"
+      >
+        <i class="pi pi-users" />
         <span>Группы</span>
       </button>
       <template v-if="isAdmin">
-        <button class="nav-item" :class="{ active: $route.path === '/teaching-assignments' }" @click="handleNavigation('/teaching-assignments')">
-          <i class="pi pi-calendar"></i>
+        <button
+          class="nav-item"
+          :class="{ active: $route.path === '/teaching-assignments' }"
+          @click="handleNavigation('/teaching-assignments')"
+        >
+          <i class="pi pi-calendar" />
           <span>Нагрузка</span>
         </button>
-        <button class="nav-item" :class="{ active: $route.path === '/schedule-planning' }" @click="handleNavigation('/schedule-planning')">
-          <i class="pi pi-calendar-plus"></i>
+        <button
+          class="nav-item"
+          :class="{ active: $route.path === '/schedule-planning' }"
+          @click="handleNavigation('/schedule-planning')"
+        >
+          <i class="pi pi-calendar-plus" />
           <span>Формирование расписания</span>
         </button>
-        <button class="nav-item" :class="{ active: $route.path === '/schedule-management' }" @click="handleNavigation('/schedule-management')">
-          <i class="pi pi-calendar-edit"></i>
+        <button
+          class="nav-item"
+          :class="{ active: $route.path === '/schedule-management' }"
+          @click="handleNavigation('/schedule-management')"
+        >
+          <i class="pi pi-calendar-edit" />
           <span>Управление расписанием</span>
         </button>
-        <button class="nav-item" :class="{ active: $route.path === '/subjects' }" @click="handleNavigation('/subjects')">
-          <i class="pi pi-list"></i>
+        <button
+          class="nav-item"
+          :class="{ active: $route.path === '/subjects' }"
+          @click="handleNavigation('/subjects')"
+        >
+          <i class="pi pi-list" />
           <span>Предметы</span>
         </button>
-        <button class="nav-item" :class="{ active: $route.path === '/data-change' }" @click="handleNavigation('/data-change')">
-          <i class="pi pi-cog"></i>
+        <button
+          class="nav-item"
+          :class="{ active: $route.path === '/data-change' }"
+          @click="handleNavigation('/data-change')"
+        >
+          <i class="pi pi-cog" />
           <span>Управление данными</span>
         </button>
       </template>
-      <button class="nav-item logout" @click="handleLogout">
-        <i class="pi pi-sign-out"></i>
+      <button
+        class="nav-item logout"
+        @click="handleLogout"
+      >
+        <i class="pi pi-sign-out" />
         <span>Выйти</span>
       </button>
     </nav>
@@ -43,50 +82,50 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { authService } from '@service/auth.js';
-import { useToast } from 'primevue/usetoast';
-import { deleteCookie } from '@utils/cookie.js';
+  import { computed, onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { authService } from '@service/auth.js';
+  import { useToast } from 'primevue/usetoast';
+  import { deleteCookie } from '@utils/cookie.js';
 
-const router = useRouter();
-const toast = useToast();
-const isAdmin = computed(() => authService.isAdmin());
+  const router = useRouter();
+  const toast = useToast();
+  const isAdmin = computed(() => authService.isAdmin());
 
-const handleNavigation = async (path) => {
-  try {
-    if (router.currentRoute.value.path === path) {
-      return;
+  const handleNavigation = async (path) => {
+    try {
+      if (router.currentRoute.value.path === path) {
+        return;
+      }
+
+      await router.replace(path);
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось перейти на страницу',
+        life: 3000,
+      });
     }
-    
-    await router.replace(path);
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось перейти на страницу',
-      life: 3000
-    });
-  }
-};
+  };
 
-const handleLogout = async () => {
-  try {
-    deleteCookie('token');
-    await router.replace('/login');
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Не удалось выйти из системы',
-      life: 3000
-    });
-  }
-};
+  const handleLogout = async () => {
+    try {
+      deleteCookie('token');
+      await router.replace('/login');
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось выйти из системы',
+        life: 3000,
+      });
+    }
+  };
 
-onMounted(() => {
+  onMounted(() => {
   // Removed all console.log statements
-});
+  });
 </script>
 
 <style scoped>
@@ -168,4 +207,4 @@ onMounted(() => {
     display: none;
   }
 }
-</style> 
+</style>

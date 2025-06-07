@@ -77,7 +77,7 @@
   import Checkbox from 'primevue/checkbox';
   import Dropdown from 'primevue/dropdown';
 
-  import { computed, defineProps, ref, toRaw } from 'vue';
+  import { computed, defineProps, onMounted, ref, toRaw } from 'vue';
   import SelectButton from 'primevue/selectbutton';
 
   const emit = defineEmits(['change']);
@@ -125,6 +125,7 @@
   }
 
   function currentLessonSearch() {
+    console.log(optionsLessons.value,'!!!');
     return optionsLessons.value[0];
   }
 
@@ -138,6 +139,7 @@
   }
 
   function change() {
+    console.log(selectedLessons.value.scheduleId);
     emit('change', {
       date: selectedLessons.value.date,
       scheduleId: selectedLessons.value.scheduleId,

@@ -70,9 +70,7 @@
       loading.value = true;
 
       const response = await scheduleService.getGroupSchedule(props.groupDetails.id);
-      console.log('Schedule API response:', response);
       const scheduleData = response?.schedule || [];
-      console.log('Processed schedule data:', scheduleData);
       schedule.value = scheduleData.map(lesson => ({
         ...lesson,
         date: new Date(lesson.date),
@@ -89,7 +87,6 @@
       });
     } finally {
       loading.value = false;
-      console.log('Loading state:', loading.value);
     }
   };
 
@@ -129,7 +126,6 @@
 
   onMounted(loadSchedule);
   watch(() => props.groupDetails.id, (newId) => {
-    console.log('Group ID changed:', newId);
     loadSchedule();
   }, { immediate: true });
 </script>

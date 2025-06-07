@@ -1,9 +1,10 @@
 
 <template>
-  <GroupList type="teaching-assignments" />
+  <GroupList type="all" />
 </template>
 
 <script setup>
+
   import GroupList from '@components/GroupList.vue';
 </script>
 

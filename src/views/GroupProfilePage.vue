@@ -123,7 +123,6 @@
     try {
       isLoading.value = true;
       const response = await groupsService.getDetails(groupId.value);
-      console.log(response);
       groupDetails.value = processGroupDetails(response);
     } catch (error) {
       toast.add({

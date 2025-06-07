@@ -296,7 +296,6 @@
       return;
     }
     if (categoryNameValue.value === userRoleNames.groups.name) {
-      console.log(selectedData.groupId);
       selectedRow.value = {
         groupId: selectedData.groupId,
         groupCode: selectedData.groupCode,
@@ -376,7 +375,6 @@
   async function sendRequest(data) {
     try {
       // Проверяем наличие необходимых данных
-      console.log(data);
 
       // Добавляем дополнительные проверки в зависимости от категории
       if (categoryNameValue.value === userRoleNames.students.name) {

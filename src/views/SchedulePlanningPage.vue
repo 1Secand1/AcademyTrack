@@ -417,7 +417,6 @@
   const filteredAssignments = computed(() => {
     if (!selectedGroup.value || !selectedSubject.value) return [];
 
-    console.log(teachingAssignments.value);
     return teachingAssignments.value.filter(a =>
       a.group.groupId === selectedGroup.value && a.subject.subjectId === selectedSubject.value,
     );

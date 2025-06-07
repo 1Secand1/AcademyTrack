@@ -515,7 +515,6 @@
   }
 
   async function deleteLesson(lesson) {
-    console.log(lesson);
     try {
       await scheduleService.delete(lesson.subjectId);
       schedule.value = schedule.value.filter(l => l.id !== lesson.id);

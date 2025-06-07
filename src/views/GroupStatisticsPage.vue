@@ -1,12 +1,22 @@
 <template>
   <div class="heder">
     <div class="row">
-      Группа {{ groupCode }}
-      <Button label="Вернуться" @click="goBack" />
+      Группа {{ lessonPlan?.groupCode || 'Название группы не определннно' }}
+      <Button
+        label="Вернуться"
+        @click="goBack"
+      />
     </div>
 
     <div class="row">
-      <Dropdown v-if="months.length" v-model="selectedMonth" :options="months" option-label="label" option-value="value" class="month-dropdown" />
+      <Dropdown
+        v-if="months.length"
+        v-model="selectedMonth"
+        :options="months"
+        option-label="label"
+        option-value="value"
+        class="month-dropdown"
+      />
       <Button
         label="добавить отчёт"
         @click="reportWindowVisible = true"
@@ -48,8 +58,6 @@
 
   const route = useRoute();
   const router = useRouter();
-  const groupCode = ref(route.query.codeGroup ?? 'Неопределенно');
-  const teachingAssignmentId = computed(() => route.params.teachingAssignmentId);
 
   const reportWindowVisible = ref(false);
 
@@ -59,37 +67,45 @@
   const months = ref([]);
   const selectedMonth = ref(null);
 
+  const props = defineProps({
+    teachingAssignmentId: { type: String, required: true },
+    groupId: { type: String, required: true },
+  });
+
+  const { teachingAssignmentId, groupId } = props;
+
   onMounted(async () => {
     try {
-      if (!teachingAssignmentId.value) {
+      if (!teachingAssignmentId) {
         console.error('teachingAssignmentId is required');
         return;
       }
 
       const [scheduleResponse, attendanceResponse] = await Promise.all([
-        scheduleService.get('', { teachingAssignmentId: teachingAssignmentId.value }),
-        attendanceService.get('', { teachingAssignmentId: teachingAssignmentId.value })
+        scheduleService.get('', { teachingAssignmentId: teachingAssignmentId }),
+        attendanceService.getGroupSummary(groupId),
       ]);
 
       lessonPlan.value = scheduleResponse[0] ?? [];
+
       lessonAttendanceReport.value = attendanceResponse[0] ?? [];
 
       // Получаем список месяцев с занятиями
       const lessons = lessonPlan.value.lessonsAttendance || [];
       const monthSet = new Set(lessons.map(l => {
         const d = new Date(l.date);
-        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
       }));
       months.value = Array.from(monthSet).sort().map(m => {
         const [year, month] = m.split('-');
         return {
           value: m,
-          label: `${monthNameDateFormatter.format(new Date(year, month-1, 1))} ${year}`
+          label: `${monthNameDateFormatter.format(new Date(year, month - 1, 1))} ${year}`,
         };
       });
       // По умолчанию — текущий месяц, если его нет — последний
       const now = new Date();
-      const current = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+      const current = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2,'0')}`;
       selectedMonth.value = months.value.find(m => m.value === current)?.value || (months.value.at(-1)?.value ?? null);
     } catch (error) {
       console.error('Error loading data:', error);
@@ -102,7 +118,7 @@
     if (!selectedMonth.value) return lessonPlan.value;
     const lessonsAttendance = (lessonPlan.value.lessonsAttendance || []).filter(l => {
       const d = new Date(l.date);
-      const m = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      const m = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
       return m === selectedMonth.value;
     });
     return { ...lessonPlan.value, lessonsAttendance };
@@ -116,10 +132,13 @@
 
   const studentList = computed(() => {
     const { students } = lessonAttendanceReport.value || {};
-    if (!Array.isArray(students) || students.length === 0) {
-      return [];
-    }
-    return students.map(({ fullName, studentId }) => ({ fullName, studentId }));
+    console.log(lessonAttendanceReport.value);
+
+    console.log(students);
+
+    if (!Array.isArray(students) || students.length === 0) { return []; }
+
+    return students.map(({ student }) => ({ ...student }));
   });
 
   const allLessonDates = computed(() => {
@@ -164,7 +183,7 @@
 
     const updateRequestBody = {
       scheduleId,
-      teachingAssignmentId: teachingAssignmentId.value,
+      teachingAssignmentId: teachingAssignmentId,
       students: getStudentsAttendanceReport(studentIds, classAttendanceStatus),
     };
 
@@ -202,7 +221,7 @@
   }
 
   function goBack() {
-    router.push({ name: 'userGroups' });
+    router.push({ name: 'group-attendance' });
   }
 </script>
 

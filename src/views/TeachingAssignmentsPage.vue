@@ -69,7 +69,6 @@
   };
 
   const deleteAssignment = async (assignmentId) => {
-    console.log(assignmentId,'!!!');
     try {
       await teachingAssignmentsService.delete(assignmentId);
       toast.add({

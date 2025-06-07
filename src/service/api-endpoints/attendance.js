@@ -5,8 +5,11 @@ class AttendanceService extends ServerManager {
         super('attendance');
     }
 
-    // Получить сводную статистику посещаемости по группе
     async getGroupSummary(groupId) {
+        return await this.get(`group/${groupId}/summary`);
+    }
+
+    async pos(groupId) {
         return await this.get(`group/${groupId}/summary`);
     }
 }
