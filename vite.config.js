@@ -4,8 +4,10 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
 	plugins: [vue()],
+	base: '',
 	resolve: {
 		alias: {
+			'@': path.resolve(__dirname, './src'),
 			'@assets': path.resolve(__dirname, './src/assets'),
 			'@components': path.resolve(__dirname, './src/components'),
 			'@router': path.resolve(__dirname, './src/router'),
@@ -22,6 +24,19 @@ export default defineConfig({
 		strictPort: true,
 		watch: {
 			ignored: ['**/src-tauri/**'],
+		},
+	},
+	build: {
+		outDir: 'dist',
+		assetsDir: 'assets',
+		emptyOutDir: true,
+		rollupOptions: {
+			output: {
+				manualChunks: undefined,
+				assetFileNames: 'assets/[name]-[hash][extname]',
+				chunkFileNames: 'assets/[name]-[hash].js',
+				entryFileNames: 'assets/[name]-[hash].js',
+			},
 		},
 	},
 })
