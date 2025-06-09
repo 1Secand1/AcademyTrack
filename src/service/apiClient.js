@@ -1,5 +1,6 @@
 import ky from 'ky';
 import { getCookie } from '@utils/cookie.js';
+import router from '@router/index.js';
 
 const { VITE_BASE_API_URL: prefixUrl } = import.meta.env;
 
@@ -30,8 +31,8 @@ export const apiClient = ky.create({
       async (request, options, response) => {
         if (!response.ok) {
           if (response.status === 401) {
-            // Если токен недействителен, перенаправляем на страницу входа
-            window.location.href = '/login';
+            // Если токен недействителен, перенаправляем на страницу входа через Vue Router
+            await router.replace('/login');
           }
           const error = new Error(`HTTP error! status: ${response.status}`);
           error.response = response;
