@@ -1,4 +1,4 @@
-const { VITE_BASE_API_URL } = import.meta.env;
+import { apiClient } from '../apiClient.js';
 
 export async function getToken(login, password) {
 	try {
@@ -7,23 +7,10 @@ export async function getToken(login, password) {
 			password: password,
 		};
 
-		console.log(VITE_BASE_API_URL,'env');
-
-		const response = await fetch(`${VITE_BASE_API_URL}/auth`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8',
-			},
-			body: JSON.stringify(user),
-		});
-
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-
-		const data = await response.json();
-		return data['token'];
+		const response = await apiClient.post('auth', { json: user }).json();
+		return response.token;
 	} catch (error) {
+		console.error('Auth error:', error);
 		return undefined;
 	}
 }

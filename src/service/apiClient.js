@@ -3,6 +3,8 @@ import { getCookie } from '@utils/cookie.js';
 
 const { VITE_BASE_API_URL: prefixUrl } = import.meta.env;
 
+console.log(prefixUrl,'prefixUrl');
+
 export const apiClient = ky.create({
   prefixUrl,
   timeout: 30000,
