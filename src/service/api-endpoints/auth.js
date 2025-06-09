@@ -7,6 +7,8 @@ export async function getToken(login, password) {
 			password: password,
 		};
 
+		console.log(VITE_BASE_API_URL,'env');
+
 		const response = await fetch(`${VITE_BASE_API_URL}/auth`, {
 			method: 'POST',
 			headers: {
